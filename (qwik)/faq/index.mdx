@@ -29,43 +29,41 @@ contributors:
   - ilteoood
 ---
 
-# FAQ
+## Preguntas frecuentes (FAQ)
 
-## Is _@QwikDev_ a sentient AI?
+### ¿Es _@QwikDev_ una IA consciente?
 
-Yes, and I am very funny too! [follow me](https://twitter.com/QwikDev)
+Sí, ¡y también soy muy divertido! [Sígueme](https://twitter.com/QwikDev)
 
-## Why is it called Qwik?
+### ¿Por qué se llama Qwik?
 
-Originally it was called _qoot_, but we thought it would be too hard to search for. One friend of ours, [@patrickjs\_\_](https://twitter.com/PatrickJS__), came up with Qwik and after an internal poll at [builder.io](https://www.builder.io/), we changed it!
+Originalmente se llamaba _qoot_, pero pensamos que sería difícil de buscar. Un amigo nuestro, [@patrickjs\_\_](https://twitter.com/PatrickJS__), sugirió Qwik y después de una encuesta interna en [builder.io](https://www.builder.io/), ¡lo cambiamos!
 
-## How is Qwik different from other frameworks?
+### ¿En qué se diferencia Qwik de otros frameworks?
 
-Qwik is the first framework that has similar DX (Developer Experience) as _React_, _Vue_, or _Svelte_ in how you author components, while delivering **Live HTML** that is instantly interactive. Qwik achieves this property by completely removing the need for hydration. Instead, Qwik applications immediately execute the event handlers on user interaction, without having to bootstrap all the app state. This technique is called [Resumability](../concepts/resumable/index.mdx).
+Qwik es el primer framework que ofrece una experiencia de desarrollo similar a _React_, _Vue_ o _Svelte_ en cuanto a cómo se crean los componentes, al mismo tiempo que ofrece un HTML en vivo que es instantáneamente interactivo. Qwik logra esta propiedad al eliminar por completo la necesidad de hidratación. En lugar de eso, las aplicaciones de Qwik ejecutan de inmediato los controladores de eventos en respuesta a la interacción del usuario, sin necesidad de inicializar todo el estado de la aplicación. Esta técnica se llama [Resumabilidad](../concepts/resumable/index.mdx).
 
-The outcome is that developers write extremely performant applications by default, without even worrying about it. Applications built with Qwik are fast regardless of the number of components or complexity, they are O(1) (constant time) in terms of JS payload.
+Como resultado, los desarrolladores escriben aplicaciones extremadamente eficientes de manera predeterminada, sin tener que preocuparse por ello. Las aplicaciones construidas con Qwik son rápidas sin importar la cantidad de componentes o su complejidad, ya que su carga de JavaScript es de complejidad O(1) (tiempo constante).
 
-## Why another framework?
+## ¿Por qué otro framework?
 
-The short answer is that Qwik solves a problem that other frameworks can't solve. Qwik has instant-on startup performance no matter how complex the application is. Qwik apps deliver the same amount of initial JS regardless of the amount of components. [Qwik is the first open-source O(1) framework](https://www.builder.io/blog/our-current-frameworks-are-on-we-need-o1).
+La respuesta breve es que Qwik resuelve un problema que otros frameworks no pueden resolver. Qwik tiene un rendimiento de inicio instantáneo sin importar cuán compleja sea la aplicación. Las aplicaciones de Qwik entregan la misma cantidad de JavaScript inicial sin importar la cantidad de componentes. [Qwik es el primer framework de código abierto O(1)](https://www.builder.io/blog/our-current-frameworks-are-on-we-need-o1).
 
-## What is Qwik City?
+## ¿Qué es Qwik City?
 
-[Qwik City](../../(qwikcity)/qwikcity/index.mdx) is just an extra set of APIs on top of Qwik. Think of it like _Qwik_ as the core, and _City_ as the extra APIs (routing, data loading, endpoints, etc.). We call it a meta-framework for Qwik. Qwik City is to Qwik, what Next.js is to React, what Nuxt is to Vue, or SvelteKit to Svelte.
+[Qwik City](../../(qwikcity)/qwikcity/index.mdx) es simplemente un conjunto adicional de API que se añade a Qwik. Piensa en _Qwik_ como el núcleo y _City_ como las API adicionales (enrutamiento, carga de datos, puntos finales, etc.). Lo llamamos un meta-framework para Qwik. Qwik City es para Qwik lo que Next.js es para React, Nuxt para Vue o SvelteKit para Svelte.
 
-## Is Qwik hard to learn?
+## ¿Es difícil aprender Qwik?
 
-We designed Qwik to be [extremely easy to learn](/docs/(qwikcity)/guides/react-cheat-sheet/index.mdx) and become productive in for React developers. Developing components is pretty much the same as React, and routing is inspired by Nextjs and others.
+Diseñamos Qwik para que sea [extremadamente fácil de aprender](/docs/(qwikcity)/guides/react-cheat-sheet/index.mdx) y para que los desarrolladores de React sean productivos rápidamente. El desarrollo de componentes es muy similar a React y el enrutamiento se inspira en Next.js y otros.
 
-However, there are fundamentally [new concepts](../think-qwik/index.mdx) to learn, such as [Resumability](../concepts/resumable/index.mdx) and fine-grained reactivity, but we think the learning curve is not steep.
+Sin embargo, hay conceptos fundamentales [nuevos](../think-qwik/index.mdx) que aprender, como la [Resumabilidad](../concepts/resumable/index.mdx) y la reactividad detallada, pero consideramos que la curva de aprendizaje no es pronunciada.
 
-We also have an interactive [tutorial](../../tutorial/welcome/overview/) to get you started.
+También tenemos un [tutorial interactivo](../../tutorial/welcome/overview/) para ayudarte a comenzar.
 
-## What are all those `$` signs?
+Es posible que hayas notado que hay más símbolos `$` de lo habitual en las aplicaciones de Qwik, como [`component$()`](/docs/(qwik)/components/overview/index.mdx#component), [`useTask$()`](/docs/(qwik)/components/tasks/index.mdx#usetask) y `<div onClick$={() => console.log('click')} />`. Estos símbolos sirven como marcadores para un límite de carga diferida (lazy-load boundary). Qwik divide tu aplicación en fragmentos más pequeños que el propio componente. Estos fragmentos son más pequeños que el componente en sí mismo y se utilizan para controladores de eventos, hooks, etc. El símbolo `$` indica tanto al [optimizador](../advanced/optimizer/index.mdx) como al desarrollador cuándo ocurre la carga diferida.
 
-You might have noticed there are more [`$`](../advanced/dollar/index.mdx) signs than usual in Qwik apps, such as: [`component$()`](/docs/(qwik)/components/overview/index.mdx#component), [`useTask$()`](/docs/(qwik)/components/tasks/index.mdx#usetask), and `<div onClick$={() => console.log('click')} />`. It serves as a marker for a lazy-load boundary. Qwik breaks your application into small chunks; these pieces are smaller than the component itself. For event handlers, hooks, etc. The `$` signals to both the [optimizer](../advanced/optimizer/index.mdx) and the developer when it's happening.
-
-**Example:**
+**Ejemplo:**
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -76,7 +74,7 @@ export default component$(() => {
 });
 ```
 
-Thanks to the `$` syntax, the component above is split into:
+Gracias a la sintaxis `$`, el componente anterior se divide en:
 
 ```js title="app.js"
 import { componentQrl, qrl } from '@builder.io/qwik';
@@ -107,7 +105,7 @@ export const App_component_AkbU84a8zes = () => {
 export const App_component_p_onClick_01pEgC10cpw = () => console.log('hello');
 ```
 
-> Note: The `$` is not related to `jQuery`, Svelte or any other framework.
+> Nota: El símbolo `$` no está relacionado con `jQuery`, Svelte ni ningún otro framework.
 
 ## Does Qwik download JS when the user interacts?
 
