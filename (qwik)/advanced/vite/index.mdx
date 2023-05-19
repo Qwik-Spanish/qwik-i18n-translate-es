@@ -12,8 +12,8 @@ contributors:
 
 # Vite
 
-Qwik aprovecha [Vite](https://vitejs.dev/) para brindar una experiencia de desarrollo rápida. Vite es una herramienta de construcción que sirve tu código a través de módulos ES nativos durante el desarrollo.
-Esto significa que no necesita empaquetar ni transpilar tu código para que funcione en el navegador. También cuenta con una sustitución de módulos en caliente (HMR) extremadamente rápida que actualiza tu navegador al instante cuando realizas cambios en tu código.
+Qwik aprovecha [Vite](https://vitejs.dev/) para brindar una experiencia de desarrollo rápida. Vite es una herramienta de construcción que sirve tu código a través de módulos nativos de ES durante el desarrollo.
+Esto significa que no necesita empaquetar (bundling) ni transpilar tu código para que funcione en el navegador. También cuenta con una sustitución de módulos en caliente (HMR) extremadamente rápida que actualiza tu navegador al instante cuando realizas cambios en tu código.
 
 ## Configuración
 
@@ -44,7 +44,7 @@ Para modificar la configuración, puedes pasar un objeto a la función `qwikVite
 
 ```js
 /**
- * Imprime registros de depuración detallados del plugin Qwik.
+ * Imprime logs de debug detallados del plugin Qwik.
  * Valor predeterminado: `false`
  */
 debug?: boolean;
@@ -54,7 +54,7 @@ debug?: boolean;
 
 ```js
 /**
- * La entry strategy de Qwik que se utilizará al empaquetar para producción.
+ * La entry strategy de Qwik que se utilizará en la build de producción.
  * Durante el desarrollo, el tipo siempre es `hook`.
  * Valor predeterminado: `{ type: "smart" }`
  */
@@ -66,7 +66,7 @@ entryStrategy?: EntryStrategy;
 ```js
 /**
  * El directorio para encontrar todos los componentes de Qwik. Dado que Qwik
- * no tiene una entrada única, el `srcDir` se utiliza para buscar archivos de Qwik de forma recursiva.
+ * no tiene una única entrada, el `srcDir` se utiliza para buscar archivos de Qwik de forma recursiva.
  * Valor predeterminado: `src`
  */
 srcDir?: string;
@@ -76,7 +76,7 @@ srcDir?: string;
 
 ```js
 /**
- * Lista de directorios para buscar componentes de Qwik o proveedores de forma recursiva.
+ * Lista de directorios para buscar componentes de Qwik o vendors de forma recursiva.
  * Valor predeterminado: `[]`
  */
 vendorRoots?: string[];
@@ -87,27 +87,27 @@ vendorRoots?: string[];
 ```js
 client?: {
     /**
-     * El punto de entrada para las compilaciones del cliente. Por lo general, esto sería
+     * El punto de entrada para las builds del cliente. Por lo general, esto sería
      * el componente principal de la aplicación.
      * Valor predeterminado: `src/components/app/app.tsx`
      */
     input?: string[] | string;
     /**
-     * Punto de entrada para el desarrollo solo en el lado del cliente con recarga de módulos en caliente (HMR).
+     * Punto de entrada para el desarrollo solo en el lado del cliente (client-side) con recarga de módulos en caliente (HMR).
      * Esto es solo para el desarrollo con Vite y no utiliza SSR.
      * Valor predeterminado: `src/entry.dev.tsx`
      */
     devInput?: string;
     /**
-     * Directorio de salida para la compilación del cliente.
+     * Directorio de salida para la build del cliente.
      * Valor predeterminado: `dist`
      */
     outDir?:
 
  string;
     /**
-     * La compilación del cliente creará un manifiesto y este hook
-     * se llamará con los datos de compilación generados.
+     * La build del cliente creará un manifest y este hook
+     * se llamará con los datos de la build generados.
      * Valor predeterminado: `undefined`
      */
     manifestOutput?: (manifest: QwikManifest) => Promise<void> | void;
@@ -121,19 +121,19 @@ ssr?: {
     /**
      * El punto de entrada para el renderizador SSR. Este archivo debería exportar
      * una función `render()`. Este punto de entrada y la función de exportación `render()`
-     * también se utilizan para el desarrollo SSR de Vite y el modo de depuración de Node.js.
+     * también se utilizan para el desarrollo SSR de Vite y el modo de debug de Node.js.
      * Valor predeterminado: `src/entry.ssr.tsx`
      */
     input?: string;
     /**
-     * Directorio de salida para la compilación del servidor.
+     * Directorio de salida para la build del servidor.
      * Valor predeterminado: `dist`
      */
     outDir?: string;
     /**
-     * La compilación SSR requiere el manifiesto generado durante la compilación del cliente.
-     * De forma predeterminada, este complemento vinculará el manifiesto del cliente a la compilación SSR.
-     * Sin embargo, la opción `manifestInput` se puede utilizar para proporcionar manualmente un manifiesto.
+     * La build SSR requiere el manifest generado durante la build del cliente.
+     * De forma predeterminada, este complemento vinculará el manifest del cliente a la build SSR.
+     * Sin embargo, la opción `manifestInput` se puede utilizar para proporcionar manualmente un manifest.
      * Valor predeterminado: `undefined`
      */
     manifestInput?: QwikManifest;
@@ -144,7 +144,7 @@ ssr?: {
 
 ```js
 /**
- * Opciones para el optimizador de Qwik.
+ * Opciones para el optimizer de Qwik.
  * Valor predeterminado: `undefined`
  */
 optimizerOptions?: OptimizerOptions;
@@ -154,8 +154,8 @@ optimizerOptions?: OptimizerOptions;
 
 ```js
 /**
- * Hook que se llama después de la compilación y proporciona todos los módulos transformados
- * que se utilizaron antes de la empaquetación.
+ * Hook que se llama después de la build y proporciona todos los módulos transformados
+ * que se utilizaron antes del bundling.
  */
 transformedModuleOutput?:
     | ((transformedModules: TransformModule[]) => Promise<void> | void)
@@ -167,9 +167,9 @@ transformedModuleOutput?:
 ```js
 devTools?: {
     /**
-     * Mantén presionadas las teclas definidas para habilitar el inspector de desarrollo de Qwik.
+     * Mantén presionadas las teclas definidas para habilitar el Qwik dev inspector.
      * De forma predeterminada, el comportamiento se activa al presionar la tecla `Alt` izquierda o derecha.
-     * Si se establece en `false`, el inspector de desarrollo de Qwik estará deshabilitado.
+     * Si se establece en `false`, el Qwik dev inspector estará deshabilitado.
      * Los valores válidos son los valores de `KeyboardEvent.code`.
      * Ten en cuenta que los sufijos 'Left' y 'Right' se ignoran.
      */
@@ -203,7 +203,7 @@ serverPluginsDir?: string;
 
 ```js
 /**
- * El nombre base de la ruta se utiliza para crear rutas de URL absolutas hasta
+ * El base pathname de la ruta se utiliza para crear rutas de URL absolutas hasta
  * el `hostname`, y siempre debe comenzar y terminar con un `/`.
  * Valor predeterminado: `/`.
  */
@@ -244,11 +244,11 @@ mdx?: any;
 
 ```js
 /**
-* El objeto de plataforma que se puede utilizar para simular las vinculaciones de Cloudflare.
+* El objeto de plataforma que se puede utilizar para imitar (mock) las bindings de Cloudflare.
 */
 platform?: Record<string, unknown>;
 ```
 
 ## Solución de problemas
 
-Antes de crear un problema en el repositorio de Qwik, verifica la sección "Solución de problemas" en la [documentación de Vite](https://vitejs.dev/guide/troubleshooting.html) y asegúrate de estar utilizando la versión recomendada.
+Antes de crear un issue en el repositorio de Qwik, verifica la sección "Solución de problemas" en la [documentación de Vite](https://vitejs.dev/guide/troubleshooting.html) y asegúrate de estar utilizando la versión recomendada.
