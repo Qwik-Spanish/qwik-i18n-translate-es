@@ -48,7 +48,7 @@
 - [Prisma](integrations/prisma/index.mdx)
 - [React](integrations/react/index.mdx)
 - [Storybook](integrations/storybook/index.mdx)
-- [Vanilla Estilizado](integrations/styled-vanilla-extract/index.mdx)
+- [Styled Vanilla Extract](integrations/styled-vanilla-extract/index.mdx)
 - [Supabase](integrations/supabase/index.mdx)
 - [Tailwind](integrations/tailwind/index.mdx)
 - [Tauri](integrations/tauri/index.mdx)
@@ -71,7 +71,7 @@
 - [Markdown y MDX](/docs/(qwikcity)/guides/mdx/index.mdx)
 - [SSG](/docs/(qwikcity)/guides/static-site-generation/index.mdx)
 - [React Cheat Sheet](/docs/(qwikcity)/guides/react-cheat-sheet/index.mdx)
-- [Mejores prácticas](/docs/(qwikcity)/guides/best-practices/index.mdx)
+- [Buenas prácticas](/docs/(qwikcity)/guides/best-practices/index.mdx)
 
 ## Conceptos
 
@@ -92,7 +92,7 @@
 - [Directorio de construcción personalizado](/docs/(qwik)/advanced/custom-build-dir/index.mdx)
 - [Vite](/docs/(qwik)/advanced/vite/index.mdx)
 - [Enrutamiento avanzado](/docs/(qwikcity)/advanced/routing/index.mdx)
-- [Búsqueda especulativa de módulos](/docs/(qwikcity)/advanced/speculative-module-fetching/index.mdx)
+- [La carga (Fetching) especulativa de módulos](/docs/(qwikcity)/advanced/speculative-module-fetching/index.mdx)
 - [Menús](/docs/(qwikcity)/advanced/menu/index.mdx)
 - [Activos estáticos](/docs/(qwikcity)/advanced/static-assets/index.mdx)
 - [Mapas del sitio](/docs/(qwikcity)/advanced/sitemaps/index.mdx)
