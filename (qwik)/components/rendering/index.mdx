@@ -1,5 +1,5 @@
 ---
-title: Rendering
+title: Renderización
 contributors:
   - the-r3aper7
   - RATIU5
@@ -15,24 +15,24 @@ contributors:
   - mhevery
 ---
 
-# Rendering
+# Renderización
 
-Rendering is the process of updating the DOM based on changes in the state of the application and the component templates.
+La renderización es el proceso de actualizar el DOM basado en los cambios en el estado de la aplicación y las plantillas de los componentes (component templates).
 
-Qwik is unique because it knows how to render templates out-of-order asynchronously and in a fine-grained manner.
+Qwik es único porque sabe cómo renderizar las plantillas de forma asíncrona y de manera refinada (fine-grained), incluso en desorden.
 
 
 ## JSX
 
-Just like React, Qwik uses [JSX](https://facebook.github.io/jsx/) to express the component's template. Notice that JSX is only syntax, under the hood, React and Qwik are completely different. **JSX != VDOM**.
+Al igual que React, Qwik utiliza [JSX](https://facebook.github.io/jsx/) para expresar la plantilla del componente. Ten en cuenta que JSX es solo sintaxis, en realidad, React y Qwik son completamente diferentes. **JSX != VDOM**.
 
-Qwik presents a few differences from other JSX frameworks:
+Qwik presenta algunas diferencias en comparación con otros frameworks de JSX:
 
-- Components are always declared with the `component$` function.
-- Components can use the `useSignal` hook to create reactive state.
-- Event handlers are declared with the `$` suffix.
-- For `<input>`, the `onChange` event is called `onInput$` in Qwik.
-- HTML attributes are prefered. `class` instead of `className`. `for` instead of `htmlFor`.
+- Los componentes siempre se declaran con la función `component$`.
+- Los componentes pueden utilizar el hook `useSignal` para crear un estado reactivo.
+- Los handlers de eventos se declaran con el sufijo `$`.
+- Para `<input>`, el evento `onChange` se llama `onInput$` en Qwik.
+- Se prefieren los atributos HTML. `class` en lugar de `className`. `for` en lugar de `htmlFor`.
 
 ```tsx /component$/#a /onClick$/#b /class/#c
 import { component$, useSignal } from '@builder.io/qwik';
@@ -46,15 +46,15 @@ export const MyComponent = component$((props) => {
           count.value = count.value + props.step;
         }}
       >
-        Increment by {props.step}
+        Incrementar en {props.step}
       </button>
       <main
         class={{
-          even: count.value % 2 === 0, // conditional class
+          even: count.value % 2 === 0, // clase condicional
           omode: count.value % 2 === 1,
         }}
       >
-        <h1>Count: {count.value}</h1>
+        <h1>Contador: {count.value}</h1>
       </main>
     </>
   );
@@ -62,9 +62,9 @@ export const MyComponent = component$((props) => {
 ```
 
 
-## Rendering child components
+## Renderización de componentes hijo
 
-Qwik lazy loads components on an as-needed basis. To minimize the number of components to download, Qwik only descends into child components if the component's props have changed.
+Qwik carga los componentes de forma lazy-load según sea necesario. Para minimizar la cantidad de componentes a descargar, Qwik solo desciende a los componentes hijo si las props (propiedades) del componente han cambiado.
 
 ```tsx {9} /Child/#a
 import { component$, useSignal } from '@builder.io/qwik';
@@ -74,23 +74,23 @@ export const Parent = component$(() => {
 
   return (
     <>
-      <button onClick$={() => (count.value += 1)}>Increment</button>
-      <Child name={'World_' + count.value} />
+      <button onClick$={() => (count.value += 1)}>Incrementar</button>
+      <Child name={'Mundo_' + count.value} />
     </>
   );
 });
 
 export const Child = component$((props: { name: string }) => {
-  return <p>Hello {props.name}</p>;
+  return <p>Hola {props.name}</p>;
 });
 ```
 
-> In the above example, the Parent component passes a changing `name` property to the Child component. The Child component will only be re-render when the count signals changes.
+> En el ejemplo anterior, el componente Parent (padre) pasa una propiedad `name` que cambia al componente Child (hijo). El componente Child solo se volverá a renderizar cuando las señales de count cambien.
 
 
-### Rendering a list of items
+### Renderización de una lista de elementos
 
-In many cases you'll want to render components by mapping an array in the render function with `items.map()`. It is required for every item of the list to have a unique `key` property passed to the first child of the mapping function. The `key` must be a string, or number and must be unique within the list.
+En muchos casos, es posible que desees renderizar varios componentes, y lo puedes lograr mapeando un arreglo en la función de renderización con `items.map()`. Es necesario que cada elemento del arreglo tenga una propiedad `key` única que debe ser pasada al primer hijo de la función de mapeo. La `key` debe ser una cadena o un número y debe ser única dentro de la lista de elementos.
 
 ```tsx {6} /data.map/ /key/#a
 import { component$ } from '@builder.io/qwik';
@@ -108,11 +108,11 @@ export const Parent = component$(() => {
 });
 ```
 
-> **Note:** it is not recommended to use the array's index as the key unless you can guarantee that the data for a given key will always be the same. It is always preferred to use some unique identifier from the data as the key.
+> **Nota:** No se recomienda utilizar el índice del arreglo como la clave (key) a menos que se pueda garantizar que los datos para una clave dada siempre serán los mismos. Siempre es preferible utilizar algún identificador único de los datos como la clave.
 
-### Rendering conditionally
+### Renderización condicional
 
-Conditional rendering is done with the Javascipt [ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) `?`, the `&&` operator, or just by using `if` statements.
+La renderización condicional se realiza con el operador ternario de JavaScript [ternary operator](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Conditional_Operator) `?`, el operador `&&`, o simplemente utilizando declaraciones `if`.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -121,9 +121,9 @@ export default component$(() => {
   const show = useSignal(false);
   return (
     <>
-      <button onClick$={() => show.value = !show.value}>Toggle</button>
-      {show.value ? <h1>Visible</h1> : <h1>Hidden</h1>}
-      {show.value && <div>Only show when it's visible</div>}
+      <button onClick$={() => show.value = !show.value}>Alternar</button>
+      {show.value ? <h1>Visible</h1> : <h1>Oculto</h1>}
+      {show.value && <div>Solo se muestra cuando está visible</div>}
     </>
   );
 });
@@ -131,20 +131,20 @@ export default component$(() => {
 
 ### `dangerouslySetInnerHTML`
 
-Qwik offers an attribute on HTML Elements called `dangerouslySetInnerHTML` as a replacement for calling `innerHTML` on the DOM.
+Qwik ofrece un atributo en los elementos HTML llamado `dangerouslySetInnerHTML` como reemplazo para llamar a `innerHTML` en el DOM.
 
-Due to cross-site-scripting (XSS) possibilities when rendering not trustworthy content, you must use this attribute to remind yourself that this operation might be dangerous.
+Debido a las posibilidades de ataques de cross-site scripting (XSS) al renderizar contenido no confiable, debes utilizar este atributo para recordarte que esta operación puede ser peligrosa.
 
 ```tsx
-const htmlString = "<strong>hello</strong>";
+const htmlString = "<strong>hola</strong>";
 <div dangerouslySetInnerHTML={htmlString}></div>
 ```
 
-### `bind` attribute
+### Atributo `bind`
 
-It is a convenient API to two-way data bind the value of a `<input>` to a `Signal`.
+Es una API conveniente para enlazar bidireccionalmente el valor de un `<input>` a una `Signal`.
 
-For checkbox inputs, you can use `bind:checked`, which binds the `checked` boolean to the specified signal.
+Para los inputs de tipo checkbox, puedes utilizar `bind:checked`, que enlaza el valor booleano `checked` a la señal (signal) especificada.
 
 ```tsx /bind:value/ /bind:checked/ /firstName/#a /acceptConditions/#b
 import { component$, useSignal } from '@builder.io/qwik';
@@ -158,13 +158,13 @@ export default component$(() => {
       <input type="text" bind:value={firstName} />
       <input type="checkbox" bind:checked={acceptConditions} />
 
-      <div>First name: {firstName.value}</div>
+      <div>Nombre: {firstName.value}</div>
     </form>
   );
 })
 ```
 
-The `bind:` is compiled away by the Qwik optimizer to a property set and an event handler, ie, it is just syntax sugar.
+El prefijo `bind:` se elimina por el Optimizador de Qwik y se convierte en un conjunto de propiedades y un handler de eventos, que al fin y al cabo, es solo sintaxis embellecida.
 
 ```tsx /bind:value/ /bind:checked/ /firstName/#a /acceptConditions/#b
 import { component$, useSignal } from '@builder.io/qwik';
@@ -183,32 +183,32 @@ export default component$(() => {
         checked={acceptConditions.value}
         onChange$={(_, el) => acceptConditions.value = el.checked }
       />
-      <div>First name: {firstName.value}</div>
+      <div>Nombre: {firstName.value}</div>
     </form>
   );
 })
 ```
 
-> This API ensures that the `value` of the input is always in sync with the value of the signal, no matter where the change comes from.
+> Esta API garantiza que el `value` del input siempre esté sincronizado con el valor de la señal, sin importar de dónde provenga el cambio.
 
 
-## Async rendering
+## Renderización asíncrona
 
-It is important that the rendering pipeline can lazy load child components. Lazy loading is an asynchronous operation; therefore, rendering needs to be asynchronous. In practice, this means that the `render()` function returns a promise.
+Es importante que el proceso de renderización pueda cargar componentes hijo de forma lazy-load. La carga lenta (lazy) es una operación asíncrona, por lo tanto, la renderización debe ser asíncrona. En la práctica, esto significa que la función `render()` devuelve una promesa.
 
-Most current-generation frameworks have a synchronous `render()` process. Synchronous rendering can't easily deal with asynchronous code loading, so synchronous rendering necessitates that all dependant components are eagerly present before rendering can commence.
+La mayoría de los frameworks de última generación tienen un proceso de renderización síncrono. La renderización síncrona no puede manejar fácilmente la carga de código asíncrono, por lo que requiere que todos los componentes dependientes estén presentes de antemano antes de que pueda comenzar la renderización.
 
-## Render batching
+## Agrupación de renderizaciones
 
-Whenever the state of the application changes, Qwik will schedule a render operation. The render operation will be scheduled to run after a macro-task (e.g. `setTimeout(0)`). This allows the application to batch multiple state changes into a single render operation.
+Cada vez que cambia el estado de la aplicación, Qwik programa una operación de renderizado. La operación de renderizado se programa para ejecutarse después de una macro-tarea (por ejemplo, `setTimeout(0)`). Esto permite que la aplicación agrupe múltiples cambios de estado en una sola operación de renderizado.
 
-In addition, because of the asynchronous nature of Qwik, all DOM writes are buffered and only flushed once all of the components have been downloaded and their JSX functions executed. The result is that the UI will update as an atomic operation, and the user will not see the intermediate steps, even if the application is slow to render.
+Además, debido a la naturaleza asíncrona de Qwik, todas las escrituras en el DOM se almacenan en un búfer y se liberan (flushean) solo cuando todos los componentes se han descargado y se han ejecutado sus funciones JSX. El resultado es que la interfaz de usuario se actualiza como una operación atómica y el usuario no verá los pasos intermedios, incluso si la aplicación es lenta al renderizar.
 
-The end goal is to enable performance and consistent rendering, even in the context of fast changing state and slow network.
+El objetivo final es permitir un rendimiento y una renderización consistentes, incluso en el contexto de un estado que cambia rápidamente y una red lenta.
 
-## Fine-grained reactivity
+## Reactividad refinada (Fine-grained)
 
-Thanks to the fine-grained reactivity of Qwik, only the components that depend on the state will be updated. This is a big performance gain for two reasons:
+Gracias a la reactividad refinada de Qwik, solo se actualizarán los componentes que dependan del estado. Esto supone una gran mejora de rendimiento por dos razones:
 
-1. Less code to execute means application updates will render faster.
-2. Less code to execute means oftentimes the code does not have to be downloaded on application startup (or ever).
+1. Menos código para ejecutar significa que las actualizaciones de la aplicación se renderizarán más rápido.
+2. Menos código para ejecutar significa que muchas veces el código no tiene que descargarse al iniciar la aplicación (o nunca).
