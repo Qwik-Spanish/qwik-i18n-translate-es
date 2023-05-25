@@ -23,10 +23,10 @@ import CodeSandbox from '../../../../../components/code-sandbox/index.tsx';
 Para que una aplicación web sea interactiva, es necesario tener una forma de responder a los eventos del usuario. Esto se logra registrando funciones callback (de devolución de llamada) en la plantilla JSX. Los controladores de eventos (event handlers) se registran utilizando el atributo `on{NombreEvento}$`. Por ejemplo, el atributo `onClick$` se utiliza para escuchar los eventos de (`click`).
 
 ```tsx /onClick$/
-<button onClick$={() => alert('¡PRESIONADO!')}>Haz clic aquí</button>
+<button onClick$={() => alert('¡PRESIONADO!')}>Haz click aquí</button>
 ```
 
-## Inline handler (Controlador en la misma línea)
+## Inline handler (Controlador en misma línea)
 
 En el siguiente ejemplo, el atributo `onClick$` del elemento `<button>` se utiliza para que Qwik sepa que se debe ejecutar el callback `() => store.count++` cada vez que se dispare el evento `click` en el botón.
 
@@ -238,7 +238,7 @@ export default component$(() => {
 Cuando creas tus componentes, a menudo es útil pasar lo que parece ser handlers de eventos (aunque no sean eventos DOM, solo callbacks). Los límites de los componentes en Qwik deben ser serializables, y las funciones no son serializables a menos que se conviertan en un QRL mediante un optimizador. Esto se hace agregando el sufijo `$`. Los QRL son asíncronos y, por lo tanto, necesitamos indicarle a TypeScript que la función no se puede llamar de forma síncrona, lo hacemos a través del tipo `PropFunction`.
 
 ```tsx
-<CmpButton onClick={() => alert('¡PRESIONADO!')}>¡Haz clic en mí!</CmpButton>
+<CmpButton onClick={() => alert('¡PRESIONADO!')}>¡Haz click en mí!</CmpButton>
 ```
 
 Lo anterior no es posible porque `onClick` es una función que no es serializable. En su lugar, debemos decirle al Optimizador que convierta nuestra función en un QRL. Esto se hace nombrando la propiedad con el sufijo `$`, como se muestra en este ejemplo.
@@ -248,7 +248,7 @@ Lo anterior no es posible porque `onClick` es una función que no es serializabl
 import { type PropFunction, component$, Slot } from '@builder.io/qwik';
 
 export default component$(() => {
-  return <CmpButton onClick$={() => alert('¡PRESIONADO!')}>¡Haz clic en mí!</CmpButton>;
+  return <CmpButton onClick$={() => alert('¡PRESIONADO!')}>¡Haz click en mí!</CmpButton>;
 });
 
 export const CmpButton = component$<{
