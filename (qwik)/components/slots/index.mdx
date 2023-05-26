@@ -16,15 +16,15 @@ import CodeSandbox from '../../../../../components/code-sandbox/index.tsx';
 
 # Slots
 
-Slots allow a component to treat the JSX children of the component as a form of input and project these children into the component's DOM tree.
+Los slots (espacios) permiten que un componente trate a los hijos JSX del componente como una forma de entrada y proyecte estos hijos en el árbol DOM del componente.
 
-This concept has different names in different frameworks:
+Este concepto tiene diferentes nombres en diferentes frameworks:
 
-- In Angular is called Content Projection
-- In React, it's the `children` of the props
-- In Web components it's [`<slot>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) as well
+- En Angular se llama Content Projection (Proyección de contenido).
+- En React, son los `children` de las props (propiedades).
+- En los Web Components, es [`<slot>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/slot) también.
 
-The main API to achieve this is the `<Slot>` component, exported in `@builder.io/qwik`:
+La API principal para lograr esto es el componente `<Slot>`, exportado en `@builder.io/qwik`:
 <CodeSandbox src="/src/routes/demo/slot/basic/index.tsx" style={{ height: '6em' }}>
 ```tsx {6} /Slot/
 import { Slot, component$ } from '@builder.io/qwik';
@@ -32,7 +32,7 @@ import { Slot, component$ } from '@builder.io/qwik';
 const Button = component$(() => {
   return (
     <button>
-      Content: <Slot />
+      Contenido: <Slot />
     </button>
   );
 });
@@ -40,23 +40,23 @@ const Button = component$(() => {
 export default component$(() => {
   return (
     <Button>
-      This goes inside {'<Button>'} component marked by{`<Slot>`}
+      Esto va dentro del componente {'<Button>'} marcado por {'<Slot>'}
     </Button>
   );
 });
 ```
 </CodeSandbox>
 
-The `<Slot>` component is a placeholder for the children of the component. The `<Slot>` component will be replaced by the children of the component during rendering.
+El componente `<Slot>` es un marcador de posición para los hijos del componente. Durante el proceso de renderización, el componente `<Slot>` será reemplazado por los hijos del componente.
 
-> **Note**: Slots in Qwik are declarative, allowing Qwik to render parents and children in isolation. Because slots are declarative, the children can NOT be read, or transformed by the components.
-> 
-> Why? Because Qwik needs to be able to render parent/children components independently from each other. With an imperative (`children`) approach, the child component can modify the `children` in countless ways. If a child component relied on `children`, it would be forced to re-render whenever a parent component would re-render to reapply the imperative transformation to the `children`. The extra rendering goes explicitly against the goals of Qwik components rendering in isolation.
+> **Nota**: Los slots en Qwik son declarativos, lo que permite que Qwik renderice los padres e hijos de forma aislada. Debido a que los slots son declarativos, los hijos NO pueden ser leídos ni transformados por los componentes.
+>
+> ¿Por qué? Porque Qwik necesita poder renderizar componentes padre/hijo de forma independiente entre sí. Con un enfoque imperativo (`children`), el componente hijo puede modificar los `children` de innumerables formas. Si un componente hijo dependiera de los `children`, se vería obligado a volver a renderizarse cada vez que un componente padre se renderice nuevamente para volver a aplicar la transformación imperativa a los `children`. El renderizado adicional va explícitamente en contra de los objetivos de los componentes Qwik de renderizarse de forma aislada.
 
 
-### Named slots
+### Slots con nombres
 
-The `Slot` component can be used multiple times in the same component, as long as it has a different `name` property:
+El componente `Slot` se puede utilizar varias veces en el mismo componente, siempre y cuando tenga una propiedad `name` diferente:
 
 <CodeSandbox src="/src/routes/demo/slot/named/index.tsx" style={{ height: '10em' }}>
 ```tsx {9} /start/#a /title/#c /footer/#a /end/#c /q:slot/ /Slot/
@@ -71,7 +71,7 @@ const Tab = component$(() => {
         <Slot name="title" />
       </h2>
       <div>
-        <Slot /> {/* default slot */}
+        <Slot /> {/* slot predeterminado */}
         <div>
           <Slot name="footer" />
         </div>
@@ -84,8 +84,8 @@ export default component$(() => {
   return (
     <Tab>
       <div q:slot="title">Qwik</div>
-      <div>A resumable framework for building instant web applications</div>
-      <span q:slot="footer">made with ❤️ by </span>
+      <div>Un framework reanudable para construir aplicaciones web instantáneas</div>
+      <span q:slot="footer">hecho con ❤️ por </span>
       <a q:slot="footer" href="https://builder.io">
         builder.io
       </a>
@@ -95,16 +95,16 @@ export default component$(() => {
 ```
 </CodeSandbox>
 
-Now, when consuming the `<Tab>` component, we can pass children and specify in which slot they should be placed, using the `q:slot` attribute:
+Ahora, al consumir el componente `<Tab>`, podemos pasar hijos y especificar en qué slot deben colocarse, utilizando el atributo `q:slot`:
 
-Notice that:
+Ten en cuenta que:
 
-- If `q:slot` is not specified or it's an empty string, the content will be projected into the default `<Slot>`, i.e. the `<Slot>` without a `name` property.
-- Multiple `q:slot="footer"` attributes coalesce items together in the content projection.
+- Si no se especifica `q:slot` o es una cadena vacía, el contenido se proyectará en el `<Slot>` predeterminado, es decir, en el `<Slot>` sin una propiedad `name`.
+- Múltiples atributos `q:slot="footer"` fusionan los elementos juntos en la proyección del contenido.
 
-### Unprojected content
+### Contenido no proyectado
 
-Qwik keeps all content around, even if not projected. This is because the content could be projected in the future. When projected content does not match any `<Slot>` component, the content is moved into an inert `<q:template>` element.
+Qwik mantiene todo el contenido, incluso si no está proyectado. Esto se debe a que el contenido podría proyectarse en el futuro. Cuando el contenido proyectado no coincide con ningún componente `<Slot>`, el contenido se mueve a un elemento `<q:template>` inerte.
 
 
 <CodeSandbox src="/src/routes/demo/slot/unprojected/index.tsx" style={{ height: '7em' }}>
@@ -126,29 +126,29 @@ const Accordion = component$(() => {
 export default component$(() => {
   return (
     <Accordion>
-      I am pre-rendered on the Server and hidden until needed.
+      Soy pre-renderizado en el servidor y oculto hasta que sea necesario.
     </Accordion>
   );
 });
 ```
 </CodeSandbox>
 
-Results in:
+Esto resulta en:
 
 ```html
 <div>
   <h1>▶︎</h1>
 </div>
 <q:template q:slot hidden aria-hidden="true">
-  I am pre-rendered on the Server and hidden until needed.
+  Soy pre-renderizado en el servidor y oculto hasta que sea necesario.
 </q:template>
 ```
 
-Notice that the un-projected content is moved into an inert `<q:template>`. This is done just in case the `Accordion` component re-renders and inserts the `<Slot>`. In that case, we avoid having to re-render the parent component just to generate the projected content. By persisting the un-projected content when the parent is initially rendered, the rendering of the two components can stay independent.
+Observa que el contenido no proyectado se mueve a un elemento `<q:template>` inerte. Esto se hace por si el componente `Accordion` se vuelve a renderizar e inserta el `<Slot>`. En ese caso, evitamos tener que volver a renderizar el componente padre solo para generar el contenido proyectado. Al persistir el contenido no proyectado cuando se renderiza inicialmente el componente padre, el renderizado de los dos componentes puede mantenerse independiente.
 
-### Invalid projection
+### Proyección inválida
 
-The `q:slot` attribute must be a direct child of a component.
+El atributo `q:slot` debe ser un hijo directo de un componente.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -158,9 +158,9 @@ export const Project = component$(() => { ... })
 export const MyApp = component$(() => {
   return (
     <Project>
-      <span q:slot="title">ok, direct child of Project</span>
+      <span q:slot="title">ok, hijo directo de Project</span>
       <div>
-        <span q:slot="title">Error, not a direct child of Project</span>
+        <span q:slot="title">Error, no es un hijo directo de Project</span>
       </div>
     </Project>
   );
@@ -168,9 +168,9 @@ export const MyApp = component$(() => {
 ```
 
 
-## Advanced Example
+## Ejemplo avanzado
 
-An example of a collapsible component that conditionally projects editable content.
+Un ejemplo de un componente plegable que proyecta contenido editable de forma condicional.
 
 <CodeSandbox src="/src/routes/demo/slot/advanced/index.tsx" style={{ height: '15em' }}>
 ```tsx
@@ -193,13 +193,13 @@ export const Collapsible = component$(() => {
 export default component$(() => {
   const title = useSignal('Qwik');
   const description = useSignal(
-    'A resumable framework for building instant web applications'
+    'Un framework reanudable para construir aplicaciones web instantáneas'
   );
   return (
     <>
-      <label>Title</label>
+      <label>Título</label>
       <input bind:value={title} type="text" />
-      <label>Description</label>
+      <label>Descripción</label>
       <textarea bind:value={description} cols={50} />
       <hr />
       <Collapsible>
@@ -212,23 +212,23 @@ export default component$(() => {
 ```
 </CodeSandbox>
 
-The `Collapsible` component will always display the title, but the body of the text will only display if `store.isOpen` is `true`.
+El componente `Collapsible` siempre mostrará el título, pero el cuerpo del texto solo se mostrará si `store.isOpen` es `true`.
 
-Additionally, the `title` and `description` of the projected content are editable.
+Además, el título y la descripción del contenido proyectado son editables.
 
-- The parent component needs to be able to change content without forcing the `Collapsible` component to re-render. 
-- The child component needs to change what is projected without having the parent component re-render. In our case, `Collapsible` should be able to show/hide the default `q:slot` without downloading and re-rendering the parent component.
+- El componente padre necesita poder cambiar el contenido sin forzar al componente `Collapsible` a volver a renderizarse.
+- El componente hijo necesita cambiar qué se proyecta sin hacer que el componente padre vuelva a renderizarse. En nuestro caso, `Collapsible` debería poder mostrar/ocultar el `q:slot` predeterminado sin descargar y volver a renderizar el componente padre.
 
-In order for the two components to have an independent lifecycle, the projection needs to be declarative. In this way, either the parent or child can change what is projected or how it is projected without forcing the re-rendering of the other.
+Para que los dos componentes tengan un ciclo de vida independiente, la proyección debe ser declarativa. De esta manera, tanto el componente padre como el hijo pueden cambiar qué se proyecta o cómo se proyecta sin forzar el renderizado del otro.
 
 
-### Projection vs `children`
+### Proyección vs. `children`
 
-All frameworks need a way for a component to wrap its complex content conditionally. This problem is solved in many different ways, but there are two predominant approaches:
+Todos los frameworks necesitan una forma de que un componente envuelva su contenido complejo de forma condicional. Este problema se resuelve de muchas formas diferentes, pero existen dos enfoques predominantes:
 
-- **projection**: Projection is a declarative way of describing how the content gets from the parent template to where it needs to be projected.
-- **`children`**: `children` refers to vDOM approaches that treat content just like another input.
+- **proyección**: la proyección es una forma declarativa de describir cómo se mueve el contenido desde la plantilla padre hasta donde debe proyectarse.
+- **`children`**: `children` se refiere a los enfoques de vDOM que tratan el contenido como otra entrada.
 
-The two approaches can best be described as declarative vs imperative. They both come with their set of advantages and disadvantages.
+Ambos enfoques se pueden describir mejor como declarativos vs. imperativos. Ambos tienen sus ventajas y desventajas.
 
-Qwik uses the declarative projection approach. The reason for this is that Qwik needs to be able to render parent/children components independently from each other. With an imperative (`children`) approach, the child component can modify the `children` in countless ways. If a child component relied on `children`, it would be forced to re-render whenever a parent component would re-render to reapply the imperative transformation to the `children`. The extra rendering goes explicitly against the goals of Qwik components rendering in isolation.
+Qwik utiliza el enfoque declarativo de proyección. La razón de esto es que Qwik necesita poder renderizar componentes padre/hijo de forma independiente entre sí. Con un enfoque imperativo (`children`), el componente hijo puede modificar los `children` de innumerables formas. Si un componente hijo dependiera de los `children`, se vería obligado a volver a renderizarse cada vez que un componente padre lo hiciera para volver a aplicar la transformación imperativa a los `children`. El renderizado adicional va en contra de los objetivos de los componentes Qwik de renderizarse de forma aislada.
