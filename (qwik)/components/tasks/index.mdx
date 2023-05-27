@@ -1,5 +1,5 @@
 ---
-title: Events
+title: Eventos
 contributors:
   - mhevery
   - manucorporat
@@ -13,91 +13,91 @@ contributors:
 import CodeSandbox from '../../../../../components/code-sandbox/index.tsx';
 
 
-# Tasks
+# Tasks (tareas)
 
-Tasks are meant for running asynchronous operations as part of component initialization or change of component state.
+Las Tasks se utilizan para ejecutar operaciones asíncronas como parte de la inicialización o del cambio de estado de un componente.
 
-> **Note**: Tasks are similar to `useEffect()` in React, but there are enough differences that we did not want to call them the same so as not to bring preexisting expectations about how they work. The main differences are:
+> **Nota**: Las Tasks son similares a `useEffect()` en React, pero hay suficientes diferencias para no llamarlos de la misma manera y evitar generar expectativas preexistentes sobre su funcionamiento. Las principales diferencias son:
 >
-> - Tasks are asynchronous.
-> - Task run on server and browser.
-> - Tasks run before rendering and can block rendering.
+> - Las Tasks son asíncronas.
+> - Las Tasks se ejecutan en el servidor y en el navegador.
+> - Las Tasks se ejecutan antes de la renderización y pueden bloquearla.
 
-`useTask$()` should be your default go-to API for running asynchronous (or synchronous) work as part of component initialization or state change. It is only when you can't achieve what you need with `useTask$()` that you should consider using `useVisibleTask$()` or `useResource$()`.
+`useTask$()` debería ser tu API predeterminada para ejecutar tareas asíncronas (o síncronas) como parte de la inicialización del componente o el cambio de estado. Solo cuando no puedas lograr lo que necesitas con `useTask$()` debes considerar el uso de `useVisibleTask$()` o `useResource$()`.
 
-The basic use case for `useTask$()` is to perform work on component initialization. `useTask$()` has these properties:
-- It can run on either the server or in the browser.
-- It runs before rendering and blocks rendering.
-- If multiple tasks are running then they are run sequentially in the order they were registered. An asynchronous task will block the next task from running until it completes.
+El caso de uso básico de `useTask$()` es realizar tareas durante la inicialización del componente. `useTask$()` tiene las siguientes propiedades:
+- Puede ejecutarse tanto en el servidor como en el navegador.
+- Se ejecuta antes de la renderización y bloquea la renderización.
+- Si se ejecutan varias tasks, se ejecutan secuencialmente en el orden en que se registraron. Una task asíncrona bloqueará la ejecución de la siguiente task hasta que se complete.
 
-Tasks can also be used to perform work when a component state changes. In this case, the task will rerun every time the tracked state changes. See: [`track()`](#track).
+Las Tasks también se pueden utilizar para realizar operaciones cuando cambia el estado de un componente. En este caso, la task se volverá a ejecutar cada vez que cambie el estado rastreado. Consulta: [`track()`](#track).
 
-Sometimes a task needs to run only on the browser and after rendering, in that case, you should use [`useVisibleTask$()`](#usevisibletask).
+A veces, una tarea necesita ejecutarse solo en el navegador y después de la renderización, en ese caso debes usar [`useVisibleTask$()`](#usevisibletask).
 
-Sometimes a task should fetch data asynchronously and produce a signal (and not block rendering), in that case, you should use [`useResource$()`](#useresource).
+A veces, una tarea debe obtener datos de forma asíncrona y producir una señal (sin bloquear la renderización), en ese caso debes usar [`useResource$()`](#useresource).
 
-## Lifecycle
+## Ciclo de vida
 
-Thanks to [Resumability](/docs/(qwik)/concepts/resumable/index.mdx), component lifetime and its lifecycle extend across server and browser runtime. Sometimes the component will first be rendered in the server, and other times it could be rendered in the browser. However, in both cases, the lifecycle (order) will be the same, only its execution location will be in different environments (server vs browser).
+Gracias a la [Reanudabilidad](/docs/(qwik)/concepts/resumable/index.mdx), la vida útil de un componente y su ciclo de vida se extienden en tiempo de ejecución, tanto en el servidor como en el navegador. A veces, el componente se renderizará primero en el servidor y otras veces se renderizará en el navegador. Sin embargo, en ambos casos, el ciclo de vida (orden) será el mismo, solo que su ejecución se realizará en entornos diferentes (servidor vs. navegador).
 
-> **Note**: For systems that use hydration the execution of the application happens twice. Once on a server (SSR/SSG) and once on the browser (hydration). For this reason, many frameworks have "effects" which only execute on the browser. That means that the code that runs on the server is different than the code that runs on the browser. Qwik execution is unified, meaning if the code has already been executed on the server it does not re-execute it on the browser.
+> **Nota**: Para los sistemas que utilizan la hidratación, la ejecución de la aplicación ocurre dos veces. Una vez en el servidor (SSR/SSG) y otra vez en el navegador (hidratación). Por esta razón, muchos frameworks tienen "effects" (efectos) que solo se ejecutan en el navegador. Esto significa que el código que se ejecuta en el servidor es diferente al código que se ejecuta en el navegador. La ejecución de Qwik es unificada, lo que significa que si el código ya se ha ejecutado en el servidor, no se vuelve a ejecutar en el navegador.
 
-**In Qwik, there are only 3 lifecycle stages:**
+**En Qwik, solo hay 3 etapas en el ciclo de vida:**
 
-- `Task` - run before rendering and also when tracked state changes. (Tasks run sequentially, and block rendering.)
-- `Render` - runs after `TASK` and before `VisibleTask`
-- `VisibleTask` - runs after `Render` and when the component becomes visible
+- `Task` - se ejecuta antes de la renderización y también cuando cambia el estado rastreado. (Las tasks se ejecutan de forma secuencial y bloquean la renderización).
+- `Render` - se ejecuta después de `Task` y antes de `VisibleTask`.
+- `VisibleTask` - se ejecuta después de `Render` y cuando el componente se vuelve visible.
 
 ```bash /useTask$/#d /RENDER/#b /useVisibleTask$/#c
       useTask$ -------> RENDER ---> useVisibleTask$
                             |
-| --- SERVER or BROWSER --- | ----- BROWSER ----- |
+| --- SERVIDOR o NAVEGADOR --- | ----- NAVEGADOR ----- |
                             |
-                       pause|resume
+                       pausar|reanudar
 ```
 
-**SERVER**: Usually **the life of a component starts on the server** (during SSR or SSG), in that case, the `useTask$` and `RENDER` will run in the server, and then the `VisibleTask` will run in the browser, after the component is visible.
+**SERVIDOR**: Por lo general, **la vida de un componente comienza en el servidor** (durante el SSR o SSG), en ese caso, `useTask$` y `RENDER` se ejecutarán en el servidor, y luego `VisibleTask` se ejecutará en el navegador, después de que el componente sea visible.
 
-> **Notice** that because the component was mounted in the server, **only useVisibleTask$() runs in the browser**. This is because the browser continues the same lifecycle, that was paused in the server right after the render and resumed in the browser.
+> **Ten en cuenta** que debido a que el componente se montó en el servidor, **solo `useVisibleTask$()` se ejecuta en el navegador**. Esto se debe a que el navegador continúa el mismo ciclo de vida que se pausó en el servidor justo después de la renderización y se reanuda en el navegador.
 
-**BROWSER**: Sometimes a component will be first mounted/rendered in the browser, for example when the user SPA navigates to a new page, or a "modal" component first appears in the page. In that case, the lifecycle will run like this:
+**NAVEGADOR**: A veces, un componente se montará/renderizará primero en el navegador, por ejemplo, cuando el usuario navega a una nueva página en una SPA (Aplicación de Página Única) o cuando un componente "modal" aparece por primera vez en la página. En ese caso, el ciclo de vida se ejecutará de la siguiente manera:
 
 ```bash /useTask$/#d /RENDER/#b /useVisibleTask$/#c
   useTask$ --> RENDER --> useVisibleTask$
 
-| -------------- BROWSER --------------- |
+| -------------- NAVEGADOR --------------- |
 ```
 
-> **Notice** that the lifecycle is exactly the same, but this time all the hooks run in the browser, and not in the server.
+> **Ten en cuenta** que el ciclo de vida es exactamente el mismo, pero en este caso todos los hooks se ejecutan en el navegador y no en el servidor.
 
 ## `useTask$()`
 
-- **When:** BEFORE component's first render, and when tracked state changes
-- **Times:** at least once
-- **Platform:** server and browser
+- **Cuándo:** ANTES de la primera renderización del componente y cuando cambia el estado rastreado.
+- **Veces:** al menos una vez.
+- **Plataforma:** servidor y navegador.
 
-`useTask$()` registers a hook to be executed upon component creation, it will run at least once either in the server or in the browser, depending on where the component is initially rendered.
+`useTask$()` registra un hook que se ejecutará al crear el componente, se ejecutará al menos una vez, ya sea en el servidor o en el navegador, dependiendo de dónde se renderice inicialmente el componente.
 
-Additionally, this task can be reactive and will re-execute when **tracked** [state](/docs/(qwik)/components/state/index.mdx) changes.
+Además, esta task puede ser reactiva y se volverá a ejecutar cuando cambie el [estado](/docs/(qwik)/components/state/index.mdx) **rastreado**.
 
-**Notice that any subsequent re-execution of the task will always happen in the browser**, because reactivity is a browser-only thing.
+**Ten en cuenta que cualquier reejecución posterior de la tarea siempre ocurrirá en el navegador**, porque la reactividad es algo exclusivo del navegador.
 
 ```bash /useTask$(track)/#d /RENDER/#b /CLICK/#a
-                      (state change) -> (re-execute)
+                      (cambio de estado) -> (reejecución)
                                   ^            |
                                   |            v
  useTask$(track) -> RENDER ->  CLICK  -> useTask$(track)
                         |
-  | ----- SERVER ------ | ----------- BROWSER ----------- |
+  | ----- SERVIDOR ------ | ----------- NAVEGADOR ----------- |
                         |
-                   pause|resume
+                   pausar|reanudar
 ```
 
-> If `useTask$()` does not track any state, it will run **exactly once**, either in the server **or** in the browser (**not both**), depending where the component is initially rendered. Effectively behaving like an "on-mount" hook.
+> Si `useTask$()` no rastrea ningún estado, se ejecutará **exactamente una vez**, ya sea en el servidor **o** en el navegador (**no en ambos**), según donde se renderice inicialmente el componente. En efecto, se comporta como un hook "on-mount" (de montaje).
 
-`useTask$()` will block the rendering of the component until after its async callback resolves, in other words, tasks execute sequentially even if they are asynchronous. (Only one task executes at a time / Tasks block rendering).
+`useTask$()` bloqueará la renderización del componente hasta que se resuelva su callback (devolución de llamada) asíncrona, en otras palabras, las tasks se ejecutan de forma secuencial incluso si son asíncronas. (Solo se ejecuta una task a la vez / las tasks bloquean la renderización).
 
-Let's look at the simplest use case of the task to run some asynchronous work on component initialization.
+Veamos el caso de uso más sencillo de la task para ejecutar algún trabajo asíncrono en la inicialización del componente.
 
 <CodeSandbox src="/src/routes/demo/tasks/use-task/index.tsx" style={{ height: '6em' }}>
 ```tsx
@@ -124,28 +124,28 @@ const delay = (time: number) => new Promise((res) => setTimeout(res, time));
 ```
 </CodeSandbox>
 
-> In this example
+> En este ejemplo:
 >
-> - The `useTask$()` computes the fibonacci number one entry per 100 ms. So 40 entries take 4 seconds to render.
->   - The `useTask$()` executes on the server as part of the SSR (the result may be cached in CDN.)
->   - Because the `useTask$()` blocks rendering, the rendered HTML page takes 4 seconds to render.
-> - Because this task has no `track()` it will never rerun, making it effectively an initialization code.
->   - Because this component only renders on the server, the `useTask$()` will never run on the browser. (code will never download to browser.)
+> - `useTask$()` calcula los números de Fibonacci una entrada cada 100 ms. Por lo tanto, se tardan 4 segundos en renderizar 40 entradas.
+>   - `useTask$()` se ejecuta en el servidor como parte del SSR (el resultado puede almacenarse en caché en una CDN).
+>   - Debido a que `useTask$()` bloquea la renderización, la página HTML renderizada tarda 4 segundos en mostrarse.
+> - Debido a que esta tarea no tiene `track()`, nunca se volverá a ejecutar, por lo que en realidad es un código de inicialización.
+>   - Debido a que este componente solo se renderiza en el servidor, `useTask$()` nunca se ejecutará en el navegador. (El código nunca se descargará al navegador).
 
-> Notice that `useTask$()` runs **BEFORE** the actual rendering and on the server. Therefore if you need to do DOM manipulation, use [`useVisibleTask$()`](#usevisibletask) instead, which runs on the browser after rendering.
+> Observa que `useTask$()` se ejecuta **ANTES** de la renderización verdadera y en el servidor. Por lo tanto, si necesitas realizar manipulaciones en el DOM, utiliza [`useVisibleTask$()`](#usevisibletask), que se ejecuta en el navegador después de la renderización.
 
-Use `useTask$()` when you need to:
-- Run async tasks before rendering
-- Run code only once before the component is first rendered
-- Programmatically run side-effect code when state changes
+Usa `useTask$()` cuando necesites:
+- Ejecutar tareas asíncronas antes de la renderización.
+- Ejecutar código solo una vez antes de que se renderice el componente por primera vez.
+- Ejecutar código side-effect (con efecto secundario) de forma programática cuando cambie el estado.
 
-> Note, if you're thinking about load data (like using `fetch()`) inside of `useTask$`, consider using [`useResource$()`](#useresource) instead. This API is more efficient in terms of leveraging SSR streaming and parallel data fetching.
+> Nota: si estás pensando en cargar datos (como usar `fetch()`) dentro de `useTask$`, considera usar [`useResource$()`](#useresource) en su lugar. Esta API es más eficiente en términos de aprovechar el flujo del SSR y la carga paralela de datos.
 
-### On mount
+### On mount (En el montaje)
 
-There is not an specific "on-mount" hook in Qwik because `useTask$()` without tracking effectively behaves like a `mount` hook.
+No hay un hook específico de "on-mount" en Qwik porque `useTask$()` sin seguimiento (track) se comporta efectivamente como un hook de "mount".
 
-This is because `useTask$` runs always at least once when the component is first mounted.
+Esto se debe a que `useTask$()` siempre se ejecuta al menos una vez cuando se monta el componente por primera vez.
 
 ```tsx {5-8}
 import { component$, useTask$ } from '@builder.io/qwik';
@@ -153,21 +153,21 @@ import { component$, useTask$ } from '@builder.io/qwik';
 export default component$(() => {
 
   useTask$(async () => {
-    // A task without `track` any state effectively behaves like a `on mount` hook.
-    console.log('Runs once when the component mounts in the server OR client.');
+    // Una task sin `track` de ningún estado se comporta efectivamente como un hook de "mount".
+    console.log('Se ejecuta una vez cuando el componente se monta en el servidor O en el cliente.');
   });
 
-  return <div>Hello</div>;
+  return <div>Hola</div>;
 });
 ```
 
-One unique aspect of Qwik, is that components are mounted only ONCE across the server and client. This is a property of resumability. What it means, is that if `useTask$` runs during SSR it will not run again in the browser because Qwik does not hydrate.
+Un aspecto único de Qwik es que los componentes se montan solo UNA VEZ en el servidor y el cliente. Esto es una propiedad de la capacidad de reanudar la ejecución. Lo que significa que si `useTask$()` se ejecuta durante el SSR, no se ejecutará nuevamente en el navegador porque Qwik no realiza hidratación.
 
 ### `track()`
 
-There are times when it is desirable to re-run a task when a component state changes. This is done by using the `track()` function. The `track()` function allows you to set up a dependency on a component state on the server (if initially rendered there) and then re-execute the task when the state changes (always on the browser) on the browser.
+A veces es deseable volver a ejecutar una task cuando cambia el estado de un componente. Esto se hace utilizando la función `track()`. La función `track()` te permite establecer una dependencia en el estado de un componente en el servidor (si se renderizó inicialmente allí) y luego volver a ejecutar la tarea cuando el estado cambie (siempre en el navegador).
 
-> **Note**: If all you want to do is compute a new state from an existing state synchronously, you should use [`useComputed$()`](/docs/components/state/#usecomputed) instead.
+> **Nota**: Si lo único que deseas hacer es calcular un nuevo estado a partir de un estado existente de forma síncrona, debes usar [`useComputed$()`](/docs/components/state/#usecomputed) en su lugar.
 
 <CodeSandbox src="/src/routes/demo/tasks/track/index.tsx" style={{ height: '6em' }} >
 ```tsx
@@ -175,7 +175,7 @@ import { component$, useSignal, useTask$ } from '@builder.io/qwik';
 import { isServer } from '@builder.io/qwik/build';
 
 export default component$(() => {
-  const text = useSignal('Initial text');
+  const text = useSignal('Texto inicial');
   const delayText = useSignal('');
 
   useTask$(({ track }) => {
@@ -183,16 +183,16 @@ export default component$(() => {
     const value = text.value;
     const update = () => (delayText.value = value);
     isServer
-      ? update() // don't delay on server render value as part of SSR
-      : delay(500).then(update); // Delay in browser
+      ? update() // no hay retraso en el valor renderizado desde el servidor (SSR)
+      : delay(500).then(update); // retraso en el navegador
   });
 
   return (
     <section>
       <label>
-        Enter text: <input bind:value={text} />
+        Ingresa texto: <input bind:value={text} />
       </label>
-      <p>Delayed text: {delayText}</p>
+      <p>Texto retrasado: {delayText}</p>
     </section>
   );
 });
@@ -201,25 +201,25 @@ const delay = (time: number) => new Promise((res) => setTimeout(res, time));
 ```
 </CodeSandbox>
 
-> On the server:
+> En el servidor:
 >
-> - The `useTask$()` runs on the server and the `track()` function sets up a subscription on `text` signal.
-> - The page is rendered.
+> - `useTask$()` se ejecuta en el servidor y la función `track()` establece una suscripción en la señal `text`.
+> - Se renderiza la página.
 >
-> On the browser:
-> - The `useTask$()` does not have to run (or be downloaded) eagerly because Qwik knows that the task is subscribed to the `text` signal from the server execution.
-> - When the user types in the input box, the `text` signal changes. Qwik knows that the `useTask$()` is subscribed to the `text` signal and it is at this time that the `useTask$()` closure is brought into the JavaScript VM to be executed.
+> En el navegador:
+> - `useTask$()` no tiene que ejecutarse (o descargarse) de forma precipitada (eagerly) porque Qwik sabe que la tarea está suscrita a la señal `text` desde la ejecución en el servidor.
+> - Cuando el usuario escribe en el cuadro de entrada, la señal `text` cambia. Qwik sabe que `useTask$()` está suscrito a la señal `text` y es en este momento que la closure (clausura) de `useTask$()` se trae a la Máquina Virtual de JavaScript para ejecutarla.
 >
-> The `useTask$()`
+> La función `useTask$()`
 >
-> - The `useTask$()` blocks rendering until it completes. If you don't want to block rendering (as in this case) make sure that the task is resolved, and run the delay work on a separate unconnected promise. (In our case we don't await `delay()`. Doing so would block rendering.)
+> - `useTask$()` bloquea la renderización hasta que se complete. Si no deseas bloquear la renderización (como en este caso), asegúrate de que la task se resuelva y ejecuta el trabajo de retraso en una promesa separada que no esté conectada. (En nuestro caso, no esperamos (await) a `delay()`. Hacerlo bloquearía la renderización).
 
-> Sometimes it is required to only run code either in the server or in the client. This can be achieved by using the `isServer` and `isBrowser` booleans exported from `@builder.io/qwik/build` as shown above.
+> A veces es necesario ejecutar código solo en el servidor o solo en el cliente. Esto se puede lograr utilizando los booleanos `isServer` e `isBrowser` exportados de `@builder.io/qwik/build`, como se muestra arriba.
 
 
-### `track()` as a function
+### `track()` como una función
 
-In the above example `track()` was used to track a specific signal. However, `track()` can also be used as a function to track multiple signals at once.
+En el ejemplo anterior, se utilizó `track()` para rastrear una señal específica. Sin embargo, `track()` también se puede utilizar como una función para rastrear múltiples señales a la vez.
 
 <CodeSandbox src="/src/routes/demo/tasks/track-fn/index.tsx" style={{ height: '6em' }} >
 ```tsx
@@ -237,19 +237,19 @@ export default component$(() => {
     );
     const update = () => (delayText.value = value);
     isServer
-      ? update() // don't delay on server render value as part of SSR
-      : delay(500).then(update); // Delay in browser
+      ? update() // no hay retraso en el valor renderizado desde el servidor (SSR)
+      : delay(500).then(update); // retraso en el navegador
   });
 
   return (
     <section>
       <label>
-        Enter text: <input bind:value={text} />
+        Ingresa texto: <input bind:value={text} />
       </label>
       <label>
-        Is uppercase? <input type="checkbox" bind:checked={isUppercase} />
+        ¿Es mayúsculas? <input type="checkbox" bind:checked={isUppercase} />
       </label>
-      <p>Delay text: {delayText}</p>
+      <p>Texto retrasado: {delayText}</p>
     </section>
   );
 });
@@ -260,17 +260,17 @@ function delay(time: number) {
 ```
 </CodeSandbox>
 
-> In this example the `track()` takes a function that not only reads the signal but also transforms its value to uppercase/lowercase. The `track()` is doing subscription on multiple signals and computes their value.
+> En este ejemplo, `track()` toma una función que no solo lee la señal, sino que también transforma su valor a mayúsculas o minúsculas. `track()` está suscribiéndose a múltiples señales y calculando su valor.
 
 ### `cleanup()`
 
-Sometimes when running a task cleanup work needs to be performed. When a new task is triggered, the previous task's `cleanup()` callback is invoked. (Also when the component is removed from the DOM then the `cleanup()` callback is also invoked.)
+A veces, al ejecutar una task, es necesario realizar operaciones de limpieza (cleanup). Cuando se desencadena una nueva task, se invoca la callback (devolución de llamada) de la función `cleanup()` de la anterior task. (También se invoca la callback de la función `cleanup()` cuando el componente se elimina del DOM).
 
-> - The `cleanup()` function is not invoked when the task is completed. It is only invoked when a new task is triggered or when the component is removed.
-> - The `cleanup()` function is invoked on the server after the applications are serialized into HTML.
-> - The `cleanup()` function is not transferable from server to browser. (Cleanup is meant to release resources on the VM where it is running. It is not meant to be transferred to the browser.)
+> - La función `cleanup()` no se invoca cuando se completa la task. Solo se invoca cuando se desencadena una nueva task o cuando se elimina el componente.
+> - La función `cleanup()` se invoca en el servidor después de que las aplicaciones se serializan en HTML.
+> - La función `cleanup()` no se puede transferir del servidor al navegador. (Cleanup se realiza para liberar recursos en la Máquina Virtual donde se está ejecutando. No está destinada a transferirse al navegador).
 
-This example shows how to implement a debounce feature using the `cleanup()` function.
+Este ejemplo muestra cómo implementar una función de debounce (rebote) utilizando la función `cleanup()`.
 
 <CodeSandbox src="/src/routes/demo/tasks/cleanup/index.tsx" style={{ height: '6em' }} >
 ```tsx
@@ -289,9 +289,9 @@ export default component$(() => {
   return (
     <section>
       <label>
-        Enter text: <input bind:value={text} />
+        Ingresa texto: <input bind:value={text} />
       </label>
-      <p>Debounced text: {debounceText}</p>
+      <p>Texto debounced: {debounceText}</p>
     </section>
   );
 });
@@ -300,17 +300,17 @@ export default component$(() => {
 
 ## `useVisibleTask$()`
 
-Sometimes a task needs to run only on the browser and after rendering, in that case, you should use `useVisibleTask$()`. The `useVisibleTask$()` is similar to `useTask$()` but it only runs on the browser and after initial rendering. `useVisibleTask$()` registers a hook to be executed when the component becomes visible in the viewport, it will run at least once in the browser, and it can be reactive and re-execute when some **tracked** [state](/docs/(qwik)/components/state/index.mdx) changes.
+A veces, una task necesita ejecutarse solo en el navegador y después de la renderización, en ese caso, debes usar `useVisibleTask$()`. `useVisibleTask$()` es similar a `useTask$()`, pero solo se ejecuta en el navegador y después del renderizado inicial. `useVisibleTask$()` registra un hook para ejecutarse cuando el componente se vuelve visible en el viewport, se ejecutará al menos una vez en el navegador, y puede ser reactivo y volver a ejecutarse cuando algún [estado](/docs/(qwik)/components/state/index.mdx) **rastreado** (track) cambie.
 
-`useVisibleTask$()` has these properties:
+`useVisibleTask$()` tiene las siguientes propiedades:
 
-- runs on the client only.
-- eagerly executes code on the client when the component becomes visible.
-- runs after initial rendering.
-- does not block rendering.
+- Se ejecuta solo en el cliente.
+- Ejecuta el código en el cliente cuando el componente se vuelve visible.
+- Se ejecuta después del renderizado inicial.
+- No bloquea la renderización.
 
-> **Caution**: The `useVisibleTask$()` should be used as a last resort, because it eagerly executes code on the client. Qwik through [resumability]() goes out of its way to delay the execution of code on the client, and `useVisibleTask$()` is an escape hatch that should be used with caution. See [Best Practices](/docs/(qwikcity)/guides/best-practices/index.mdx#dont-register-events-eagerly-with-usevisibletask) for more details.
-> If you need to run a task on a client consider `useTask$()` with a server guard.
+> **Precaución**: `useVisibleTask$()` se debe utilizar como último recurso, ya que ejecuta el código en el cliente de forma precipitada (eagerly). Qwik, a través de la [reanudabilidad](), se esfuerza por retrasar la ejecución de código en el cliente, y `useVisibleTask$()` es una vía de escape que se debe utilizar con precaución. Consulta las [mejores prácticas](/docs/(qwikcity)/guides/best-practices/index.mdx#dont-register-events-eagerly-with-usevisibletask) para obtener más detalles.
+> Si necesitas ejecutar una tarea en el cliente, considera utilizar `useTask$()` con una protección en el servidor.
 >
 > <CodeSandbox src="/src/routes/demo/tasks/track-server-guard/index.tsx" style={{ height: '6em' }}>
 > ```tsx
@@ -324,7 +324,7 @@ Sometimes a task needs to run only on the browser and after rendering, in that c
 >   useTask$(({ track }) => {
 >     track(() => text.value);
 >     if (isServer) {
->       return; // Server guard
+>       return; // Protección del servidor
 >     }
 >     isBold.value = true;
 >     delay(1000).then(() => (isBold.value = false));
@@ -333,10 +333,10 @@ Sometimes a task needs to run only on the browser and after rendering, in that c
 >   return (
 >     <section>
 >       <label>
->         Enter text: <input bind:value={text} />
+>         Ingresa texto: <input bind:value={text} />
 >       </label>
 >       <p style={{ fontWeight: isBold.value ? 'bold' : 'normal' }}>
->         Text: {text}
+>         Texto: {text}
 >       </p>
 >     </section>
 >   );
@@ -346,11 +346,9 @@ Sometimes a task needs to run only on the browser and after rendering, in that c
 > ```
 > </CodeSandbox>
 >
-> In the above example the `useTask$()` is guarded by `isServer`. The `track()` is before the guard which
-> allows the server to set up the subscription but does not execute any code on the server. The client
-> then executes the `useTask$()` once the `text` signal changes.
+> En el ejemplo anterior, `useTask$()` está protegido por `isServer`. El `track()` se encuentra antes de la protección, lo que permite que el servidor establezca la suscripción pero no ejecute ningún código en el servidor. Luego, el cliente ejecuta `useTask$()` una vez que la señal `text` cambia.
 
-This example shows how to use `useVisibleTask$()` to initialize a clock on the browser only when the clock component becomes visible.
+Este ejemplo muestra cómo utilizar `useVisibleTask$()` para inicializar un reloj solo en el navegador cuando el componente de reloj se vuelve visible.
 
 <CodeSandbox src="/src/routes/demo/tasks/use-visible-task/index.tsx" style={{ height: '6em' }} >
 ```tsx
@@ -367,8 +365,8 @@ export default component$(() => {
   return (
     <>
       <div style="position: sticky; top:0">
-        Scroll to see clock. (Currently clock is
-        {isClockRunning.value ? ' running' : ' not running'}.)
+        Desplázate para ver el reloj. (Actualmente el reloj está
+        {isClockRunning.value ? ' en ejecución' : ' detenido'}.)
       </div>
       <div style="height: 200vh" />
       <Clock isRunning={isClockRunning} />
@@ -377,7 +375,7 @@ export default component$(() => {
 });
 
 const Clock = component$<{ isRunning: Signal<boolean> }>(({ isRunning }) => {
-  const time = useSignal('paused');
+  const time = useSignal('pausado');
   useVisibleTask$(({ cleanup }) => {
     isRunning.value = true;
     const update = () => (time.value = new Date().toLocaleTimeString());
@@ -389,11 +387,11 @@ const Clock = component$<{ isRunning: Signal<boolean> }>(({ isRunning }) => {
 ```
 </CodeSandbox>
 
-> Notice how the clock's `useVisibleTask$()` does not run until the `<Clock>` component became visible. The default behavior of `useVisibleTask$()` is to run the task when the component becomes visible. This behavior is implemented through [intersection observers](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
+> Observa cómo `useVisibleTask$()` del reloj no se ejecuta hasta que el componente `<Clock>` se vuelve visible. El comportamiento predeterminado de `useVisibleTask$()` es ejecutar la tarea cuando el componente se vuelve visible. Este comportamiento se implementa mediante [Intersection Observers](https://developer.mozilla.org/en-US/docs/Web/API/Intersection_Observer_API).
 
-### Option `eagerness`
+### Opción `eagerness` (precipitada)
 
-At times it is desirable to run `useVisibleTask$()` eagerly as soon as the application is loaded in the browser. In that case the `useVisibleTask$()` needs to run in eagre mode. This is done by using the `{ strategy: 'document-ready' }`.
+A veces es deseable ejecutar `useVisibleTask$()` de manera precipitada tan pronto como la aplicación se carga en el navegador. En ese caso, `useVisibleTask$()` debe ejecutarse en modo eager. Esto se logra utilizando `{ strategy: 'document-ready' }`.
 
 <CodeSandbox src="/src/routes/demo/tasks/use-visible-task-eager/index.tsx" style={{ height: '6em' }}>
 ```tsx
@@ -410,8 +408,8 @@ export default component$(() => {
   return (
     <>
       <div style="position: sticky; top:0">
-        Scroll to see clock. (Currently clock is
-        {isClockRunning.value ? ' running' : ' not running'}.)
+        Desplázate para ver el reloj. (Actualmente el reloj está
+        {isClockRunning.value ? ' en ejecución' : ' detenido'}.)
       </div>
       <div style="height: 200vh" />
       <Clock isRunning={isClockRunning} />
@@ -420,7 +418,7 @@ export default component$(() => {
 });
 
 const Clock = component$<{ isRunning: Signal<boolean> }>(({ isRunning }) => {
-  const time = useSignal('paused');
+  const time = useSignal('pausado');
   useVisibleTask$(
     ({ cleanup }) => {
       isRunning.value = true;
@@ -435,35 +433,35 @@ const Clock = component$<{ isRunning: Signal<boolean> }>(({ isRunning }) => {
 ```
 </CodeSandbox>
 
-> In this example the clock starts running immediately on the browser regardless of whether it is visible or not.
+> En este ejemplo, el reloj comienza a ejecutarse inmediatamente en el navegador sin importar si es visible o no.
 
 
-## Use Hook Rules
+## Reglas de uso de Hooks
 
-When using lifecycle hooks, you must adhere to the following rules:
+Al utilizar los hooks del ciclo de vida, debes seguir las siguientes reglas:
 
-- They can only be called at the root level of `component$` (not inside conditional blocks)
-- They can only be called at the root of another `use*` method, allowing for composition.
+- Solo se pueden llamar a nivel raíz de `component$` (no dentro de bloques condicionales).
+- Solo se pueden llamar a nivel raíz de otro método `use*`, lo que permite la composición.
 
 ```tsx
-useHook(); // <-- ❌ does not work
+useHook(); // <-- ❌ no funciona
 
 export default component$(() => {
-  useCustomHook(); // <-- ✅ does work
+  useCustomHook(); // <-- ✅ funciona
   if (condition) {
-    useHook(); // <-- ❌ does not work
+    useHook(); // <-- ❌ no funciona
   }
   useTask$(() => {
-    useNavigate(); // <-- ❌ does not work
+    useNavigate(); // <-- ❌ no funciona
   });
-  const myQrl = $(() => useHook()); // <-- ❌ does not work
-  return <button onClick$={() => useHook()}></button>; // <-- ❌ does not work
+  const myQrl = $(() => useHook()); // <-- ❌ no funciona
+  return <button onClick$={() => useHook()}></button>; // <-- ❌ no funciona
 });
 
 function useCustomHook() {
-  useHook(); // <-- ✅ does work
+  useHook(); // <-- ✅ funciona
   if (condition) {
-    useHook(); // <-- ❌ does not work
+    useHook(); // <-- ❌ no funciona
   }
 }
 ```
