@@ -1,5 +1,5 @@
 ---
-title: Overview
+title: Visión general
 contributors:
   - RATIU5
   - leifermendez
@@ -24,36 +24,35 @@ contributors:
 
 import CodeSandbox from '../../../../../components/code-sandbox/index.tsx';
 
-# Components
+# Componentes
 
-Components are the basic building blocks of Qwik Applications. They are reusable piece of code that can be used to build a UI.
+Los componentes son los bloques básicos de las aplicaciones Qwik. Son fragmentos de código reutilizables que se utilizan para construir una interfaz de usuario.
 
-Qwik components are unique in that:
+Los componentes de Qwik son únicos por las siguientes razones:
 
-- Qwik components automatically get broken down into lazy-loaded chunks by the [Optimizer](../../advanced/optimizer/index.mdx).
-- They are [resumable](../../concepts/resumable/index.mdx) (a component can get created on a server and continue its execution on the client).
-- They are [reactive](../../concepts/reactivity/index.mdx) and render independently of other components on the page. See [rendering](../../components/rendering/index.mdx).
+- Los componentes de Qwik se descomponen automáticamente en fragmentos lazy-load por el [Optimizador](../../advanced/optimizer/index.mdx).
+- Son [reanudables](../../concepts/resumable/index.mdx) (un componente puede crearse en el servidor y continuar su ejecución en el cliente).
+- Son [reactivos](../../concepts/reactivity/index.mdx) y se renderizan de forma independiente de otros componentes en la página. Consulta [renderizado](../../components/rendering/index.mdx).
 
 ## `component$()`
 
-A Qwik component is a function that returns JSX wrapped in a `component$` call.
+Un componente de Qwik es una función que devuelve JSX, envuelta en una llamada a `component$`.
 
 <CodeSandbox src="/src/routes/demo/component/simple/index.tsx" style={{ height: '3em' }}>
 ```tsx /component$/
 import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  return <div>Hello World!</div>;
+  return <div>¡Hola Mundo!</div>;
 });
 ```
 </CodeSandbox>
 
-> The reason for the `component$` is that the trailing `$` allows the [Optimizer](/docs/advanced/dollar/) to break the components into an application tree into a separate chunk so that each chunk can be loaded (or not loaded if it is not needed) independently. Without the `$` the component would be always loaded if the parent component needs to be loaded.
+> La razón de `component$` es que el símbolo `$` al final permite al [Optimizador](/docs/advanced/dollar/) dividir los componentes del árbol de la aplicación en fragmentos separados para que cada fragmento se pueda cargar (o no cargarse si no es necesario) de forma independiente. Sin el `$`, el componente se cargaría siempre que el componente padre necesite cargarse.
 
-### Composing Components
+### Composición de componentes
 
-Components can be composed together to create more complex components.
-
+Los componentes se pueden componer para crear componentes más complejos.
 
 <CodeSandbox src="/src/routes/demo/component/child/index.tsx" style={{ height: '6em' }}>
 ```tsx {7}
@@ -62,23 +61,23 @@ import { component$ } from '@builder.io/qwik';
 export default component$(() => {
   return (
     <>
-      <p>Parent Text</p>
+      <p>Texto del padre</p>
       <Child />
     </>
   );
 });
 
 const Child = component$(() => {
-  return <p>Child Text</p>;
+  return <p>Texto del hijo</p>;
 });
 ```
 </CodeSandbox>
 
-> Notice that Qwik components are already lazy loaded thanks to the `$` sign. That means that you don't need to dynamically import the child component manually, Qwik will do it for you.
+> Observa que los componentes de Qwik ya se cargan de forma lazy-load gracias al símbolo `$`. Esto significa que no necesitas hacer manualmente una importación dinámica del componente hijo, Qwik lo hará por ti.
 
-### Counter Example
+### Ejemplo del contador
 
-A slightly more complex example of a counter.
+Un ejemplo ligeramente más complejo de un contador.
 
 <CodeSandbox src="/src/routes/demo/state/counter/index.tsx" style={{ height: '6em' }}>
 ```tsx
@@ -89,8 +88,8 @@ export default component$(() => {
 
   return (
     <>
-      <p>Count: {count.value}</p>
-      <button onClick$={() => count.value++}>Increment</button>
+      <p>Contador: {count.value}</p>
+      <button onClick$={() => count.value++}>Incrementar</button>
     </>
   );
 });
@@ -99,9 +98,9 @@ export default component$(() => {
 
 ## Props
 
-Props are used to pass data from the parent into the component. Props are accesible via the `props` argument to the component$ function.
+Las props (propiedades) se utilizan para pasar datos desde el componente padre al componente hijo. Las props son accesibles a través del argumento `props` de la función `component$`.
 
-In this example a component `Item` declares optional `name`, `quantity`, `description`, and `price`.
+En este ejemplo, un componente `Item` declara las props opcionales `name`, `quantity`, `description` y `price`.
 
 <CodeSandbox src="/src/routes/demo/component/props/index.tsx" style={{ height: '10em' }}>
 ```tsx {3-8, 27} /ItemProps/
@@ -117,10 +116,10 @@ interface ItemProps {
 export const Item = component$<ItemProps>((props) => {
   return (
     <ul>
-      <li>name: {props.name}</li>
-      <li>quantity: {props.quantity}</li>
-      <li>description: {props.description}</li>
-      <li>price: {props.price}</li>
+      <li>nombre: {props.name}</li>
+      <li>cantidad: {props.quantity}</li>
+      <li>descripción: {props.description}</li>
+      <li>precio: {props.price}</li>
     </ul>
   );
 });
@@ -129,18 +128,18 @@ export default component$(() => {
   return (
     <>
       <h1>Props</h1>
-      <Item name="hammer" price={9.99} />
+      <Item name="martillo" price={9.99} />
     </>
   );
 });
 ```
 </CodeSandbox>
 
-> In the example above we are using `component$<ItemProps>` to provide an explicit type for the props. This is optional but it allows the TypeScript compiler to check that the props are used correctly.
+> En el ejemplo anterior, estamos utilizando `component$<ItemProps>` para proporcionar un tipo explícito para las props. Esto es opcional, pero permite al compilador de TypeScript verificar que las props se usen correctamente.
 
-### Default props
+### Props por defecto
 
-You can use the destructuring pattern with props to provide default values.
+Puedes utilizar el patrón de desestructuración con las props para proporcionar valores por defecto.
 
 ```tsx
 interface Props {
@@ -148,30 +147,30 @@ interface Props {
   placeholder?: string;
 }
 
-// We can use JS's destructuring of props to provide a default value.
-export default component$<Props>(({enabled = true, placeholder = ''}) => {
+// Podemos utilizar la desestructuración de JS en las props para proporcionar un valor por defecto.
+export default component$<Props>(({ enabled = true, placeholder = '' }) => {
   return (
     <input disabled={!enabled} placeholder={placeholder} />
   );
 });
 ```
 
-## Rendering on Reactivity
+## Renderizado por Reactividad
 
-Qwik components are reactive. This means that they automatically update on a state change. There are two kinds of updates:
+Los componentes de Qwik son reactivos. Esto significa que se actualizan automáticamente cuando cambia el estado. Hay dos tipos de actualizaciones:
 
-1. A state is bound to a DOM text or attribute. Such changes usually directly update the DOM and do not require component function re-execute.
-2. A state causes a structural change to the DOM (elements are created and or removed). Such changes require component function to re-execute.
+1. Un estado está vinculado a un texto o atributo del DOM. Estos cambios generalmente actualizan directamente el DOM y no requieren que el componente funcional se vuelva a ejecutar.
+2. Un estado provoca un cambio estructural en el DOM (se crean o eliminan elementos). Estos cambios requieren que el componente funcional se vuelva a ejecutar.
 
-The thing to keep in mind is that when state changes your component function may execute zero or more times depending on what the state is bound to. For this reason, the function should be idempotent and you should not rely on the number of times it executes.
+Lo importante es tener en cuenta que cuando cambia el estado, el componente funcional puede ejecutarse cero o más veces, dependiendo de a qué esté vinculado el estado. Por esta razón, la función debe ser idempotente y no debes confiar en el número de veces que se ejecuta.
 
-A state change causes the component to get invalidated. When components get invalidated, they are added to the invalidation queue, which is flushed (rendered) on the next `requestAnimationFrame`. This acts as a form of coalescing for component rendering.
+Un cambio de estado provoca la invalidación del componente. Cuando los componentes se invalidan, se agregan a la cola de invalidaciones, que se libera (renderiza) en el siguiente `requestAnimationFrame`. Esto actúa como una forma de agrupación para el renderizado de componentes.
 
-## Getting hold of DOM element
+## Obtener un elemento del DOM
 
-Use `ref` to get hold of a DOM element. Create a signal to store DOM element. Then pass the signal to the JSX `ref` property.
+Usa `ref` para obtener un elemento del DOM. Crea una señal para almacenar el elemento del DOM y luego pasa la señal a la propiedad `ref` de JSX.
 
-> Getting a reference to DOM elements can be useful to calculate the element size (`getBoundingClientRect`), computed styles, initializing a WebGL canvas, or even wire-up some third-party library that interacts with DOM elements directly.
+> Obtener una referencia a los elementos del DOM puede ser útil para calcular el tamaño del elemento (`getBoundingClientRect`), estilos computados, inicializar un lienzo WebGL o incluso conectar una biblioteca de terceros que interactúa directamente con los elementos del DOM.
 
 <CodeSandbox src="/src/routes/demo/component/ref/index.tsx" style={{ height: '10em' }}>
 ```tsx /const outputRef = useSignal<Element>();/ /ref={outputRef}/
@@ -196,11 +195,10 @@ export default component$(() => {
         ref={outputRef}
         style={{ border: '1px solid red', width: '100px' }}
       >
-        Change text value here to stretch the box.
+        Cambia el valor del texto aquí para estirar el cuadro.
       </article>
       <p>
-        The above red box is {height.value} pixels high and {width.value}{' '}
-        pixels wide.
+        El cuadro rojo de arriba tiene una altura de {height.value} píxeles y un ancho de {width.value} píxeles.
       </p>
     </section>
   );
@@ -208,12 +206,12 @@ export default component$(() => {
 ```
 </CodeSandbox>
 
-## Lazy Loading
+## Lazy Loading (Carga lenta)
 
-The component also serves an important role when breaking parent-child relationships for bundling purposes.
+El componente también cumple una función importante al romper las relaciones entre padre e hijo con fines de empaquetamiento.
 
 ```tsx
-export const Child = () => <span>child</span>;
+export const Child = () => <span>hijo</span>;
 
 const Parent = () => (
   <section>
@@ -222,16 +220,16 @@ const Parent = () => (
 );
 ```
 
-In the above example, referring to the `Parent` component implies a transitive reference to the `Child` component. When the bundler is creating a chunk, a reference to `Parent` necessitates bundling `Child` as well. (`Parent` internally refers to `Child`.) These transitive dependencies are a problem because it means that having a reference to the root component will transitively refer to the remainder of the application—something which Qwik tries to avoid explicitly.
+En el ejemplo anterior, hacer referencia al componente `Parent` implica una referencia transitiva al componente `Child`. Cuando el bundler (empaquetador) está creando un fragmento, una referencia a `Parent` requiere empaquetar también a `Child` (`Parent` se refiere internamente a `Child`). Estas dependencias transitivas son un problema porque significa que tener una referencia al componente raíz se referirá de forma transitiva al resto de la aplicación, algo que Qwik trata de evitar explícitamente.
 
-To avoid the above problem we don't refer to components directly, instead, we refer to the lazy wrapper. This is created automatically by the `component$()` function.
+Para evitar el problema anterior, no hacemos referencia directa a los componentes, en su lugar, referenciamos el envoltorio lazy-load. Este se crea automáticamente mediante la función `component$()`.
 
 <CodeSandbox src="/src/routes/demo/component/lazy/index.tsx" style={{ height: '4em' }} sandbox={false}>
 ```tsx
 import { component$ } from '@builder.io/qwik';
 
 export const Child = component$(() => {
-  return <p>child</p>;
+  return <p>hijo</p>;
 });
 
 export const Parent = component$(() => {
@@ -244,7 +242,7 @@ export const Parent = component$(() => {
 ```
 </CodeSandbox>
 
-In the above example the Optimizer transforms the above to:
+En el ejemplo anterior, el Optimizador transforma el código de la siguiente manera:
 
 ```tsx
 const Child = componentQrl(qrl('./chunk-a', 'Child_onMount'));
@@ -257,12 +255,12 @@ const Parent_onRender = () => (
 );
 ```
 
-> **NOTE**
-> For simplicity, not all of the transformations are shown; all resulting symbols are kept in the same file for succinctness.
+> **NOTA**
+> Por simplicidad, no se muestran todas las transformaciones; todos los símbolos resultantes se mantienen en el mismo archivo para mejor concisión.
 
-Notice that after the Optimizer transforms the code, the `Parent` no longer directly references `Child`. This is important because it allows the bundler (and tree shakers) to freely move the symbols into different chunks without pulling the rest of the application with it.
+Observa que después de que el Optimizador transforma el código, el `Parent` ya no hace referencia directamente a `Child`. Esto es importante porque permite que el bundler (y los tree shakers) muevan libremente los símbolos a diferentes fragmentos sin llevar consigo el resto de la aplicación.
 
-So what happens when the `Parent` component needs to render a `Child` component, but the `Child` component has not yet been downloaded? First, the `Parent` component renders its DOM like so.
+Entonces, ¿qué sucede cuando el componente `Parent` necesita renderizar un componente `Child`, pero el componente `Child` aún no se ha descargado? Primero, el componente `Parent` renderiza su DOM de la siguiente manera.
 
 ```html
 <main>
@@ -272,96 +270,90 @@ So what happens when the `Parent` component needs to render a `Child` component,
 </main>
 ```
 
-As you can see in the above example, the `<!--qv-->` acts as a marker where the `Child` component will be inserted once it is lazy-loaded.
+Como se puede ver en el ejemplo anterior, `<!--qv-->` actúa como un marcador donde se insertará el componente `Child` una vez que se haya cargado de forma lazy-load.
 
-## Inline Components
+## Inline Components (Componentes de una línea)
 
-In addition to the standard `component$()` with all of it's lazy-loaded
-properties, Qwik also supports lightweight (inline) components that act more
-like components in traditional frameworks.
+Además del estándar `component$()` con todas sus propiedades lazy-load,
+Qwik también admite ligeros inline components (componentes de una línea) que actúan más
+como componentes en frameworks tradicionales.
 
 <CodeSandbox src="/src/routes/demo/component/inline-child/index.tsx" style={{height: '4em'}}>
 ```tsx
 import { component$ } from '@builder.io/qwik';
 
-// Inline component: declared using a standard function.
+// Componente de una línea: declarado usando una función estándar.
 export const MyButton = (props: { text: string }) => {
   return <button>{props.text}</button>;
 };
 
-// Component: declared using `component$()`.
+// Componente: declarado usando `component$()`.
 export default component$(() => {
   return (
     <p>
-      Some text:
-      <MyButton text="Click me" />
+      Un poco de texto:
+      <MyButton text="Haz click en mí" />
     </p>
   );
 });
 ```
 </CodeSandbox>
 
-In the above example, `MyButton` is an inline component.
-Unlike the standard `component$()`, inline components cannot be individually
-lazy-loaded; instead, they are bundled with their parent component. In this case:
+En el ejemplo anterior, `MyButton` es un componente de una línea. A diferencia del `component$()` estándar, los componentes de una línea no se cargan de forma lazy-load individualmente; en cambio, se agrupan con su componente padre. En este caso:
 
-- `MyButton` will get bundled with the `default` component.
-- Whenever `default` is rendered, it will also guarantee that `MyButton` is
-rendered.
+- `MyButton` se agrupará con el componente `default`.
+- Siempre que se renderice `default`, también se garantizará que se renderice `MyButton`.
 
-You can think of inline components as being inlined into the component where they are instantiated.
+Puedes pensar en los componentes de una línea como si se incluyeran en la misma línea en el componente donde se instancian.
 
-### Limitations
-Inline components come with some limitations that the standard `component$()`
-does not have. Inline components:
-- Cannot use `use*` methods such as `useSignal` or `useStore`.
-- Cannot project content with a `<Slot>`
+### Limitaciones
+Los componentes de una línea tienen algunas limitaciones que no tiene el `component$()` estándar. Los componentes de una línea:
+- No pueden usar métodos `use*` como `useSignal` o `useStore`.
+- No pueden proyectar contenido mediante un `<Slot>`.
 
-As the name implies, inline components are best used sparingly for
-lightweight pieces of markup since they offer the convenience of being
-bundled with the parent component.
+Como su nombre indica, los componentes de una línea se deben usar con moderación para fragmentos ligeros de marcado (markup), ya que ofrecen la conveniencia de empaquetarse con el componente padre.
 
 
-## API Overview
+## Descripción general de la API
 
-### State
+### Estado
 
-- [`useSignal(initialState)`](../state/index.mdx#usesignal) - creates a reactive value
-- [`useStore(initialStateObject)`](../state/index.mdx#usestore) - creates a reactive object that can be used to store state
-- [`createContextId(contextName)`](../context/index.mdx#createcontext) - creates a context reference
-- [`useContextProvider()`](../context/index.mdx#usecontextprovider) - provides a value to a given context
-- [`useContext()`](../context/index.mdx#usecontext) - reads the value of the current context
+- [`useSignal(initialState)`](../state/index.mdx#usesignal) - crea un valor reactivo.
+- [`useStore(initialStateObject)`](../state/index.mdx#usestore) - crea un objeto reactivo que se puede utilizar para almacenar estado.
+- [`createContextId(contextName)`](../context/index.mdx#createcontext) - crea una referencia de contexto.
+- [`useContextProvider()`](../context/index.mdx#usecontextprovider) - proporciona un valor a un contexto dado.
+- [`useContext()`](../context/index.mdx#usecontext) - lee el valor del contexto actual.
 
-### Styles
+### Estilos
 
-- [`useStylesScoped$()`](../styles/index.mdx#usestylesscoped) - appends scoped styles to the component
-- [`useStyles$()`](../styles/index.mdx#usestyles) - appends unscoped styles to the component
+- [`useStylesScoped$()`](../styles/index.mdx#usestylesscoped) - agrega estilos con ámbito al componente.
+- [`useStyles$()`](../styles/index.mdx#usestyles) - agrega estilos sin ámbito al componente.
 
-### Events
+### Eventos
 
-- [`useOn()`](../events/index.mdx) - appends a listener to the current component programmatically
-- [`useOnWindow()`](../events/index.mdx) - appends a listener to the window object programmatically
-- [`useOnDocument()`](../events/index.mdx) - appends a listener to the document object programmatically
+- [`useOn()`](../events/index.mdx) - agrega un listener al componente actual programáticamente.
+- [`useOnWindow()`](../events/index.mdx) - agrega un listener al objeto `window` programáticamente.
+- [`useOnDocument()`](../events/index.mdx) - agrega un listener al objeto `document` programáticamente.
 
-### Tasks/Lifecycle
+### Tareas/Ciclo de vida
 
-- [`useTask$()`](../tasks/index.mdx#usetask) - defines a callback that will be called before render and/or when a watched store changes
-- [`useVisibleTask$()`](../tasks/index.mdx#usevisibletask) - defines a callback that will be called after rendering in the client only (browser)
-- [`useResource$()`](../tasks/index.mdx#useresource) - creates a resource to asynchronously load data
+- [`useTask$()`](../tasks/index.mdx#usetask) - define un callback que se llamará antes del renderizado y/o cuando cambia un store (almacén) observado.
+- [`useVisibleTask$()`](../tasks/index.mdx#usevisibletask) - define un callback que se llamará después de la renderización solo en el cliente (navegador).
+- [`useResource$()`](../tasks/index.mdx#useresource) - crea un recurso para cargar datos de forma asíncrona.
 
-### Other
+### Otros
 
-- [`$()`](../../advanced/qrl/index.mdx) - creates a QRL
-- [`noSerialize()`](/docs/components/state/#noserialize)
-- `useErrorBoundary()`
+- [`$()`](../../advanced/qrl/index.mdx) - crea un QRL.
+- [`noSerialize()`](/docs/components/state/#noserialize).
+- `useErrorBoundary()`.
 
-### Components
+### Componentes
 
-- [`<Slot>`](../slots/index.mdx) - declares a content projection slot
-- `<SSRStreamBlock>` - declares a stream block
-- `<SSRStream>` - declares a stream
-- `<Fragment>` - declares a JSX fragment
+- [`<Slot>`](../slots/index.mdx) - declara un slot (espacio) para proyección de contenido.
+- `<SSRStreamBlock>` - declara un bloque de transmisión (stream).
+- `<SSRStream>` - declara una transmisión.
+- `<Fragment>` - declara un fragmento JSX.
 
-## See Also
+## Ver también
 
-- [Inline components](../overview/index.mdx#inline-components)
+- [Componentes de una línea](../overview/index.mdx#inline-components)

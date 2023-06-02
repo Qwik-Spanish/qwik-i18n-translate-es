@@ -1,5 +1,5 @@
 ---
-title: Context
+title: Contexto
 contributors:
   - manucorporat
   - RATIU5
@@ -16,11 +16,11 @@ contributors:
 ---
 import CodeSandbox from '../../../../../components/code-sandbox/index.tsx';
 
-# Context
+# Contexto
 
-Qwik provides a context API, which solves the problem of props drilling and it is very similar to React's functional `useContext()`. In fact, Qwik's context API is the most efficient way to pass down the data to different components, reducing overhead, generating less code, and allowing Qwik to [treeshake](https://developer.mozilla.org/en-US/docs/Glossary/Tree_shaking) unused data more heavily.
+Qwik proporciona una API de contexto que resuelve el problema de la propagación encadenada de props y es muy similar a `useContext()` en React. De hecho, la API de contexto de Qwik es la forma más eficiente de transmitir datos a diferentes componentes, reduciendo la sobrecarga, generando menos código y permitiendo que Qwik elimine de forma más efectiva los datos no utilizados mediante [tree shaking](https://developer.mozilla.org/es/docs/Glossary/Tree_shaking).
 
-Qwik's context API is made of 3 methods, importable from `@builder.io/qwik`:
+La API de contexto de Qwik está compuesta por 3 métodos, importables desde `@builder.io/qwik`:
 
 - [`createContextId(contextName: string): ContextId`](#createcontextid)
 - [`useContextProvider(ctx: ContextId, value: VALUE): void`](#usecontextprovider)
@@ -49,7 +49,7 @@ export default component$(() => {
           (theme.value = theme.value == 'dark' ? 'light' : 'dark')
         }
       >
-        Flip
+        Invertir
       </button>
       <Child />
     </>
@@ -58,17 +58,17 @@ export default component$(() => {
 
 const Child = component$(() => {
   const theme = useContext(ThemeContext);
-  return <div>Theme is {theme.value}</div>;
+  return <div>El tema es {theme.value}</div>;
 });
 ```
 </CodeSandbox>
 
 
-In the above example, we are creating a `ContextId` with the name `docs.theme-context` and then using it to provide a `useSignal` to the `default` component. The `Child` component is then using the `useContext` method to get the `useSignal` and render its value.
+En el ejemplo anterior, creamos un `ContextId` con el nombre `docs.theme-context` y luego lo usamos para proporcionar una señal (`useSignal`) al componente `default`. El componente `Child` utiliza el método `useContext` para obtener la señal y mostrar su valor.
 
 ## `createContextId()`
 
-This method is used to create a new `ContextId`.
+Este método se utiliza para crear un nuevo `ContextId`.
 
 ```tsx
 export interface GenericType {
@@ -78,19 +78,19 @@ export interface GenericType {
 export const QwikCityContext = createContextId<GenericType>(name: string): ContextId<GenericType>;
 ```
 
-### Parameters
+### Parámetros
 
-- `name`: it is a unique string given to `createContextId` as an identifier of context. This will avoid conflicts when there are multiple contexts. It is advised to use a naming convention like `io.builder.qwik.city`.
+- `name`: es una cadena única que se proporciona a `createContextId` como identificador del contexto. Esto evitará conflictos cuando hay múltiples contextos. Se recomienda utilizar una convención de nomenclatura como `io.builder.qwik.city`.
 
-### Returns
+### Devoluciones
 
-Notice that the value returned by `createContextId()` does not hold any state, it is an immutable ID object i.e. `{ id: 'io.builder.qwik.city' }`. It's only used to describe the name and type of the context, like an address or an identifier.
+Observa que el valor devuelto por `createContextId()` no contiene ningún estado, es un objeto de ID inmutable, como por ejemplo, `{ id: 'io.builder.qwik.city' }`. Solo se utiliza para describir el nombre y el tipo del contexto, como una dirección o un identificador.
 
-Since it does not hold any state, it's ok to call it and make it a singleton, and export it in some shared module.
+Dado que no contiene ningún estado, puedes llamarlo y convertirlo en un singleton, y exportarlo en algún módulo compartido.
 
 ## `useContextProvider()`
 
-This method is used to create a Context for a specific component and its descendants, using the `ContextId` as the key identifier of the context.
+Este método se utiliza para crear un contexto para un componente específico y sus descendientes, utilizando `ContextId` como identificador clave del contexto.
 
 ```tsx {9, 10, 11} /QwikCityContext/#a /PlainArrayContext/#b /AppNameContext/#c title="src/components/Parent.tsx"
 import { component$, useStore, useContextProvider } from '@builder.io/qwik';
@@ -111,19 +111,19 @@ export const Parent = component$(() => {
 });
 ```
 
-### Parameters
+### Parámetros
 
-- `ContextId`: A previously created Context must be supplied which will serve as an identifier for the data being provided (second parameter).
+- `ContextId`: Debe proporcionarse un Context previamente creado que servirá como identificador de los datos que se van a proporcionar (segundo parámetro).
 
-- `data`: you can provide any data type like Qwik's useSignal, useStore, Array, Objects.
+- `data`: puedes proporcionar cualquier tipo de datos como useSignal, useStore, Array, Objects.
 
-### Caveats
+### Precauciones
 
-- The provided value will not be globally available across the whole render tree, but only to descendant components in the tree.
+- El valor proporcionado no estará disponible globalmente en todo el árbol de renderizado, sino solo para los componentes descendientes en el árbol.
 
 ## `useContext()`
 
-This method is used to get the value of `Context` which is **provided** by Parent Component.
+Este método se utiliza para obtener el valor de un `Context` que es **proporcionado** por el componente padre.
 
 ```tsx {4,5,6} /useContext/ /QwikCityContext/#a /PlainArrayContext/#b /AppNameContext/#c title="src/components/Children.tsx"
 import { component$, useContext } from '@builder.io/qwik';
@@ -134,7 +134,7 @@ export const Children = component$(() => {
   const appName = useContext(AppNameContext);
 
   return (
-    <div>Child components can use any of the provided values, such as {appName}</div>
+    <div>Los componentes hijos pueden usar cualquiera de los valores proporcionados, como {appName}</div>
   );
 });
 ```
