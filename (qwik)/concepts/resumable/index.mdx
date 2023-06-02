@@ -35,7 +35,7 @@ La hidratación de todos los demás frameworks **reproduce** toda la lógica de 
 
 ## Introducción a la Resumibilidad
 
-La resumibilidad se trata de pausar la ejecución en el servidor y reanudarla en el cliente sin tener que reproducir y descargar toda la lógica de la aplicación.
+La reanudabilidad se trata de pausar la ejecución en el servidor y reanudarla en el cliente sin tener que reproducir y descargar toda la lógica de la aplicación.
 
 Un buen modelo mental es que las aplicaciones de Qwik en cualquier punto de su ciclo de vida se pueden serializar y mover a una instancia de VM diferente (de servidor a navegador). Allí, la aplicación simplemente se reanuda desde donde se detuvo la serialización. No se requiere hidratación. Por eso decimos que las aplicaciones de Qwik no se hidratan; se reanudan.
 
