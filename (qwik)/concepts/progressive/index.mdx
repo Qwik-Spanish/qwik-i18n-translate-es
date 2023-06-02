@@ -13,7 +13,7 @@ contributors:
 
 Se realizará la descarga del código según las necesidades de la aplicación, sin descargar de forma anticipada todo el código base.
 
-Esto nos conecta con el [principio fundamental](../../think-qwik/index.mdx) de Qwik que se centra en retrasar la **descarga** y ejecución de JavaScript tanto como sea posible. Qwik necesita dividir la aplicación en muchos fragmentos que se pueden cargar de forma diferida para lograrlo.
+Esto nos conecta con el [principio fundamental](../../think-qwik/index.mdx) de Qwik que se centra en retrasar la **descarga** y ejecución de JavaScript tanto como sea posible. Qwik necesita dividir la aplicación en muchos fragmentos que se pueden cargar de forma perezosa (Lazy Loading) para lograrlo.
 
 ## Estado actual
 
@@ -22,9 +22,9 @@ Esto nos conecta con el [principio fundamental](../../think-qwik/index.mdx) de Q
 - Los límites de carga diferida se delegan por completo al desarrollador.
 - Los frameworks solo pueden cargar de manera perezosa (Lazy Loading) componentes que no están en el árbol de renderizado actual.
 
-El problema es que los frameworks necesitan conciliar su estado interno con el DOM. Y esto significa que al menos una vez en la aplicación se produce [la hidratación](../../concepts/resumable/#resumable-vs-hydration). Los frameworks deben ser capaces de realizar un renderizado completo para reconstruir el estado interno del marco de trabajo. Después del primer renderizado, los frameworks pueden ser más selectivos en sus actualizaciones, pero el daño ya está hecho, el código ha sido descargado. Así que ahora tenemos dos problemas:
+El problema es que los frameworks necesitan conciliar su estado interno con el DOM. Y esto significa que al menos una vez en la aplicación se produce [la hidratación](../../concepts/resumable/#resumable-vs-hydration). Los frameworks deben ser capaces de realizar un renderizado completo para reconstruir su propio estado interno. Después del primer renderizado, los frameworks pueden ser más selectivos en sus actualizaciones, pero el daño ya está hecho, el código ha sido descargado. Así que ahora tenemos dos problemas:
 
-- Los frameworks necesitan descargar y ejecutar componentes para reconstruir el árbol de renderizado al iniciar. (Ver [la hidratación es una sobrecarga pura](https://www.builder.io/blog/hydration-is-pure-overhead)) Esto obliga a la descarga y ejecución anticipada de todos los componentes en el árbol de renderizado.
+- Los frameworks necesitan descargar y ejecutar componentes para reconstruir el árbol de renderizado al iniciar. (Ver [la hidratación es una sobrecarga pura](https://www.builder.io/blog/hydration-is-pure-overhead)) Esto obliga a la descarga y carga precipitada (eager) de todos los componentes en el árbol de renderizado.
 - Los controladores de eventos vienen con los componentes aunque no se necesiten en el momento del renderizado. La inclusión de los controladores de eventos obliga a descargar código innecesario.
 
 ## Solución
