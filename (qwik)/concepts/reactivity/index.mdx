@@ -56,7 +56,7 @@ export const Counter = component$(() => {
 1. El servidor realiza un renderizado inicial del componente. El renderizado en el servidor incluye la creación del proxy representado por `store`.
 2. El renderizado inicial invoca el método OnRender, que tiene una referencia al proxy `store`. El renderizado pone el proxy en modo de "aprendizaje". Durante la construcción del JSX, el proxy observa una lectura de la propiedad `count`. Como el proxy está en modo de "aprendizaje", registra que `Counter` tiene una suscripción en `store.count`.
 3. El servidor serializa el estado de la aplicación en HTML. Esto incluye el `store` y la información de suscripción que indica que `Counter` está suscrito a `store.count`.
-4. En el navegador, el usuario hace clic en el botón. Debido a que el controlador de eventos de clic hace referencia a `store`, Qwik restaura el proxy del store. El proxy contiene el estado de la aplicación (el contador) y la suscripción que asocia a `Counter` con `state.count`.
+4. En el navegador, el usuario hace click en el botón. Debido a que el controlador de eventos de click hace referencia a `store`, Qwik restaura el proxy del store. El proxy contiene el estado de la aplicación (el contador) y la suscripción que asocia a `Counter` con `state.count`.
 5. El controlador de eventos incrementa `store.count`. Como `store` es un proxy, detecta la escritura y utiliza la información de suscripción para invalidar `Counter`.
 6. Después de `requestAnimationFrame`, `Counter` descarga la función de renderizado y vuelve a ejecutar el método OnRender.
 7. Durante el OnRender, la lista de suscripciones se limpia y se construye una nueva lista de suscripciones observando las lecturas realizadas por la construcción del JSX.
@@ -85,10 +85,10 @@ Este ejemplo es un contador más complicado.
 - Contiene un botón `mostrar`/`ocultar` que determina si se muestra el contador.
 
 1. En el renderizado inicial, el contador es visible. Por lo tanto, el servidor crea una suscripción que registra que `ComplexCounter` necesita volver a renderizarse si cambia `store.count` o `store.visible`.
-2. Si el usuario hace clic en `ocultar`, `ComplexCounter` se vuelve a renderizar. En el nuevo renderizado, se borran todas las suscripciones y se registran nuevas. En esta ocasión, el JSX no lee `store.count`. Por lo tanto, solo `store.visible` se agrega a la lista de suscripciones.
-3. Si el usuario hace clic en `incrementar`, se actualiza `store.count`, pero esto no provoca que el componente se vuelva a renderizar. Esto es correcto porque el contador no es visible, por lo que volver a renderizar sería una operación sin efectos.
-4. Si el usuario hace clic en `mostrar`, el componente se volverá a renderizar y esta vez el JSX leerá tanto `store.visible` como `store.count`. La lista de suscripciones se actualiza una vez más.
-5. Ahora, al hacer clic en `incrementar`, se actualiza `store.count`. Como el contador es visible, `ComplexCounter` está suscrito a `store.count`.
+2. Si el usuario hace click en `ocultar`, `ComplexCounter` se vuelve a renderizar. En el nuevo renderizado, se borran todas las suscripciones y se registran nuevas. En esta ocasión, el JSX no lee `store.count`. Por lo tanto, solo `store.visible` se agrega a la lista de suscripciones.
+3. Si el usuario hace click en `incrementar`, se actualiza `store.count`, pero esto no provoca que el componente se vuelva a renderizar. Esto es correcto porque el contador no es visible, por lo que volver a renderizar sería una operación sin efectos.
+4. Si el usuario hace click en `mostrar`, el componente se volverá a renderizar y esta vez el JSX leerá tanto `store.visible` como `store.count`. La lista de suscripciones se actualiza una vez más.
+5. Ahora, al hacer click en `incrementar`, se actualiza `store.count`. Como el contador es visible, `ComplexCounter` está suscrito a `store.count`.
 
 Observa cómo el conjunto de suscripciones se actualiza automáticamente a medida que el componente renderiza diferentes ramas de su JSX. La ventaja del proxy es que las suscripciones se actualizan automáticamente a medida que la aplicación se ejecuta, y el sistema siempre puede calcular el conjunto más pequeño de componentes invalidados.
 
@@ -114,7 +114,7 @@ export const MyComp = component$(() => {
 })
 ```
 
-En los ejemplos anteriores, Qwik envolverá automáticamente los objetos secundarios `person` y `location` en un proxy y creará correctamente suscripciones en todas las propiedades anidadas.
+En los ejemplos anteriores, Qwik envolverá automáticamente los objetos hijos `person` y `location` en un proxy y creará correctamente suscripciones en todas las propiedades anidadas.
 
 El comportamiento de envoltura descrito anteriormente tiene un efecto secundario sorprendente. Escribir y leer desde un proxy envuelve automáticamente el objeto, lo que significa que cambia la identidad del objeto. Esto normalmente no debería ser un problema, pero es algo que el desarrollador debe tener en cuenta.
 
@@ -165,7 +165,7 @@ export const MyApp = component$(() => {
 
 En el ejemplo anterior, hay dos componentes `<Child/>`.
 
-- Cada vez que se hace clic en un botón, se incrementa uno de los tres contadores. Un cambio en el estado del contador provocará que el componente `MyApp` se vuelva a renderizar en cada clic.
+- Cada vez que se hace click en un botón, se incrementa uno de los tres contadores. Un cambio en el estado del contador provocará que el componente `MyApp` se vuelva a renderizar en cada clic.
 - Si se ha incrementado `store.c`, ninguno de los componentes hijos se volverá a renderizar. (Y, por lo tanto, su código no se cargará de forma diferida)
 - Si se ha incrementado `store.a`, solo se volverá a renderizar `<Child count={store.a}/>` .
 - Si se ha incrementado `store.b`, solo se volverá a renderizar `<Child count={store.b}/>`.
