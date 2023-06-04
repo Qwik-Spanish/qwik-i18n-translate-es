@@ -41,3 +41,12 @@ Para ver si está entendiendo, preguntamos después de introducir toda la info:
 "resumen de que tienes que tener en cuenta en i18nIT"
 
 Y debe de aparecer algo como lo siguiente:
+
+> Cuando menciones "i18nIT", debes tener en cuenta los siguientes puntos:
+Omitir traducciones innecesarias y mantener los tecnicismos en inglés.
+No traducir los términos "clicks" y "click".
+Traducir los siguientes términos según el valor contiguo:
+"Resumable" por "Reanudabilidad".
+"Hydratation" por "Hidratación".
+"child objects" por "objetos hijos".
+Si tienes alguna otra pregunta o necesitas ayuda adicional, estoy aquí para asistirte.
