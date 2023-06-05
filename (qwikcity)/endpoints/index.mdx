@@ -12,209 +12,207 @@ contributors:
 
 # Endpoints
 
-Endpoints are `index.ts` files in the `src/routes` directory that does not export a `default` component. Instead, it exports a `onRequest`, `onGet`, `onPost`, `onPut`, `onDelete`, `onPatch`, `onHead` function, which will be used to handle the incoming request.
+Los endpoints son archivos `index.ts` en el directorio `src/routes` que no exportan un componente `default`. En su lugar, exportan una función `onRequest`, `onGet`, `onPost`, `onPut`, `onDelete`, `onPatch`, `onHead`, que se utiliza para manejar la solicitud entrante.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
 
-// Called when the HTTP method is GET
+// Se llama cuando el método HTTP es GET
 export const onGet: RequestHandler = async (requestEvent) => {
-  // Respond with a JSON object
+  // Responder con un objeto JSON
   requestEvent.json(200, { hello: 'world' });
 };
 ```
 
-Endpoints are useful when you need to expose some external API, for example a RESTful API, or a GraphQL API, by an external entity such as a mobile app or a third-party service.
+Los endpoints son útiles cuando necesitas exponer una API externa, como una API RESTful o una API de GraphQL, a una entidad externa, como una aplicación móvil o un servicio de terceros.
 
 ```ts
 import type { RequestHandler } from '@builder.io/qwik-city';
 
-// Called with every HTTP request (regardless of method)
+// Se llama con cada solicitud HTTP (independientemente del método)
 export const onRequest: RequestHandler = async (requestEvent) => { ... }
 
-// Called when the HTTP method is GET
+// Se llama cuando el método HTTP es GET
 export const onGet: RequestHandler = async (requestEvent) => { ... }
 
-// Called when the HTTP method is POST
+// Se llama cuando el método HTTP es POST
 export const onPost: RequestHandler = async (requestEvent) => { ... }
 
-// Called when the HTTP method is PUT
+// Se llama cuando el método HTTP es PUT
 export const onPut: RequestHandler = async (requestEvent) => { ... }
 
-// Called when the HTTP method is PATCH
+// Se llama cuando el método HTTP es PATCH
 export const onPatch: RequestHandler = async (requestEvent) => { ... }
 
-// Called when the HTTP method is DELETE
+// Se llama cuando el método HTTP es DELETE
 export const onDelete: RequestHandler = async (requestEvent) => { ... }
 ```
 
-## Endpoints vs server$
+## Endpoints vs. server$
 
-Endpoints are low level APIs that give developers full control over the HTTP response. They are only recommended when you need to create an API to be consumed by an external entity such as a mobile app or a third-party service.
+Los endpoints son APIs de bajo nivel que brindan a los desarrolladores un control total sobre la respuesta HTTP. Se recomiendan únicamente cuando necesitas crear una API para ser consumida por una entidad externa, como una aplicación móvil o un servicio de terceros.
 
-The `server$` functions are usually a better option when you need to run some code on the server and return a response back to the app. The `server$` are strongly typed and provide a more convenient API for returning data.
+Las funciones `server$` suelen ser una opción mejor cuando necesitas ejecutar algún código en el servidor y devolver una respuesta a la aplicación. Las funciones `server$` están fuertemente tipadas y proporcionan una API más conveniente para devolver datos.
 
-## Raw Response Control
+## Control de respuesta en bruto (RAW)
 
-Endpoints give developers full control over the HTTP response. This allows endpoints to implement RESTful APIs, JSON, XML, GraphQL APIs, reverse proxies or any other type of API.
+Los endpoints brindan a los desarrolladores un control total sobre la respuesta HTTP. Esto permite implementar APIs RESTful, JSON, XML, GraphQL, reverse proxies u cualquier otro tipo de API.
 
-All endpoint functions are passed a `RequestEvent` object, which contains the HTTP request and response information.
+Todas las funciones de endpoints reciben un objeto `RequestEvent`, que contiene la información de la solicitud y la respuesta HTTP.
 
 ```ts
 export interface RequestEvent {
   /**
-   * HTTP response headers.
+   * Cabeceras de la respuesta HTTP.
    *
    * https://developer.mozilla.org/en-US/docs/Glossary/Response_header
    */
   readonly headers: Headers;
 
   /**
-   * HTTP request and response cookie. Use the `get()` method to retrieve a request cookie value.
-   * Use the `set()` method to set a response cookie value.
+   * Cookie de la solicitud y respuesta HTTP. Usa el método `get()` para recuperar el valor de una cookie de la solicitud.
+   * Usa el método `set()` para establecer el valor de una cookie de la respuesta.
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies
    */
   readonly cookie: Cookie;
 
   /**
-   * HTTP request method.
+   * Método de solicitud HTTP.
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods
    */
   readonly method: string;
 
   /**
-   * URL pathname. Does not include the protocol, domain, query string (search params) or hash.
+   * Ruta de acceso URL. No incluye el protocolo, dominio, cadena de consulta (parámetros de búsqueda) o fragmento.
    *
    * https://developer.mozilla.org/en-US/docs/Web/API/URL/pathname
    */
   readonly pathname: string;
 
   /**
-   * URL path params which have been parsed from the current url pathname segments.
-   * Use `query` to instead retrieve the query string search params.
+   * Parámetros de ruta extraídos de los segmentos de la ruta de acceso URL actual.
+   * Usa `query` para recuperar los parámetros de búsqueda de la cadena de consulta.
    */
   readonly params: Readonly<Record<string, string>>;
 
   /**
-   * URL Query Strings (URL Search Params).
-   * Use `params` to instead retrieve the route params found in the url pathname.
+   * Cadenas de consulta de URL (URL Search Params).
+   * Usa `params` para recuperar los parámetros de ruta encontrados en la ruta de acceso URL.
    *
    * https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams
    */
   readonly query: URLSearchParams;
 
   /**
-   * HTTP request URL.
+   * URL de la solicitud HTTP.
    */
   readonly url: URL;
 
   /**
-   * The base pathname of the request, which can be configured at build time.
-   * Defaults to `/`.
+   * La ruta base de acceso de la solicitud, que se puede configurar en tiempo de compilación.
+   * Por defecto es `/`.
    */
   readonly basePathname: string;
 
   /**
-   * HTTP request information.
+   * Información de la solicitud HTTP.
    */
   readonly request: Request;
 
   /**
-   * Platform specific data and functions
+   * Datos y funciones específicos de la plataforma.
    */
   readonly platform: PLATFORM;
 
   /**
-   * Platform provided environment variables.
+   * Variables de entorno proporcionadas por la plataforma.
    */
   readonly env: EnvGetter;
 
   /**
-   * Shared Map across all the request handlers. Every HTTP request will get a new instance of
-   * the shared map. The shared map is useful for sharing data between request handlers.
+   * Mapa compartido en todos los handlers de solicitud. Cada solicitud HTTP obtendrá una nueva instancia del mapa compartido.
+   * El mapa compartido es útil para compartir datos entre handlers de solicitud.
    */
   readonly sharedMap: Map<string, any>;
 
   /**
-   * This method will check the request headers for a `Content-Type` header and parse the body accordingly.
-   * It supports `application/json`, `application/x-www-form-urlencoded`, and `multipart/form-data` content types.
+   * Este método verificará las cabeceras de la solicitud en busca de la cabecera `Content-Type` y analizará el cuerpo de acuerdo.
+   * Admite los tipos de contenido `application/json`, `application/x-www-form-urlencoded` y `multipart/form-data`.
    *
-   * If the `Content-Type` header is not set, it will return `null`.
+   * Si no se establece la cabecera `Content-Type`, se devolverá `null`.
    */
   readonly parseBody: () => Promise<unknown>;
 
   /**
-   * Convenience method to set the Cache-Control header.
+   * Método conveniente para establecer la cabecera Cache-Control.
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control
    */
   readonly cacheControl: (cacheControl: CacheControl) => void;
 
   /**
-   * HTTP response status code. Sets the status code when called with an
-   * argument. Always returns the status code, so calling `status()` without
-   * an argument will can be used to return the current status code.
+   * Código de estado de la respuesta HTTP. Establece el código de estado cuando se llama con un argumento.
+   * Siempre devuelve el código de estado, por lo que llamar a `status()` sin argumentos se puede usar para devolver el código de estado actual.
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
    */
   readonly status: (statusCode?: number) => number;
 
   /**
-   * Which locale the content is in.
+   * Indica en qué idioma está el contenido.
    *
-   * The locale value can be retrieved from selected methods using `getLocale()`:
+   * El valor de idioma se puede obtener de los métodos seleccionados mediante `getLocale()`:
    */
   readonly locale: (local?: string) => string;
 
   /**
-   * URL to redirect to. When called, the response will immediately
-   * end with the correct redirect status and headers.
+   * URL a la que redirigir. Cuando se llama, la respuesta se finaliza inmediatamente
+   * con el estado y las cabeceras de redirección correctas.
    *
    * https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections
    */
   readonly redirect: (statusCode: RedirectCode, url: string) => RedirectMessage;
 
   /**
-   * When called, the response will immediately end with the given
-   * status code. This could be useful to end a response with `404`,
-   * and use the 404 handler in the routes directory.
-   * See https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
-   * for which status code should be used.
+   * Cuando se llama, la respuesta se finaliza inmediatamente con el código de estado dado.
+   * Esto puede ser útil para finalizar una respuesta con `404` y utilizar el controlador de `404` en el directorio de rutas.
+   * Consulta https://developer.mozilla.org/en-US/docs/Web/HTTP/Status
+   * para conocer el código de estado que se debe utilizar.
    */
   readonly error: (statusCode: number, message: string) => ErrorResponse;
 
   /**
-   * Convenience method to send an text body response. The response will be automatically
-   * set the `Content-Type` header to`text/plain; charset=utf-8`.
-   *  An `text()` response can only be called once.
+   * Método conveniente para enviar texto en el cuerpo de una respuesta. La respuesta establecerá automáticamente
+   * la cabecera `Content-Type` en `text/plain; charset=utf-8`.
+   * Una respuesta `text()` solo se puede llamar una vez.
    */
   readonly text: (statusCode: number, text: string) => AbortMessage;
 
   /**
-   * Convenience method to send an HTML body response. The response will be automatically
-   * set the `Content-Type` header to`text/html; charset=utf-8`.
-   *  An `html()` response can only be called once.
+   * Método conveniente para enviar HTML en el cuerpo de una respuesta. La respuesta establecerá automáticamente
+   * la cabecera `Content-Type` en `text/html; charset=utf-8`.
+   * Una respuesta `html()` solo se puede llamar una vez.
    */
   readonly html: (statusCode: number, html: string) => AbortMessage;
 
   /**
-   * Convenience method to JSON stringify the data and send it in the response.
-   * The response will be automatically set the `Content-Type` header to
-   * `application/json; charset=utf-8`. A `json()` response can only be called once.
+   * Método conveniente para convertir los datos a JSON y enviarlos en la respuesta.
+   * La respuesta establecerá automáticamente la cabecera `Content-Type` en
+   * `application/json; charset=utf-8`. Una respuesta `json()` solo se puede llamar una vez.
    */
   readonly json: (statusCode: number, data: any) => AbortMessage;
 
   /**
-   * Send a body response. The `Content-Type` response header is not automatically set
-   * when using `send()` and must be set manually. A `send()` response can only be called once.
+   * Enviar una respuesta con cuerpo. La cabecera `Content-Type` de respuesta no se establece automáticamente
+   * al usar `send()` y se debe establecer manualmente. Una respuesta `send()` solo se puede llamar una vez.
    */
   readonly send: SendMethod;
 
   /**
-   * Low-level access to write to the HTTP response stream. Once `getWritableStream()` is called,
-   * the status and headers can no longer be modified and will be sent over the network.
+   * Acceso de bajo nivel (low-level) para escribir en el stream (flujo) de respuesta HTTP. Una vez que se llama a `getWritableStream()`,
+   * el estado y las cabeceras ya no se pueden modificar y se enviarán a través de la red.
    */
   readonly getWritableStream: () => WritableStream<Uint8Array>;
 
@@ -222,9 +220,9 @@ export interface RequestEvent {
 }
 ```
 
-### JSON GET Endpoint
+### Endpoint GET JSON
 
-Creating a JSON endpoint is as simple as calling the `json(status, object)` method. The `json()` method will automatically set the `Content-Type` header to `application/json; charset=utf-8` and JSON stringify the data.
+Crear un endpoint JSON es tan simple como llamar al método `json(status, object)`. El método `json()` establecerá automáticamente la cabecera `Content-Type` en `application/json; charset=utf-8` y convertirá el objeto en una cadena JSON (JSON stringify).
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -236,17 +234,17 @@ interface ProductData {
 }
 
 export const onGet: RequestHandler = async (requestEvent) => {
-  // Get the product from the database
+  // Obtener el producto desde la base de datos
   const product: ProductData = await database.get(requestEvent.params.skuId);
 
-  // Send the product as JSON
+  // Enviar el producto como JSON
   requestEvent.json(200, product);
 };
 ```
 
-### Changing the status code
+### Cambiar el código de estado
 
-Endpoints can manually change the HTTP status code of the response, using the `status()` method.
+Los endpoints pueden cambiar manualmente el código de estado HTTP de la respuesta utilizando el método `status()`.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -256,9 +254,9 @@ export const onGet: RequestHandler = async (requestEvent) => {
 };
 ```
 
-### Adding response headers
+### Agregar cabeceras de respuesta
 
-Endpoints can manually add response headers to the response, using the `headers` property.
+Los endpoints pueden agregar manualmente cabeceras a la respuesta utilizando la propiedad `headers`.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -268,26 +266,26 @@ export const onPost: RequestHandler = async (requestEvent) => {
 };
 ```
 
-### Setting a cookie
+### Establecer (Set) una cookie
 
-Endpoints can manually read and set cookies, using the `cookie` property. This might be useful for setting a session cookie, such as a JWT token, or a cookie to track a user.
+Los endpoints pueden leer y establecer cookies manualmente utilizando la propiedad `cookie`. Esto puede ser útil para establecer una cookie de sesión, como un token JWT, o una cookie para realizar un seguimiento de un usuario.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
 
 export const onGet: RequestHandler = async (requestEvent) => {
-  // Read a cookie
+  // Leer una cookie
   requestEvent.cookie.get('my-cookie');
 
-  // Set a cookie
+  // Establecer una cookie
   requestEvent.cookie.set('my-cookie', 'Hello World');
 };
 ```
 
 
-### Sending a Text body
+### Enviar un cuerpo de texto
 
-Creating a text endpoint is as simple as calling the `text(status, string)` method. The `text()` method will automatically set the `Content-Type` header to `text/plain; charset=utf-8`.
+Crear un endpoint de texto es tan simple como llamar al método `text(status, string)`. El método `text()` establecerá automáticamente la cabecera `Content-Type` en `text/plain; charset=utf-8`.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -297,9 +295,9 @@ export const onGet: RequestHandler = async (requestEvent) => {
 };
 ```
 
-### Sending a RAW response
+### Enviar una respuesta en bruto (RAW)
 
-Creating a raw endpoint is as simple as calling the `send(Response)` method. The `send()` method takes a standard `Response` object, which can be created using the `Response` constructor.
+Crear un endpoint RAW es tan simple como llamar al método `send(Response)`. El método `send()` toma un objeto `Response` estándar, que se puede crear utilizando el constructor `Response`.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -315,9 +313,9 @@ export const onGet: RequestHandler = async (requestEvent) => {
 };
 ```
 
-### Create a reverse proxy using a fetch
+### Crear un reverse proxy utilizando un fetch
 
-A reverse proxy can be created by using the `fetch()` method to make a request to another server, and then using the `send()` method to send the response back to the client.
+Se puede crear un reverse proxy (proxy inverso) utilizando el método `fetch()` para realizar una solicitud a otro servidor y luego utilizando el método `send()` para enviar la respuesta de vuelta al cliente.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -328,9 +326,9 @@ export const onGet: RequestHandler = async (requestEvent) => {
 };
 ```
 
-### Create a stream response manually
+### Crear un stream (flujo) de respuesta manualmente
 
-Endpoints can manually write to the HTTP response stream, using the `getWritableStream()` method. This can be useful for creating a streaming endpoint, such as a server-sent events endpoint.
+Los endpoints pueden escribir manualmente en el stream de respuesta HTTP utilizando el método `getWritableStream()`. Esto puede ser útil para crear un endpoint de transmisión, como un endpoint de eventos enviados por servidor.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
@@ -353,9 +351,9 @@ export const onGet: RequestHandler = async (requestEvent) => {
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
 ```
 
-### Redirecting to another URL
+### Redireccionar a otra URL
 
-Endpoints can redirect to another URL, by throwing the `redirect(status, url)` method. The `redirect()` method will automatically set the `Location` header to the redirect URL.
+Los endpoints pueden redireccionar a otra URL lanzando el método `redirect(status, url)`. El método `redirect()` establecerá automáticamente la cabecera `Location` en la URL de redirección.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
