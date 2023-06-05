@@ -19,11 +19,11 @@ Spanish Translation documentation from Official Qwik Documentation
     * `git checkout docs/00-nombre-seccion`
 6. Abre los archivos index.mdx de cada subsección para que puedas traducirlos (p. ej. `cd \(qwik\)/seccion/subseccion/index.mdx`)
 7. Para la traducción, actualmente estamos utilizando el siguiente **prompt** y pasándolo a [ChatGPT](https://chat.openai.com/):
-    * *Hola ChatGPT, necesito que seas mi traductor de inglés al español profesional y que me ayudes con la traducción profesional de varios textos de documentación técnica de software. Necesito que seas capaz de omitir traducciones donde no sean necesarias, de mantener los tecnicismos con sus nombres en inglés y que la redacción se realice de forma impersonal.*
+    * [Prompt Qwik ES](./translate-chat-gpt-prompt.md)
     * Luego de utilizar el prompt, traducir el texto por partes puede ser conveniente para no saturar el servicio.
     * Utiliza esta frase para cada parte que se le pase al chat: "Traduce esto por favor: ...pegar parte del texto..."
 8. La traducción la realizará la IA y nuestra responsabilidad recae en revisar las traducciones.
-9. Se deben realizar correcciones de acuerdo con los términos importantes en el siguiente [Glosario de Qwik ES](https://docs.google.com/spreadsheets/d/1awVY8MFN2pQK5ID2FM8SPMF11ks8qCk_oAdCJH7ObE0/edit#gid=0):
+9. Se deben realizar correcciones de acuerdo con los términos importantes en el siguiente [Glosario Qwik ES](./term-glosary.md):
     * Se deben anotar aquellos que aún no están y que se consideren importantes. (En cada subsección pueden haber términos específicos, es necesario anotarlos).
     * Se ha convenido que los términos en inglés deben tener preferencia por sobre las traducciones al español, siempre que sea posible, porque facilitan buscar información.
     * Revisar la términología, la puntuación y la coherencia del texto. Lo fundamental de realizar traducciones es que sea fácil de entender por el lector (legibilidad).
