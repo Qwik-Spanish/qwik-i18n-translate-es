@@ -21,7 +21,7 @@ Spanish Translation documentation from Official Qwik Documentation
 7. Para la traducción, actualmente estamos utilizando el siguiente **prompt** y pasándolo a [ChatGPT](https://chat.openai.com/):
     * [Prompt Qwik ES](./translate-chat-gpt-prompt.md)
     * Luego de utilizar el prompt, traducir el texto por partes puede ser conveniente para no saturar el servicio.
-    * Utiliza esta frase para cada parte que se le pase al chat: "Traduce esto por favor: ...pegar parte del texto..."
+    * Utiliza esta frase para cada parte que se le pase al chat: "Traduce esto con i18nIT por favor: ...pegar parte del texto..."
 8. La traducción la realizará la IA y nuestra responsabilidad recae en revisar las traducciones.
 9. Se deben realizar correcciones de acuerdo con los términos importantes en el siguiente [Glosario Qwik ES](./term-glosary.md):
     * Se deben anotar aquellos que aún no están y que se consideren importantes. (En cada subsección pueden haber términos específicos, es necesario anotarlos).
