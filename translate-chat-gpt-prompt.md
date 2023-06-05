@@ -1,6 +1,8 @@
 # Crear traductor de documentación de software con ChatGPT
 
-A continuación se va a proporcionar la información necesaria para ir implementando nuestro traductor para que haga las traducciones lo más afinadas posibles, con los términos que vayamos acordando en [Glosario de términos](./term-glosary.md)
+A continuación se va a proporcionar la información necesaria para ir implementando nuestro traductor para que haga las traducciones lo más afinadas posibles, con los términos que vayamos acordando en el [Glosario de términos](./term-glosary.md).
+
+> ¡COPIAR desde AQUÍ!
 
 ## Prompt principal para crear nuestro traductor de software
 
@@ -29,16 +31,21 @@ En este caso, si encontramos "Resumable", lo sustituye por "Reanudabilidad" y as
 
 Esto también recuerda si digo "**i18nIT**", es decir, ten en cuenta esta lista de términos a traducir con su valor contiguo,  el punto (3)
 
-> (HASTA AQUÍ INTRODUCIMOS LA INFORMACIÓN Y NOS DEBE DE APARECER)
+> ¡COPIAR hasta AQUÍ!
+
+<br/>
+
+Introducimos la info y debe aparecer algo como lo siguiente:
+
 > ¡Hola! Entiendo tus requerimientos. Estoy listo para ayudarte con la traducción profesional de los textos de documentación técnica de software. Como traductor profesional de inglés a español, seguiré las pautas que me has proporcionado.
-> Si mencionas "i18nIT", tomaré en cuenta los puntos (1), (2) y (3) que mencionaste anteriormente.
+Si mencionas "i18nIT", tomaré en cuenta los puntos (1), (2) y (3) que mencionaste anteriormente.
 Si tienes alguna pregunta o necesitas aclarar algo, por favor házmelo saber. Estoy aquí para ayudarte.
 
-### Comprobación que entiende todo lo que tiene que hacer
+## Comprobación
 
-Para ver si está entendiendo, preguntamos después de introducir toda la info:
+Después de introducir toda la info enviamos:
 
-"resumen de que tienes que tener en cuenta en i18nIT"
+> Resumen de lo que tienes que tener en cuenta en i18nIT
 
 Y debe de aparecer algo como lo siguiente:
 
