@@ -20,7 +20,7 @@ contributors:
 
 ## `useContent()`
 
-La función [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) recupera la información de contenido más cercana para la ruta actual. El objeto devuelto incluye:
+La función [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) recupera la información de contenido más próxima para la ruta actual. El objeto devuelto incluye:
 
 ```ts
 headings: ContentHeading[] | undefined;
@@ -201,8 +201,7 @@ export default component$(() => {
   );
 });
 ```
-
-Este componente tendrá un botón que, al hacer clic, Qwik City navegará a `/dashboard` sin recargar la página.
+Este componente que tiene un botón, cuando hacemos click, Qwik City nos traerá el contenido de la ruta `/dashboard` sin recargar la página
 
 > Ten en cuenta que para SEO y accesibilidad, es mejor utilizar el componente `<Link>` en lugar de `useNavigate()` para navegar programáticamente a una nueva página después de alguna interacción del usuario.
 
