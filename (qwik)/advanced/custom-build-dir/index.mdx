@@ -13,7 +13,7 @@ Por defecto, el directorio de salida del build en Qwik es la carpeta `dist` que 
 
 Sin embargo, en ciertos casos necesitarás que la carpeta de salida del build sea diferente de la asignada por defecto. Vamos a ver cómo podríamos cambiar esos ajustes, pero antes veamos cómo no hacerlo.
 
-## Cómo no hacerlo
+## Cómo NO hacerlo
 
 Por lo general con Vite.js lo hacemos de la siguiente manera:
 
@@ -30,7 +30,7 @@ export default defineConfig(() => {
   return {
     /* VITE_CONFIG */
     build: {
-      outDir: '../resources/', // Debido a las settings de qwikVite(), al final será `dist`
+      outDir: '../resources/', // Debido a las configuraciones de qwikVite(), al final será `dist`
     },
     plugins: [
       qwikCity({

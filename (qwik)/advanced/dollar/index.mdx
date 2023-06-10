@@ -18,7 +18,7 @@ contributors:
 
 Qwik divide la aplicación en muchas piezas pequeñas denominadas símbolos. Dado que un componente puede dividirse en muchos símbolos, un símbolo es por lo tanto más pequeño que un componente. El encargado de realizar esta división es el [Optimizer de Qwik](../optimizer/index.mdx).
 
-El sufijo `$` se usa para indicar tanto al optimizador como al desarrollador cuando se produce esta transformación. Como desarrollador, debes entender que ciertas reglas especiales se van a aplicar siempre que veas `$` (no todo JavaScript válido es una transformación válida del Oprimizer de Qwik).
+El sufijo `$` se usa para indicar tanto al optimizador como al desarrollador cuando se produce esta transformación. Como desarrollador, debes entender que ciertas reglas especiales se van a aplicar siempre que veas `$` (no todo JavaScript válido es una transformación válida del Optimizer de Qwik).
 
 ## Implicaciones a la hora de la compilación
 
@@ -115,9 +115,9 @@ foo$(bar)
 
 #### Closures
 
-Las reglas son un poco más laxas en el caso de los closures, y los identificadores locales pueden ser tanto referenciados como capturados.
+Las reglas son menos restrictivas en el caso de los closures, y los identificadores locales pueden ser tanto referenciados como capturados.
 
-> **REGLA**: Si una función captura léxicamente una variable (o parámetro), esa variable debe ser:
+> **REGLA**: Si una función captura léxicamente una variable (o parámetro), debe de ser esa variable:
 >
 > 1. una `const` y
 > 2. su valor debe ser serializable.

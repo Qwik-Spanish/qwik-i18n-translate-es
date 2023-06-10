@@ -35,7 +35,7 @@ Esto creará una nueva carpeta llamada `my-library` con la siguiente estructura:
 └── vite.config.ts
 ```
 
-Los archivos más importantes de una biblioteca son un `package.json y un `vite.config.ts` debidamente configurados.
+Los archivos más importantes de una biblioteca son los ficheros `package.json y `vite.config.ts` debidamente configurados.
 
 ## package.json
 
@@ -59,7 +59,7 @@ Los archivos más importantes de una biblioteca son un `package.json y un `vite.
 }
 ```
 
-Fíjate que el campo `qwik` es el entry point del Optimizer de Qwik, que usará este archivo para generar el archivo `index.qwik.mjs`.
+Fíjate que el campo `qwik` es el punto de entrada del Optimizer de Qwik, que usará este archivo para generar el archivo `index.qwik.mjs`.
 
 > El archivo debe tener la extensión `.qwik.mjs` para que el optimizer lo pueda reconocer.
 
@@ -88,7 +88,7 @@ En comparación con una configuración normal de Vite, las bibliotecas usarán e
 
 ## `src/index.ts`
 
-Este es el punto de entrada de tu biblioteca, exportará todos los componentes y funciones que quieras hacer accesibles.
+Este es el punto de entrada (entry point) de tu biblioteca, exportará todos los componentes y funciones que quieras hacer accesibles.
 
 ```ts
 // Como ejemplo, vamos a exportar los componentes Logo y Counter
@@ -104,7 +104,7 @@ No te preocupes por ellos, ya que no serán parte de la biblioteca final, pero s
 
 ## Hacer un build y publicar
 
-Para publicar tu biblioteca, primero debes chacer un build en el modo `lib` y luego publicarla en npm.
+Para publicar tu biblioteca, primero debes hacer un build en el modo `lib` y luego publicarla en npm.
 
 ```bash
 npm run build

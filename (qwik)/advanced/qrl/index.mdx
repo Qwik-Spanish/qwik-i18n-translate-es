@@ -115,7 +115,7 @@ Supongamos que: `http://localhost/index.html`
 Lo principal a tener en cuenta es el atributo `on:click`. El Qwikloader se encargará de leer este atributo en cuanto el usuario haga click en el botón.
 
 1. El HTML se carga en el navegador y el Qwikloader registra un listener global de tipo `click`. En este punto, no se carga/ejecuta ningún otro JavaScript.
-2. El usuario hace clic en el `<button>`. Esto dispara un evento `click` que se propaga hacia arriba y es gestionado por el Qwikloader.
+2. El usuario hace click en el `<button>`. Esto dispara un evento `click` que se propaga hacia arriba y es gestionado por el Qwikloader.
 3. El Qwikloader rastrea la ruta de propagación del evento y busca el atributo `on:click`, que encuentra en `<button>`.
 4. Ahora el Qwikloader intentará cargar el chunk correspondiente. Para hacerlo, necesita resolver la ruta relativa de `./chunk-c.js`. Usa estos valores para construir una ruta absoluta comenzando en `<button>` y que vaya hacia el documento.
    - `on:click="./chunk-c.js#Counter_onClick[0,2]"`
@@ -137,7 +137,7 @@ Lo principal a tener en cuenta es el atributo `on:click`. El Qwikloader se encar
    - `<button q:obj="456, 123"` recibe tanto el `count` como la referencia al `<div q:id="457">`
 9. Una vez que el `qwik/json` se deserializa, `useLexicalScope` puede usar el arreglo de la QRL `[0,1]` para mirar en `q:obj="456, 123"` y recuperar el objecto con el id `456` y `123`, que son las props del `<div q:id="123" q:obj="456" q:host>` al igual que el `store` de la función `Counter_onMount`.
 
-> **NOTE:** Por razones de rendimiento, el `q:obj` y el `<script type="qwik/json">` solo se actualizan cuando la aplicación se deserializa en el HTML. Cuando la aplicación esté funcionando, puede ser que sus valores se hayan quedado obsoletos..
+> **NOTE:** Por razones de rendimiento, el `q:obj` y el `<script type="qwik/json">` solo se actualizan cuando la aplicación se deserializa en el HTML. Cuando la aplicación esté funcionando, puede ser que sus valores se hayan quedado obsoletos.
 
 ## ¿Por qué no hacer simplemente `import()` de forma dinámica?
 
