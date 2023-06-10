@@ -1,22 +1,22 @@
 ---
-title: Component library
+title: Biblioteca de componentes
 contributors:
   - manucorporat
 ---
 
-# Library
+# Biblioteca
 
-Qwik uses the [library mode of Vite](https://vitejs.dev/guide/build.html#library-mode) to create component libraries.
+Qwik usa el [modo de bibliotecas de Vite](https://vitejs.dev/guide/build.html#library-mode), o library mode, para crear bibliotecas de componentes.
 
-In order to create a component library for Qwik, you need to make sure of specific rules, this is because the Qwik Optimizer needs to recognize your library as a Qwik library.
+Para crear una biblioteca de componentes para Qwik, debes asegurarte de seguir una serie de reglas específicas, ya que el Optimizer de Qwik necesita reconocer tu biblioteca como una biblioteca de Qwik.
 
-The easiest way to create a new component library is to use the build-in `library` starter:
+La manera más sencilla de crear una nueva biblioteca de componentes es utilizar el starter integrado `library`:
 
 ```bash
 pnpm create qwik library my-library
 ```
 
-This will create a new folder called `my-library` with the following structure:
+Esto creará una nueva carpeta llamada `my-library` con la siguiente estructura:
 
 ```bash {2,11,14}
 ├── README.md
@@ -35,7 +35,7 @@ This will create a new folder called `my-library` with the following structure:
 └── vite.config.ts
 ```
 
-The most important files of a library are a properly configured `package.json` and `vite.config.ts`.
+Los archivos más importantes de una biblioteca son un `package.json y un `vite.config.ts` debidamente configurados.
 
 ## package.json
 
@@ -54,23 +54,20 @@ The most important files of a library are a properly configured `package.json` a
       "types": "./lib-types/index.d.ts"
     }
   },
-  "files": [
-    "lib",
-    "lib-types"
-  ],
-  "type": "module",
+  "files": ["lib", "lib-types"],
+  "type": "module"
 }
 ```
 
-Notice the `qwik` field, this is the entry point for the Qwik Optimizer, it will use this file to generate the `index.qwik.mjs` file.
+Fíjate que el campo `qwik` es el entry point del Optimizer de Qwik, que usará este archivo para generar el archivo `index.qwik.mjs`.
 
-> The file must be called with the `.qwik.mjs` extension, otherwise the Qwik Optimizer will not recognize it.
+> El archivo debe tener la extensión `.qwik.mjs` para que el optimizer lo pueda reconocer.
 
 ## vite.config.ts
 
 ```ts {8-12}
-import { defineConfig } from 'vite';
-import { qwikVite } from '@builder.io/qwik/optimizer';
+import { defineConfig } from 'vite'
+import { qwikVite } from '@builder.io/qwik/optimizer'
 
 export default defineConfig(() => {
   return {
@@ -83,42 +80,42 @@ export default defineConfig(() => {
       },
     },
     plugins: [qwikVite()],
-  };
-});
+  }
+})
 ```
 
-Compared to a normal Vite configuration, libraries will use [the `lib` mode of Vite](https://vitejs.dev/guide/build.html#library-mode), which requires to property configure `build.lib`.
+En comparación con una configuración normal de Vite, las bibliotecas usarán el [`lib` mode de Vite](https://vitejs.dev/guide/build.html#library-mode), que requiere configurar correctamente el `build.lib`.
 
 ## `src/index.ts`
 
-This is the entry point of your library, it will export all the components, and functions that you want to expose to the world.
+Este es el punto de entrada de tu biblioteca, exportará todos los componentes y funciones que quieras hacer accesibles.
 
 ```ts
-// As an example, we will export the Logo and Counter components
-export { Logo } from './components/logo/logo';
-export { Counter } from './components/counter/counter';
+// Como ejemplo, vamos a exportar los componentes Logo y Counter
+export { Logo } from './components/logo/logo'
+export { Counter } from './components/counter/counter'
 ```
 
-## Libraries are also Apps
+## Las bibliotecas también son aplicaciones
 
-The library starter is also a standalone Qwik app (without routing, nor Qwik City), this is the reason why you will find `entry.dev.tsx`, `entry.ssr.tsx` and `root.tsx` files.
+El starter de library es también una aplicación independiente (sin enrutamiento ni Qwik City). Por eso es normal que te encuentres los archivos `entry.dev.tsx`, `entry.ssr.tsx` y `root.tsx` en la carpeta.
 
-Do not worry about them, they won't be part of the final library, but they are useful during development and testing, so you can test your components in a real Qwik app.
+No te preocupes por ellos, ya que no serán parte de la biblioteca final, pero son útiles durante el desarrollo y las pruebas, en el caso de que quieras probar tus componentes en una aplicación Qwik real.
 
-## Build and publish
+## Hacer un build y publicar
 
-In order to publish your library, you have to first build it in `lib` mode and then publish to npm.
+Para publicar tu biblioteca, primero debes chacer un build en el modo `lib` y luego publicarla en npm.
 
 ```bash
 npm run build
 ```
 
-This will create a `lib` folder with the following structure. Then you can publish it to npm.
+Esto creará una carpeta `lib`. Ahora podemos publicar nuestra app en npm.
 
 ```bash {2,11,14}
 npm publish
 ```
 
-> Notice that before first publishing, you might want to update the `package.json` fields, like `name`, `version`, `description`, etc.
+> Antes de publicar tu app por primera vez, seguramente quieras actualizar algunos de los campos del `package.json`, como `name`, `version`, `description`, etc.
 
-> For any other subsequent publish, you will need to update the `version` field.
+> Cada vez que quieras publicar una nueva versión de la app, tendrás que actualizar el campo `version`.

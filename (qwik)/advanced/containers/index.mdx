@@ -1,5 +1,5 @@
 ---
-title: Containers
+title: Contenedores
 contributors:
   - the-r3aper7
   - RATIU5
@@ -10,9 +10,9 @@ contributors:
   - mhevery
 ---
 
-# Containers
+# Contenedores
 
-Every Qwik application is contained inside a element, usually the `<html>` element. This element becomes the container for the application. The container is the root element for the application and all components, state and events are contained within.
+Toda aplicación de Qwik se encuentra contenida dentro de un elemento, normalmente dentro del `<html>`. Este elemento se convierte en el contenedor de la aplicación, y, por ello, en el elemento raíz para la aplicación y todos sus componentes, estados y eventos.
 
 ```html
 <html q:container="paused" q:version="0.12.1" q:base="/build">
@@ -20,19 +20,19 @@ Every Qwik application is contained inside a element, usually the `<html>` eleme
 </html>
 ```
 
-## Container Attributes
+## Atributos del Contenedor
 
-Since containers are implicitally rendered by the Qwik runtime, it's not possible to define custom HTML attributes using JSX, however, the SSR render APIs, like `renderToString` and `renderToStream`, provide the `containerAttributes` option to define custom attributes:
+Dado que los contenedores son renderizados de manera implícita en el runtime de Qwik, no es posible definir atributos HTML personalizados utilizando JSX. Sin embargo, las APIs de renderización de SSR, como `renderToString` y `renderToStream`, otorgan la opción `containerAttributes` para definir atributos personalizados:
 
 ```tsx
 renderToStream(<Root />, {
   containerAttributes: {
     lang: 'en',
   },
-});
+})
 ```
 
-The code above will render the following HTML:
+El código anterior renderizará el siguiente HTML:
 
 ```html
 <html lang="en" q:container="paused" q:version="0.12.1" q:base="/build">
@@ -40,28 +40,28 @@ The code above will render the following HTML:
 </html>
 ```
 
-In the example above, the `lang` attribute is added to the `<html>` container element.
+En el ejemplo anterior, el atributo `lang` se añade al elemento contenedor `<html>`.
 
-> Note that this attribute will not be reactive, if the app needs to change this value dynamically, it will need to do through manual DOM manipulation.
+> Ten en cuenta que este atributo no será reactivo: si la aplicación necesita cambiar este valor de manera dinámica, tendrá que hacerlo a través de la manipulación manual del DOM.
 
-Along with the custom attributes, Qwik will automatically render the `q:container`, `q:version`, `q:render` and `q:base` attributes.
+Junto con los atributos personalizados, Qwik renderizará automáticamente los atributos `q:container`, `q:version`, `q:render` y `q:base`.
 
-- `q:container` - The container state. This attribute is used by the Qwik runtime to determine if the container is in a paused state or not. The value of this attribute is either `paused` or `resumed`.
+- `q:container` - El estado del contenedor. Este atributo se utiliza en el runtime de Qwik para determinar si el contenedor está en un estado pausado o no. El valor de este atributo es `paused` or `resumed`.
 
-- `q:version` - The version of the Qwik runtime.
+- `q:version` - La versión del runtime de Qwik.
 
-- `q:render` - Indicated how the container was rendered. The value of this attribute is either `ssr`, `ssr-dev`, `dom` or `dom-dev`.
+- `q:render` - Indica cómo se ha renderizado el contenedor. Este valor puede tener los siguientes valores: `ssr`, `ssr-dev`, `dom` o `dom-dev`.
 
-## Properties
+## Propiedades
 
-Since the runtime ensures isolation across containers, several containers can coexist within the same document, a container can even contain another nested container, this property allows containers to break up an application into smaller parts.
+Dado que el runtime asegura el aislamiento entre contenedores, varios contenedores pueden coexistir dentro del mismo documento, un contenedor incluso puede contener otro contenedor anidado, esta propiedad permite dividir una aplicación en partes más pequeñas.
 
-- **resumed**: Each container can be resumed independently from all other components on the page. Independent resumability further reduces the amount of state which resume deserializes.
-- **updated**: Each container can be updated/replaced at any point using `innerHTML`. This allows a portion of the page to update without forcing a full re-fetch of a complete HTML document without downloading or executing JavaScript.
-- **compiled**: Each container can be compiled and deployed separately from other containers. Separate compilation is especially useful for large-scale applications and large-scale teams working on the applications.
-- **versioned**: Each container can run a different version of the Qwik framework. Allowing for the composability of the website from many small containers.
+- **resumed**: Cada contenedor puede ser reanudado de manera independiente de todos los demás componentes en la página. La capacidad de reanudación independiente reduce aún más la cantidad de estado que se deserializa al reanudar.
+- **updated**: Cada contenedor puede ser actualizado/reemplazado en cualquier momento utilizando `innerHTML`. Esto permite que una parte de la página se actualice sin obligar a una nueva recuperación completa de un documento HTML completo sin descargar o ejecutar JavaScript.
+- **compiled**: Cada contenedor puede ser compilado y desplegado de manera independiente de otros contenedores. La compilación separada es especialmente útil para aplicaciones a gran escala y equipos grandes que trabajan en las aplicaciones.
+- **versioned**: Cada contenedor puede ejecutar una versión diferente de Qwik. Esto permite la composibilidad del sitio web a partir de muchos contenedores pequeños.
 
-Containers can be nested in a tree and can communicate and share data. The inter-component communication requires that the components have well-defined boundaries, which we call container protocols.
+Los contenedores pueden anidarse en un árbol y pueden comunicarse y compartir datos. La comunicación entre componentes requiere que los componentes tengan límites bien definidos, a los que llamamos protocolos de contenedor (container protocols).
 
 ```html
 <html q:container="paused" q:version="0.12.1" q:base="/build">
@@ -69,13 +69,21 @@ Containers can be nested in a tree and can communicate and share data. The inter
     <title>My Qwik Application</title>
   </head>
   <body>
-    <header q:container="resumed" q:version="0.11.1" q:base="https://server.a/build">
+    <header
+      q:container="resumed"
+      q:version="0.11.1"
+      q:base="https://server.a/build"
+    >
       <div>
         <h1>This is a header form a container</h1>
       </div>
     </header>
 
-    <footer q:container="paused" q:version="0.13.0" q:base="https://footer.server.b/">
+    <footer
+      q:container="paused"
+      q:version="0.13.0"
+      q:base="https://footer.server.b/"
+    >
       <div>
         <h1>This is a footer</h1>
       </div>
@@ -84,45 +92,45 @@ Containers can be nested in a tree and can communicate and share data. The inter
 </html>
 ```
 
-## Containers vs. Components
+## Contenedores vs. Componentes
 
-Containers sound very similar to components; what are the differences? You can think of a container as a more restricted component. However, components can do a few things which containers can't.
+Es cierto que los contenedores pueden parecer muy similares a los componentes y que nos podríamos preguntar en qué se diferencian. Podemos pensar en un contenedor como un componente con más restricciones, ya que hay una serie de cosas que los componentes pueden hacer que los contenedores no, como las siguientes:
 
-- Containers can only have read-only properties passed into them. This restriction is because container inputs may need to be serialized for SSR requests.
-- Containers don't understand [content projection](../../components/slots/index.mdx).
-- Containers can't modify the state which has been passed into them.
+- A los contenedores solo se le pueden pasar propiedades de solo lectura. Esta restricción se debe a que las entradas del contenedor pueden necesitar ser serializadas para solicitudes SSR.
+- Los contenedores no entienden de [proyección de contenido](../../components/slots/index.mdx).
+- Los contenedores no pueden modificar el estado que se les ha pasado.
 
-Components have restrictions:
+Eso no quita que los componentes no tengan algunas restricciones:
 
-- Components must be compiled together and, as a result, share the same bundle artifacts and same Qwik version.
-- On pause, all of the components in the container are serialized together (and then they are resumed together).
+- Los componentes se compilan juntos. Por ende, todos comparten los mismos bundle artifacts y la versión de Qwik.
+- Al pausar, todos los componentes en el contenedor se serializan juntos (y luego se reanudan juntos).
 
-## What do containers solve?
+## ¿Qué solucionan los contenedores?
 
-Containers allow multiple independent Qwik applications to run on the page and behave as a single application to the user. There are two most common use cases:
+Los contenedores permiten que varias aplicaciones independientes de Qwik se ejecuten en la página y se comporten como una sola aplicación para el usuario. Hay dos casos de uso más comunes:
 
 1. Routing
-2. Micro-frontend architecture
+2. Arquitectura de micro-frontends
 
 ### Routing
 
-A typical site is composed of two logical parts:
+Un sitio web con routing se compone de dos partes lógicas:
 
-1. The navigation that tends to stay constant across many pages.
-2. The outlet, which is the part of the page that changes based on which route the user navigated to.
+1. La navegación, que tiende a mantenerse constante a través de muchas páginas.
+2. El outlet, que es la parte de la página que cambia en función de a qué ruta navega el usuario.
 
-We can model the two parts as two navigation and outlet containers. When the user first navigates to a route, the server responds with HTML, that contains containers for both the navigation and the outlet. Once the user navigates to the second route, there are three ways to solve the navigation:
+Podemos modelar estas dos partes como dos contenedores: de navegación y outlet. Cuando el usuario navega por primera vez a una ruta, el servidor responde con HTML que contiene contenedores tanto para la navegación como para el outlet. Una vez que el usuario navega a la segunda ruta, hay tres formas de resolver la navegación:
 
-1. The simplistic approach is to make a full round trip and download an entirely new page. The main downside is that the application loses all of its states on the client.
-2. The classical approach is to treat any further navigation in JavaScript. We replace the current outlet component with the new outlet component and let the new component render. The disadvantage is that we need to download and execute the JavaScript.
-3. The Qwik approach treats the navigation and the outlet as two different containers. The first navigation downloads HTML representing the full page (with both containers). The subsequent navigation fetches the HTML only for the outlet container. This approach is the best of both worlds. The navigation is fast (no JavaScript download or execution), and the application keeps its state in the parent container.
+1. El enfoque simplista es hacer un viaje completo y descargar una página completamente nueva. El principal inconveniente es que la aplicación pierde todos sus estados en el cliente.
+2. El enfoque clásico es tratar cualquier navegación adicional en JavaScript. Reemplazamos el componente outlet actual con el nuevo componente outlet y dejamos que el nuevo componente se renderice. La desventaja es que necesitamos descargar y ejecutar JavaScript.
+3. El enfoque Qwik trata la navegación y el outlet como dos contenedores diferentes. La primera navegación descarga HTML que representa la página completa (con ambos contenedores). La navegación subsiguiente solo obtiene el HTML para el contenedor de outlet. Este enfoque es lo mejor de ambos mundos. La navegación es rápida (sin descarga o ejecución de JavaScript), y la aplicación mantiene su estado en el contenedor principal.
 
 ### Micro-frontend
 
-When an application gets very large, it becomes impractical to think of it as a single application. A better mental model is that many applications work together to give the user the impression of a single application.
+Cuando una aplicación se vuelve muy grande, se vuelve poco práctico pensar en ella como una sola aplicación. Un mejor modelo mental es que muchas aplicaciones trabajan juntas para dar al usuario la impresión de una sola aplicación.
 
-For large apps, the teams also become large. Large teams usually have different goals and, as a result, different release schedules.
+Para las aplicaciones grandes, los equipos también se vuelven grandes. Los equipos grandes suelen tener diferentes objetivos y, como resultado, diferentes fechas de lanzamiento (release schedule).
 
-Containers allow a large team to break up the application into many smaller parts and treat each part as a unit with a separate deployment, testing, and version upgrade schedule.
+Los contenedores permiten a un equipo grande dividir la aplicación en muchas partes más pequeñas y tratar cada parte como una unidad con un despliegue, prueba y calendario de actualización de versión separados.
 
-Teams break up the application into containers and clearly define protocols between the containers. As long as the protocols are satisfied, each team can deploy the two containers independently.
+Los equipos dividen la aplicación en contenedores y definen claramente los protocolos entre los contenedores. Siempre que se satisfagan los protocolos, cada equipo puede desplegar los dos contenedores de manera independiente.

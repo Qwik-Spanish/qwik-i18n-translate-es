@@ -1,5 +1,5 @@
 ---
-title: Custom Build Output Directory
+title: Personalizar el directorio de salida del build
 contributors:
   - manucorporat
   - adamdbradley
@@ -7,30 +7,30 @@ contributors:
   - mhevery
 ---
 
-# Custom Build Output Directory
+# Personalizar el directorio de salida del build
 
-By default, the build output directory for Qwik is the `dist` folder in the root folder of the project.
+Por defecto, el directorio de salida del build en Qwik es la carpeta `dist` que encontrarás en la raíz del proyecto.
 
-In certain cases, sometimes we need to make the build output directory different from the default package.
+Sin embargo, en ciertos casos necesitarás que la carpeta de salida del build sea diferente de la asignada por defecto. Vamos a ver cómo podríamos cambiar esos ajustes, pero antes veamos cómo no hacerlo.
 
-## Wrong Way
+## Cómo no hacerlo
 
-Usually with Vite.js we do it like this:
+Por lo general con Vite.js lo hacemos de la siguiente manera:
 
 ```ts title="vite.config.ts"
-import { defineConfig } from 'vite';
-import { qwikVite } from '@builder.io/qwik/optimizer';
-import { qwikCity } from '@builder.io/qwik-city/vite';
-import { resolve } from 'node:path';
+import { defineConfig } from 'vite'
+import { qwikVite } from '@builder.io/qwik/optimizer'
+import { qwikCity } from '@builder.io/qwik-city/vite'
+import { resolve } from 'node:path'
 /* VITE_IMPORTS */
 
 export default defineConfig(() => {
-  const pagesDir = resolve('pages');
+  const pagesDir = resolve('pages')
 
   return {
     /* VITE_CONFIG */
     build: {
-      outDir: '../resources/', // This will be overrided to `dist` by qwikVite() setting
+      outDir: '../resources/', // Debido a las settings de qwikVite(), al final será `dist`
     },
     plugins: [
       qwikCity({
@@ -42,21 +42,21 @@ export default defineConfig(() => {
       qwikVite(/* VITE_QWIK */),
       /* VITE_PLUGINS */
     ],
-  };
-});
+  }
+})
 ```
 
-However, it will be overridden by the settings of QwikVite() so nothing happens and the build output directory is still in the `dist` folder
+Como indicamos, las settings de qwikVite() sobreescribirán el outDir y veremos que el directorio del build seguirá siendo `dist`.
 
-## The Right Way
+## Cómo hacerlo
 
-So instead of changing the settings in Vite.js directly, we just need to change the settings in QwikVite() like this:
+En lugar de cambiar los ajustes en Vite.js directamente, tenemos que hacerlo en qwikVite() de la siguiente forma:
 
 ```ts title="vite.config.ts"
-import { defineConfig } from 'vite';
-import { qwikVite } from '@builder.io/qwik/optimizer';
-import { qwikCity } from '@builder.io/qwik-city/vite';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vite'
+import { qwikVite } from '@builder.io/qwik/optimizer'
+import { qwikCity } from '@builder.io/qwik-city/vite'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(() => {
   return {
@@ -65,13 +65,13 @@ export default defineConfig(() => {
       qwikCity(),
       qwikVite({
         client: {
-          outDir: 'resources/', // This is the right setting
+          outDir: 'resources/', // Aquí es donde tienes que hacerlo
         },
       }),
       tsconfigPaths(),
     ],
-  };
-});
+  }
+})
 ```
 
-So that the output build directory becomes `resources`, please rename this folder name as needed.
+Importante: si quieres que el directorio del build sea `resources`, entonces renómbralo con ese nombre también.
