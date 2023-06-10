@@ -14,53 +14,52 @@ contributors:
   - mugan86
 ---
 
-# Best Practices
+# Aplicar buenas prácticas
 
-## Inline operations in templates
+## Operaciones en línea en las plantillas
 
-Qwik optimizer can better optimize the reactivity of the application if the operations are inlined in the template.
+El optimizador de Qwik puede optimizar mejor la reactividad de la aplicación si las operaciones se realizan en línea en la plantilla.
 
-```tsx title="Suboptimal implementation"
-// Don't do this!
+```tsx title="Implementación subóptima"
+// ¡No hagas esto!
 export default component$(() => {
   const signal = useSignal(0);
-  const isBiggerThanZero = signal.value > 0 ? 'Bigger than zero' : 'Smaller than zero';
+  const isBiggerThanZero = signal.value > 0 ? 'Mayor que cero' : 'Menor que cero';
   return (
     <div>
       <button onClick$={() => signal.value++}>+</button>
       <button onClick$={() => signal.value--}>-</button>
-      <div>{isBiggerThanZero} - Current value: { signal.value }</div>
+      <div>{isBiggerThanZero} - Valor actual: { signal.value }</div>
     </div>
   );
 });
 ```
 
-The above implementation will cause the whole template to be re-rendered when the signal changes. This is because the `isBiggerThanZero` is not inlined in the template.
+La implementación anterior hará que toda la plantilla se vuelva a renderizar cuando la señal cambie. Esto se debe a que `isBiggerThanZero` no está en línea en la plantilla.
 
-```tsx title="Optimal Implementation"
+```tsx title="Implementación óptima"
 export default component$(() => {
   const signal = useSignal(0);
   return (
     <div>
       <button onClick$={() => signal.value++}>+</button>
-        <button onClick$={() => signal.value--}>-</button>
-        <div>
-          {signal.value > 0 ? 'Bigger than zero' : 'Smaller than zero'} - Current
-          value: {signal.value}
-        </div>
+      <button onClick$={() => signal.value--}>-</button>
+      <div>
+        {signal.value > 0 ? 'Mayor que cero' : 'Menor que cero'} - Valor actual: {signal.value}
+      </div>
     </div>
   );
 });
 ```
 
-## Avoid registering DOM events in `useVisibleTask$()`
+## Evita registrar eventos DOM en `useVisibleTask$()`
 
-Qwik allows to register event listeners in a declarative way, using the `useOn()` or using JSX.
+Qwik permite registrar escuchadores de eventos de manera declarativa utilizando `useOn()` o utilizando JSX.
 
-When using `useVisibleTask` to programatically register events, we are downloading and executing JavaScript eagerly, even if the event is not triggered.
+Cuando utilizamos `useVisibleTask$()` para registrar eventos programáticamente, estamos descargando y ejecutando JavaScript de manera anticipada, incluso si el evento no se ha desencadenado.
 
-```tsx title="Suboptimal implementation"
-// Don't do this!
+```tsx title="Implementación subóptima"
+// ¡No hagas esto!
 useVisibleTask$(() => {
   const listener = (event) => {
     const mouseEvent = event as MouseEvent;
@@ -74,75 +73,73 @@ useVisibleTask$(() => {
 });
 ```
 
-The above implementation causes more JavaScript to load eagerly, rather than responding precisely to user events. Increased upfront JavaScript loading results in slower app performance.
+La implementación anterior provoca que se cargue más JavaScript de manera anticipada, en lugar de responder precisamente a los eventos del usuario. Cargar más JavaScript al inicio resulta en un rendimiento más lento de la aplicación.
 
-Instead, use the `useOnDocument()` hook to register events on the `document` object, this way Qwik will not execute any JS until the event is triggered.
+En su lugar, utiliza el hook `useOnDocument()` para registrar eventos en el objeto `document`. De esta manera, Qwik no ejecutará ningún JavaScript hasta que se desencadene el evento.
 
-```tsx title="Optimal Implementation"
+```tsx title="Implementación óptima"
 useOnDocument(
   'mousemove',
   $((event) => {
     const mouseEvent = event as MouseEvent;
     console.log(mouseEvent.x, mouseEvent.y);
-    // No manual clean up required!
+    // ¡No se requiere limpieza manual!
   })
 );
 ```
 
-When in doubt, instead of `useVisibleTask$()` use:
-- `useOn()`: listen to events on the root element of `the current component`.
-- `useOnWindow()`: listen to events on the `window` object.
-- `useOnDocument()`: listen to events on the `document` object.
+Cuando tengas dudas, en lugar de utilizar `useVisibleTask$()`, utiliza:
+- `useOn()`: para escuchar eventos en el elemento raíz del componente actual.
+- `useOnWindow()`: para escuchar eventos en el objeto `window`.
+- `useOnDocument()`: para escuchar eventos en el objeto `document`.
 
+## Evita acceder a `window.location` directamente
 
-## Avoid accessing the location from the `window` object
+No accedas directamente a `window.location`, utiliza el gancho `useLocation()` en su lugar.
 
-Don't access `window.location` directly, use `useLocation()` hook instead.
-
-```tsx title="Suboptimal implementation"
-// Don't do this!
+```tsx title="Implementación subóptima"
+// ¡No hagas esto!
 useVisibleTask$(()=> {
     if (window.location.href).includes('foo') {
-        //... do the thing
+        //... hacer algo
     }
 })
-// or
+// o
 if (typeof window !== "undefined") {
     const queryParams = new URLSearchParams(window.location.search);
     const query: Record<string, string> = {};
     queryParams.forEach((value, key) => {
         query[key] = value;
     })
-    doTheThing(query);
+    hacerAlgo(query);
 }
 ```
 
-Many actions related to location information can be executed during the initial server-side render, resulting in pure HTML without any JavaScript overhead.
+Muchas acciones relacionadas con la información de la ubicación se pueden ejecutar durante la representación inicial en el lado del servidor, lo que resulta en HTML puro sin ningún gasto de JavaScript.
 
-By forcing this logic to run on the client side, it introduces increased upfront JavaScript and leads to eager loading.
+Al forzar esta lógica a ejecutarse en el lado del cliente, se introduce una carga de JavaScript anticipada y provoca una carga ansiosa.
 
-Using the `if typeof window !== "undefined"` pattern may cause the code to be skipped. On the server, the code block will be skipped since the window is always undefined.
+El uso del patrón `if typeof window !== "undefined"` puede hacer que el bloque de código se omita. En el servidor, el bloque de código se omitirá ya que `window` siempre es `undefined`.
 
-While developers may be accustomed to code running twice, Qwik eliminates this necessity by providing a more efficient approach.
+Si bien los desarrolladores pueden estar acostumbrados a que el código se ejecute dos veces, Qwik elimina esta necesidad al proporcionar un enfoque más eficiente.
 
-```tsx title="Optimal Implementation"
-// Do this!
+```tsx title="Implementación óptima"
+// ¡Haz esto!
 const location = useLocation();
 
 if (location.url.href.includes('foo')) {
-  // Do the thing
+  // Haz algo
 }
 
-doTheThing(location.url.searchParams);
+hacerAlgo(location.url.searchParams);
 ```
 
-### Exception
+### Excepción
 
-When using SSG for purely static files, it's inevitable to rely on the server without current location information during the build time.
+Cuando se utiliza SSG para archivos puramente estáticos, es inevitable depender del servidor sin la información de ubicación actual durante el tiempo de compilación.
 
-However, exercise caution! If the required information (such as query parameters) isn't needed until a user event occurs, incorporate the check within your event handling code.
+¡Sin embargo, ten cuidado! Si la información requerida (como los parámetros de consulta) no se necesita hasta que ocurra un evento del usuario, incorpora la comprobación dentro de tu código de manejo de eventos.
 
-This approach helps to prevent eager loading of JavaScript and improves performance.
+Este enfoque ayuda a evitar la carga ansiosa de JavaScript y mejora el rendimiento.
 
-> See: [useLocation() Docs](/docs/(qwikcity)/api/index.mdx#uselocation)
-
+> Consulta: [Documentación de useLocation()](/docs/(qwikcity)/api/index.mdx#uselocation)
