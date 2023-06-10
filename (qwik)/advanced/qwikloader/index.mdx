@@ -41,7 +41,7 @@ A continuación tienes un ejemplo de simple HTML con Qwikloader y un botón con 
 </html>
 ```
 
-1. El navegador descarga el HTML y ejecuta el script Qwikloader en línea. El Qwikloader, entonces, configura oyentes globales para todos los eventos del navegador.
+1. El navegador descarga el HTML y ejecuta el script Qwikloader en línea. El Qwikloader, entonces, configura global listeners (oyentes globales) para todos los eventos del navegador.
 2. El usuario hace click en el `<button>`. El navegador genera un evento de tipo `click` que asciende en el DOM hasta que el listener global del Qwikloader lo intercepta.
 3. El Qwikloader vuelve a la ruta del evento y busca un atributo `on:click` en los elementos.
 4. El Qwikloader usa los atributos `on:click` y `q:base` junto al `document.baseURI` para crear una URL completa con el fin de hacer un fetch del handler que ha sido lazy-loaded. Por ejemplo, si la página original la servíamos en `http://localhost/`, esta nueva URL sería `http://localhost/build/myHandler.js`.
@@ -52,7 +52,7 @@ A continuación tienes un ejemplo de simple HTML con Qwikloader y un botón con 
 El registro del listener crea dos problemas en el contexto de SSR/SSG que Qwik necesita resolver. (Para tener algo más de contexto: recuerda que Qwik es reanudable, es decir, puede continuar ejecutando la aplicación desde donde el servidor se detuvo sin verse obligado a descargar y ejecutar el código antes de tiempo).
 
 1. **La ubicación del listener**: Qwik necesita saber dónde están los eventos en el HTML que proviene del SSR/SSG.
-2. **El código del listene**: Qwik necesita saber qué código debe ejecutarse si se activa el evento.
+2. **El código del listener**: Qwik necesita saber qué código debe ejecutarse si se activa el evento.
 
 Sin la información anterior, Qwik se vería obligado a descargar la template del componente y ejecutarla para poder recuperar tanto la ubicación como el closure. Este proceso es lo que se denomina hidratación y Qwik trata explícitamente de evitar esto.
 

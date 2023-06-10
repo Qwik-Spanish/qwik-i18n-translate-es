@@ -7,7 +7,7 @@ contributors:
   - mhevery
 ---
 
-# Optimizer
+# Optimizer (Optimizador)
 
 La filosofía de Qwik es retrasar la carga del código el mayor tiempo posible. Para hacer eso, Qwik confía en el Optimizer, también denominado optimizador, que se encarga de reorganizar el código para que haya lazy load. El Optimizer es una transformación a nivel de código que se ejecuta como parte del rollup. (El Optimizer está escrito en Rust (y disponible como WASM) para un rendimiento instantáneo).
 
@@ -23,7 +23,7 @@ export const Counter = component$(() => {
 })
 ```
 
-El código anterior representa lo que un desarrollador escribiría para describir el componente. A continuación se muestran las transformaciones que el Optimizer de Qwik aplica al código para que se le pueda aplicar lazy load.
+El código anterior representa lo que un desarrollador escribiría para describir el componente. A continuación se muestran las transformaciones que el Optimizer de Qwik aplica al código para que se le pueda implementar lazy load.
 
 ```tsx
 const Counter = component(qrl('./chunk-a.js', 'Counter_onMount'))

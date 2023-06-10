@@ -28,11 +28,11 @@ Recuerda: [la diferencia entre reanudabilidad e hidratación](../../concepts/res
 
 Cuando Qwik renderiza una aplicación, es capaz de recopilar qué "símbolos" se utilizaron durante el renderizado. Un símbolo incluye varias partes de un componente, que son extraídas por el optimizador para descomponer la aplicación. Los event listeners individuales, el estado del componente y el propio renderizador del componente son ejemplos de diferentes símbolos que podrían extraerse.
 
-Por ejemplo, imaginemos que tenemos una página de producto que es mayormente estática, excepto por un botón de "Añadir al carrito". Cuando se hace clic en este botón, el usuario debería recibir de inmediato un feedback para mostrar el producto agregado al carrito. En este ejemplo, el optimizador de Qwik podría entender que el único símbolo con el que un usuario podría interactuar es el event listener del clic del botón "Añadir al carrito".
+Por ejemplo, imaginemos que tenemos una página de producto que es mayormente estática, excepto por un botón de "Añadir al carrito". Cuando se hace click en este botón, el usuario debería recibir de inmediato un feedback para mostrar el producto agregado al carrito. En este ejemplo, el optimizador de Qwik podría entender que el único símbolo con el que un usuario podría interactuar es el event listener del click del botón "Añadir al carrito".
 
-Para nuestro ejemplo de "Añadir al carrito", el optimizador recogería los símbolos solo para el event listener de clic y el renderizador para el widget de agregar al carrito. Sin embargo, no tendría que descargar, hidratar y volver a renderizar ninguna otra parte de la aplicación, ya que ni siquiera es posible volver a renderizar otras secciones de la página.
+Para nuestro ejemplo de "Añadir al carrito", el optimizador recogería los símbolos solo para el event listener de click y el renderizador para el widget de agregar al carrito. Sin embargo, no tendría que descargar, hidratar y volver a renderizar ninguna otra parte de la aplicación, ya que ni siquiera es posible volver a renderizar otras secciones de la página.
 
-Dado que Qwik comprende qué es posible hacer, puede hacer el prefetch al código del event listener en lugar de todo el JavaScript para toda la aplicación o ruta. Esto contrasta con el enfoque tradicional en el que toda la aplicación o ruta, y el código del framework, deben ser precargados solo para agregar el event listener de clic.
+Dado que Qwik comprende qué es posible hacer, puede hacer el prefetch al código del event listener en lugar de todo el JavaScript para toda la aplicación o ruta. Esto contrasta con el enfoque tradicional en el que toda la aplicación o ruta, y el código del framework, deben ser precargados solo para agregar el event listener de click.
 
 ## Estrategia de prefetching
 
@@ -54,9 +54,7 @@ export default function (opts: RenderToStreamOptions) {
 
 ## Implementación del prefetching
 
-Browsers offer numerous ways to "implement", or apply, a [prefetching strategy](#prefetching-strategy), and Qwik can be configured to prefer one implementation over another, each with their pros and cons. Depending on the configuration, the generated HTML content will include the prefetch implementation.
-
-Los navegadores ofrecen numerosas formas de "implementar" o aplicar una estrategia de prefetching, y Qwik puede configurarse para decantarse por una implementación determianda. Cada una tiene sus pros y contras. Dependiendo de la configuración, el contenido HTML generado incluirá la implementación de prefetching.
+Los navegadores ofrecen numerosas formas de "implementar" o aplicar una estrategia de prefetching, y Qwik puede configurarse para decantarse por una implementación determinada. Cada una tiene sus pros y contras. Dependiendo de la configuración, el contenido HTML generado incluirá la implementación de prefetching.
 
 ```ts
 export default function (opts: RenderToStreamOptions) {
@@ -85,7 +83,7 @@ Para las aplicaciones de Qwik City, recomendamos encarecidamente el uso de [Spec
 
 El [Speculative Module Fetching](<../../../(qwikcity)/advanced/speculative-module-fetching/index.mdx>) la estrategia de caché preferida utilizada por Qwik City. Esta estrategia escucha el evento `qprefetch`, que es lanzado por el propio framework. El evento contiene una lista de URLs que se usarán para pre-popular la [caché del navegador](https://developer.mozilla.org/en-US/docs/Web/API/Cache).
 
-Esta estrategia escucha el evento qprefetch, que es enviado por el marco de trabajo Qwik. El evento contiene una lista de URL que el hilo de fondo debería utilizar para pre-popular la caché del navegador.
+Esta estrategia escucha el evento qprefetch, que es enviado por el framework Qwik. El evento contiene una lista de URL que el hilo de fondo debería utilizar para pre-popular la caché del navegador.
 
 Qwik en sí debería estar configurado para utilizar la implementación `prefetchEvent`, que lanzará un evento `qprefetch`. Por defecto, la implementación `prefetchEvent` se establecerá en `always`. A continuación, [Qwik City](<../../../(qwikcity)/advanced/speculative-module-fetching/index.mdx>) escuchará este evento y comunicará con su service worker para persistir los pares de objeto Request / Response de manera que estén almacenados en la long-lived memory.
 
@@ -103,7 +101,7 @@ dispatchEvent(new CustomEvent("qprefetch", { detail: {
 
 El uso del elemento `<link>` con el atributo `rel` es un enfoque común en los frameworks actuales, y Qwik puede utilizar este método configurando las opciones `linkInsert` y `linkRel`. El desafío con el enfoque de link rel es la falta de soporte en _todos_ los dispositivos, al menos en el momento de la escritura. Además, durante el desarrollo, puede ser engañoso que funcione en todas partes; mientras que en los dispositivos móviles no es fácilmente visible que la prefetch de enlaces esté funcionando correctamente.
 
-Por ejemplo, Safari, el navegador que impulsa los iPhones y iPads, no admite `modulepreload`. Esto es significativo porque los dispositivos móviles quizás serían los más beneficiados precarga de módulos. Lo siguiente es Firefox, que no admite el link rel `prefetch` cuando estamos en `https`.
+Por ejemplo, Safari, el navegador que impulsa los iPhones y iPads, no admite `modulepreload`. Esto es significativo porque los dispositivos móviles quizás serían los más beneficiados por la precarga de módulos. Lo siguiente es Firefox, que no admite el link rel `prefetch` cuando estamos en `https`.
 
 > Prefetch es una función que se supone que debe ayudar a hacer más rápidas las experiencias de nuestros visitantes, pero con la combinación incorrecta de navegador y CDN / servidor, ¡puede hacer las experiencias más lentas!
 >
@@ -113,7 +111,7 @@ Además, puede ser posible disparar varias solicitudes para el mismo recurso. Po
 
 #### link rel="modulepreload"
 
-- Aunque está en la especificación de HTML, eso no significa que los usuarios finales estén precargando la aplicación correctamenteEven. [Can I Use: modulepreload](https://caniuse.com/link-rel-modulepreload)
+- Aunque está en la especificación de HTML, eso no significa que los usuarios finales estén precargando la aplicación correctamente. [Can I Use: modulepreload](https://caniuse.com/link-rel-modulepreload)
 - No está soportado en [Firefox](https://bugzilla.mozilla.org/show_bug.cgi?id=1425310).
 
 ### Web Worker Fetch

@@ -12,7 +12,7 @@ contributors:
 
 # Vite
 
-Qwik aprovecha [Vite](https://vitejs.dev/) para brindar una experiencia de desarrollo rápida. Vite es una herramienta de construcción que sirve tu código a través de módulos nativos de ES durante el desarrollo.
+Qwik aprovecha [Vite](https://vitejs.dev/) para brindar una experiencia de desarrollo rápida. Vite es una herramienta de construcción que sirve tu código a través de módulos ES (ESM) durante el desarrollo.
 Esto significa que no necesita empaquetar (bundling) ni transpilar tu código para que funcione en el navegador. También cuenta con una sustitución de módulos en caliente (HMR) extremadamente rápida que actualiza tu navegador al instante cuando realizas cambios en tu código.
 
 ## Configuración
@@ -24,16 +24,16 @@ Después de crear un proyecto de Qwik, encontrarás un archivo `vite.config.js` 
 Qwik incluye dos plugins que facilitan el uso de Vite con Qwik y Qwik City.
 
 ```ts title="vite.config.ts"
-import { defineConfig } from 'vite';
-import { qwikCity } from '@builder.io/qwik-city/vite';
-import { qwikVite } from '@builder.io/qwik/optimizer';
-import tsconfigPaths from 'vite-tsconfig-paths';
+import { defineConfig } from 'vite'
+import { qwikCity } from '@builder.io/qwik-city/vite'
+import { qwikVite } from '@builder.io/qwik/optimizer'
+import tsconfigPaths from 'vite-tsconfig-paths'
 
 export default defineConfig(() => {
   return {
     plugins: [qwikCity(), qwikVite(), tsconfigPaths()],
-  };
-});
+  }
+})
 ```
 
 ### `qwikVite()`
@@ -54,7 +54,7 @@ debug?: boolean;
 
 ```js
 /**
- * La entry strategy de Qwik que se utilizará en la build de producción.
+ * La estrategia de entrada (entry strategy) de Qwik que se utilizará en la build de producción.
  * Durante el desarrollo, el tipo siempre es `hook`.
  * Valor predeterminado: `{ type: "smart" }`
  */
