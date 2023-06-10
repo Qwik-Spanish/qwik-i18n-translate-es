@@ -1,5 +1,5 @@
 ---
-title: Pensamiento Qwik
+title: Filosofía Qwik
 contributors:
   - manucorporat
   - hayley
@@ -8,7 +8,7 @@ contributors:
   - mhevery
 ---
 
-# Pensamiento Qwik
+# Filosofía Qwik
 
 Qwik es muy similar a otros frameworks web a un nivel alto. Qwik es un framework que renderiza un árbol de componentes resultando en una aplicación interactiva.
 
@@ -19,13 +19,13 @@ La parte única de Qwik no está en lo que hace, sino en cómo logra sus objetiv
 
 El objetivo de Qwik es tener que descargar y ejecutar solo lo mínimo indispensable de la aplicación.
 
-## Retraso en la ejecución
+## Retrasando la ejecución
 
 > Retrasar la ejecución de JavaScript tanto como sea posible.
 
 Las aplicaciones de Qwik se inician rápidamente porque hay una cantidad mínima de código JavaScript para ejecutar. (En su forma más simple, una aplicación de Qwik solo necesita alrededor de 1KB de JavaScript para volverse interactiva).
 
-Al retrasar de manera agresiva la descarga y ejecución de la aplicación, Qwik puede proporcionar un rendimiento de inicio casi instantáneo que las generaciones actuales de frameworks web no pueden igualar.
+Al retrasar de manera considerable la descarga y ejecución de la aplicación, Qwik puede proporcionar un rendimiento de inicio casi instantáneo que las generaciones actuales de frameworks web no pueden igualar.
 
 Qwik es rápido no porque use algoritmos inteligentes, sino porque está diseñado de tal manera que la mayor parte del JavaScript nunca necesita descargarse ni ejecutarse. Su velocidad proviene de no realizar acciones (como la hidratación) que otros frameworks deben hacer.
 
@@ -44,7 +44,7 @@ Los sitios web modernos requieren una gran cantidad de JavaScript para volverse 
 
 A medida que nuestras aplicaciones se vuelven más complejas con una mayor fidelidad de interactividad, la cantidad de código ha aumentado constantemente a lo largo de los años sin indicios de detenerse. En pocas palabras, nuestros sitios se vuelven más complejos. Un aumento en la complejidad del sitio, a su vez, requiere más código. Todo este código afecta negativamente el rendimiento de inicio del sitio.
 
-Para empeorar las cosas, JavaScript es monohilo (single-threaded); por lo tanto, nuestros sitios complejos no pueden aprovechar los CPU multinúcleo (multi-core) modernos.
+Para complicarlo aun más, JavaScript es monohilo (single-threaded); por lo tanto, nuestros sitios complejos no pueden aprovechar los CPU multinúcleo (multi-core) modernos.
 
 ### ¿Cómo llegamos hasta este punto?
 
@@ -62,7 +62,7 @@ Como industria, hemos fracasado al pensar en las implicaciones del tamaño del p
 
 Qwik está diseñado desde cero para abordar el problema del tamaño. Un tamaño de paquete pequeño es su objetivo inicial, y todas las demás decisiones de diseño están subordinadas a ese objetivo.
 
-Qwik no se trata de crear menos JavaScript. Qwik se trata de no tener que enviar todo ese JavaScript al cliente de una vez al iniciar la aplicación. Qwik es el resultado cuando llevas la idea de "cargar JavaScript de forma lazy-load" al extremo.
+Qwik no se trata de crear menos JavaScript. Qwik se trata de no tener que enviar todo ese JavaScript al cliente de una vez al iniciar la aplicación. Qwik es el resultado cuando llevas la idea de "cargar JavaScript mediante lazy-load" al extremo.
 
 Sí, Qwik requiere una forma diferente de pensar y diseñar tu aplicación, pero el resultado es un JavaScript inicial casi nulo con una descarga progresiva de JavaScript basada en las interacciones del usuario.
 
