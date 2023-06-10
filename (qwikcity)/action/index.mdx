@@ -13,20 +13,20 @@ contributors:
   - mhevery
 ---
 
-# `routeAction$()`
+# `routeAction$()` (Acciones de enrutado)
 
-Actions allows to handle form submissions, allowing to perform side effects such as writing to a database, or sending an email.
+Las acciones permiten manejar el envío de formularios, lo que permite ejecutar efectos secundarios (side effects) como escribir en una base de datos o enviar un correo electrónico.
 
-Actions can also return data back to the client/browser, allowing to update the UI accordingly, i.e. showing a success message after a form submission.
+Las acciones también pueden devolver datos al cliente/navegador, lo que permite actualizar la interfaz de usuario en consecuencia, es decir, mostrar un mensaje de éxito después de enviar un formulario.
 
-Actions can be declared using the `routeAction$()` or `globalAction$()` exported from `@builder.io/qwik-city`.
+Las acciones se pueden declarar utilizando `routeAction$()` o `globalAction$()` exportados desde `@builder.io/qwik-city`.
 
 ```tsx {4,16} /useAddUser/ /firstName/#a /lastName/#b /email/#c title="src/routes/layout.tsx"
 import { component$ } from '@builder.io/qwik';
 import { routeAction$, Form } from '@builder.io/qwik-city';
 
 export const useAddUser = routeAction$(async (data, requestEvent) => {
-  // This will only run on the server when the user submits the form (or when the action is called programatically)
+  // Esto solo se ejecutará en el servidor cuando el usuario envíe el formulario (o cuando la acción se llame programáticamente)
   const userID = await db.users.add({
     firstName: data.firstName,
     lastName: data.lastName,
@@ -45,23 +45,23 @@ export default component$(() => {
       <Form action={action}>
         <input name="firstName" />
         <input name="lastName" />
-        <button type="submit">Add user</button>
+        <button type="submit">Agregar usuario</button>
       </Form>
       {action.value?.success && (
-        // When the action is done successfully, the `action.value` property will contain the return value of the action
-        <p>User {action.value.userID} added successfully</p>
+        // Cuando la acción se complete correctamente, la propiedad `action.value` contendrá el valor de retorno de la acción
+        <p>Usuario {action.value.userID} agregado correctamente</p>
       )}
     </>
   );
 });
 ```
 
-> Since actions are not executed during rendering, they can have side effects such as writing to a database, or sending an email. An action only runs when called explicitly.
+> Dado que las acciones no se ejecutan durante el renderizado, pueden tener efectos secundarios como escribir en una base de datos o enviar un correo electrónico. Una acción solo se ejecuta cuando se llama explícitamente.
 
 
-## Using actions with `<Form/>`
+## Usar acciones con `<Form/>`
 
-The best way to call an action is using the `<Form/>` component exported in `@builder.io/qwik-city`.
+La mejor manera de llamar a una acción es utilizando el componente `<Form/>` exportado en `@builder.io/qwik-city`.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -80,20 +80,20 @@ export default component$(() => {
   return (
     <Form action={action}>
       <input name="name" />
-      <button type="submit">Add user</button>
-      {action.value?.success && <p>User added successfully</p>}
+      <button type="submit">Agregar usuario</button>
+      {action.value?.success && <p>Usuario agregado correctamente</p>}
     </Form>
   );
 });
 ```
 
-Under the hood, the `<Form/>` component uses a native HTML `<form>` element, so it will work without JavaScript.
+Por debajo, el componente `<Form/>` utiliza un elemento nativo `<form>` de HTML, por lo que funcionará sin JavaScript.
 
-When JS is enabled, the `<Form/>` component will intercept the form submission and trigger the action in SPA mode, allowing to have a full SPA experience.
+Cuando JavaScript está habilitado, el componente `<Form/>` interceptará el envío del formulario y activará la acción en modo SPA, lo que permite tener una experiencia de SPA completa.
 
-## Using actions programatically
+## Usar acciones programáticamente
 
-Actions can also be triggered programatically using the `action.submit()` method, i.e. you don't need a `<Form/>` component, but you can trigger the action from a button click or any other event, just like you would do with a function.
+Las acciones también se pueden activar programáticamente utilizando el método `action.submit()`, es decir, no se necesita un componente `<Form/>`, sino que se puede activar la acción desde un click en un botón u otro evento, como se haría con una función.
 
 ```tsx {18} title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -117,21 +117,21 @@ export default component$(() => {
           console.log(value);
         }}
       >
-        Add user
+        Agregar usuario
       </button>
-      {action.value?.success && <p>User added successfully</p>}
+      {action.value?.success && <p>Usuario agregado correctamente</p>}
     </section>
   );
 });
 ```
 
-In the example above, the `addUser` action is triggered when the user clicks the button. The `action.submit()` method returns a `Promise` that resolves when the action is done.
+En el ejemplo anterior, la acción `addUser` se activa cuando el usuario hace click en el botón. El método `action.submit()` devuelve una `Promise` que se resuelve cuando se completa la acción.
 
-## Actions with Event Handlers
+## Acciones con handlers de eventos
 
-We can use the `onSubmitCompleted$` event handler after an action is executed successfully and returns some data. It is particularly useful when you need to perform additional tasks, such as resetting UI elements or updating the application state, once an action has been completed successfully.
+Podemos utilizar el controlador (handler) de eventos `onSubmitCompleted$` después de que se ejecute una acción con éxito y devuelva algún dato. Es particularmente útil cuando necesitas realizar tareas adicionales, como restablecer elementos de la interfaz de usuario o actualizar el estado de la aplicación, una vez que se haya completado una acción con éxito.
 
-Here's an example of the `onSubmitCompleted$` handler used to edit an item in a EditForm component of a todo app.
+Aquí tienes un ejemplo del controlador `onSubmitCompleted$` utilizado para editar un elemento en un componente `EditForm` de una aplicación de tareas pendientes.
 
 ```tsx title="src/components/EditForm.tsx"
 import { component$, type Signal, useSignal } from '@builder.io/qwik';
@@ -139,7 +139,7 @@ import { Form } from '@builder.io/qwik-city';
 import { type ListItem, useEditFromListAction } from '../../routes/index';
 
 export interface EditFormProps {
-  item: listItem;
+  item: ListItem;
   editingIdSignal: Signal<string>;
 }
 
@@ -162,16 +162,16 @@ const EditForm = component$(
             name="text"
             id={`edit-${item.id}`}
           />
-          {/* Sends item.id with form data on submission. */}
+          {/* Envía item.id con los datos del formulario al enviarlo. */}
           <input type="hidden" name="id" value={item.id} />
           <button type="submit">
-            Submit
+            Enviar
           </button>
         </Form>
 
         <div>
           <button onClick$={() => (editingIdSignal.value = '')}>
-            Cancel
+            Cancelar
           </button>
         </div>
       </div>
@@ -182,13 +182,13 @@ const EditForm = component$(
 export default EditForm;
 ```
 
-In this example, `onSubmitCompleted$` is used to reset the editingIdSignal value to an empty string once the form submission is completed successfully. This allows the application to update its state and return to the default view.
+En este ejemplo, `onSubmitCompleted$` se utiliza para restablecer el valor de `editingIdSignal` a una cadena vacía una vez que se haya completado el envío del formulario con éxito. Esto permite que la aplicación actualice su estado y vuelva a la vista predeterminada.
 
-## Validation and type safety
+## Validación y type safety
 
-Qwik comes with built-in support for [Zod](https://zod.dev/), a TypeScript-first schema validation that can be used directly with actions, using the `zod$()` function.
+Qwik cuenta con soporte incorporado para [Zod](https://zod.dev/), una validación de esquemas de TypeScript que se puede utilizar directamente con acciones mediante la función `zod$()`.
 
-Actions + [Zod](https://zod.dev/) allows to create type safe forms, where the data is validated server side before the action is executed.
+La combinación de acciones y [Zod](https://zod.dev/) permite crear formularios con tipado seguro, donde los datos se validan en el lado del servidor antes de ejecutar la acción.
 
 ```tsx {16-20} /firstName/#a /lastName/#b title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -196,7 +196,7 @@ import { routeAction$, zod$, z, Form } from '@builder.io/qwik-city';
 
 export const useAddUser = routeAction$(
   async (user) => {
-    // The "user" is strongly typed: { firstName: string, lastName: string }
+    // El objeto "user" tiene un tipado fuerte: { firstName: string, lastName: string }
     const userID = await db.users.add({
       firstName: user.firstName,
       lastName: user.lastName,
@@ -206,7 +206,7 @@ export const useAddUser = routeAction$(
       userID,
     };
   },
-  // Zod schema is used to validate that the FormData includes "firstName" and "lastName"
+  // El esquema Zod se utiliza para validar que los datos del formulario incluyan "firstName" y "lastName"
   zod$({
     firstName: z.string(),
     lastName: z.string(),
@@ -222,56 +222,56 @@ export default component$(() => {
         <input name="lastName" />
 
         {action.value?.failed && <p>{action.value.fieldErrors?.firstName}</p>}
-        <button type="submit">Add user</button>
+        <button type="submit">Agregar usuario</button>
       </Form>
       {action.value?.success && (
-        <p>User {action.value.userID} added successfully</p>
+        <p>Usuario {action.value.userID} agregado correctamente</p>
       )}
     </>
   );
 });
 ```
 
-When submitting data to a `routeAction()`, the data is validated against the Zod schema. If the data is invalid, the action will put the validation error in the `routeAction.value` property.
+Cuando se envían datos a una `routeAction()`, los datos se validan con respecto al esquema Zod. Si los datos no son válidos, la acción colocará el error de validación en la propiedad `routeAction.value`.
 
-Please refer to the [Zod documentation](https://zod.dev/) for more information on how to use Zod schemas.
+Consulta la documentación de [Zod](https://zod.dev/) para obtener más información sobre cómo utilizar los esquemas de Zod.
 
-## HTTP request and response
+## Solicitud y respuesta HTTP
 
-`routeAction$` and `globalAction$` have access to the `RequestEvent` object which includes information about the current HTTP request and response.
+`routeAction$` y `globalAction$` tienen acceso al objeto `RequestEvent`, que incluye información sobre la solicitud y respuesta HTTP actual.
 
-This allows actions to access the request headers, cookies, url and environment variables within the `routeAction$` function.
+Esto permite que las acciones accedan a las cabeceras de la solicitud, las cookies, la URL y las variables de entorno dentro de la función `routeAction$`.
 
 ```tsx /requestEvent/ title="src/routes/product/[user]/index.tsx"
 import { routeAction$ } from '@builder.io/qwik-city';
 
-// The second argument of the action is the `RequestEvent` object
+// El segundo argumento de la acción es el objeto `RequestEvent`
 export const useProductRecommendations = routeAction$(
   async (_data, requestEvent) => {
-    console.log('Request headers:', requestEvent.request.headers);
-    console.log('Request cookies:', requestEvent.cookie);
-    console.log('Request url:', requestEvent.url);
-    console.log('Request params:', requestEvent.params);
+    console.log('Cabeceras de la solicitud:', requestEvent.request.headers);
+    console.log('Cookies de la solicitud:', requestEvent.cookie);
+    console.log('URL de la solicitud:', requestEvent.url);
+    console.log('Parámetros de la solicitud:', requestEvent.params);
     console.log('MY_ENV_VAR:', requestEvent.env.get('MY_ENV_VAR'));
   }
 );
 
 ```
 
-## Action Failures
+## Fallos de la acción
 
-In order to return non-success values, the action must use the `fail()` method.
+Para devolver valores que indican un estado fallido, la acción debe utilizar el método `fail()`.
 
 ```tsx /fail/
 import { routeAction$, zod$, z } from '@builder.io/qwik-city';
 
 export const useAddUser = routeAction$(
   async (user, { fail }) => {
-    // `user` is typed { name: string }
+    // `user` tiene el tipo { name: string }
     const userID = await db.users.add(user);
     if (!userID) {
       return fail(500, {
-        message: 'User could not be added',
+        message: 'No se pudo agregar el usuario',
       });
     }
     return {
@@ -284,7 +284,7 @@ export const useAddUser = routeAction$(
 );
 ```
 
-Failures are stored in the `action.value` property, just like the success value. However, the `action.value.failed` property is set to `true` when the action fails. Futhermore, failure messages can be found in the `fieldErrors` object according to properties defined in your Zod schema.
+Los fallos se almacenan en la propiedad `action.value`, al igual que los valores de éxito. Sin embargo, la propiedad `action.value.failed` se establece en `true` cuando la acción falla. Además, los mensajes de fallo se pueden encontrar en el objeto `fieldErrors` según las propiedades definidas en el esquema Zod.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -295,26 +295,26 @@ export default component$(() => {
   return (
     <Form action={action}>
       <input name="name" />
-      <button type="submit">Add user</button>
+      <button type="submit">Agregar usuario</button>
       {action.value?.failed && <p>{action.value.fieldErrors.name}</p>}
-      {action.value?.userID && <p>User added successfully</p>}
+      {action.value?.userID && <p>Usuario agregado correctamente</p>}
     </Form>
   );
 });
 ```
 
-Thanks to Typescript type discrimination, you can use the `action.value.failed` property to discriminate between success and failure.
+Gracias a la discriminación de tipos de TypeScript, puedes utilizar la propiedad `action.value.failed` para discriminar entre éxito (success) y fallo (failure).
 
-## Previous form state
+## Estado previo del formulario
 
-When an action is triggered, the previous state is stored in the `action.formData` property. This is useful to display a loading state while the action is running.
+Cuando se activa una acción, el estado anterior se almacena en la propiedad `action.formData`. Esto es útil para mostrar un estado de carga mientras la acción se está ejecutando.
 
 ```tsx {12} /action.formData/
 import { component$ } from '@builder.io/qwik';
 import { routeAction$, Form, zod$, z } from '@builder.io/qwik-city';
 
 export const useAddUser = routeAction$(async (user) => {
-  // handle action...
+  // manejar la acción...
 });
 
 export default component$(() => {
@@ -322,23 +322,23 @@ export default component$(() => {
   return (
     <Form action={action}>
       <input name="name" value={action.formData?.get('name')} />
-      <button type="submit">Add user</button>
+      <button type="submit">Agregar usuario</button>
     </Form>
   );
 });
 ```
 
-The `action.formData` is specially useful as it allows to keep the form data filled by the user even on a page refresh, allowing to have a full SPA experience, even with JS disabled.
+`action.formData` es especialmente útil ya que permite mantener los datos del formulario rellenados por el usuario incluso al actualizar la página, lo que permite tener una experiencia completa de SPA, incluso con JS desactivado.
 
-## Route vs Global actions
+## Acciones de ruta vs. Acciones globales
 
-Actions can be declared using the `routeAction$()` or `globalAction$()` exported from `@builder.io/qwik-city`, the only difference between the two is that `routeAction$()` is scoped to a route, while `globalAction$()` is globally available across the whole app.
+Las acciones se pueden declarar utilizando `routeAction$()` o `globalAction$()` exportadas desde `@builder.io/qwik-city`, la única diferencia entre las dos es que `routeAction$()` se limita a una ruta, mientras que `globalAction$()` está disponible en toda la aplicación.
 
-We recommend starting with `routeAction$()` and only use `globalAction$()` when you need to share an action across multiple routes, or if you wish to use the action in a component that is not a route.
+Recomendamos comenzar con `routeAction$()` y solo utilizar `globalAction$()` cuando necesites compartir una acción entre varias rutas, o si deseas utilizar la acción en un componente que no es una ruta.
 
 ### `routeAction$()`
 
-`routeAction$()` can only be declared inside the `src/routes` folder, in a `layout.tsx` or `index.tsx` file, and they MUST be exported, just like a `routeLoader$()`. Since `routeAction$()` are only accessible within the route it's declared, they are recommended when the action needs to access some user data, or it's a protected route. Think about it like a "private" action.
+`routeAction$()` solo se puede declarar dentro de la carpeta `src/routes`, en un archivo `layout.tsx` o `index.tsx`, y DEBEN exportarse, al igual que un `routeLoader$()`. Dado que `routeAction$()` solo es accesible dentro de la ruta en la que se declara, se recomienda cuando la acción necesita acceder a datos del usuario, o si es una ruta protegida. Piensa en ella como una acción "privada".
 
 ```tsx title="src/routes/form/index.tsx"
 import { routeAction$ } from '@builder.io/qwik-city';
@@ -350,7 +350,7 @@ export const useChangePassword = routeAction$((data) => {
 
 ### `globalAction$()`
 
-`globalAction$()` can be declared anywhere in the `src` folder. Since `globalAction$()` are globally available, they are recommended when the action needs to be shared across multiple routes, or when the action doesn't need to access any user data. For example, a `useLogin` action that logs in a user. Think about it like a "public" action.
+`globalAction$()` se puede declarar en cualquier lugar de la carpeta `src`. Dado que `globalAction$()` está disponible globalmente, se recomienda cuando la acción necesita compartirse entre varias rutas o cuando la acción no necesita acceder a ningún dato del usuario. Por ejemplo, una acción `useLogin` que inicia sesión en un usuario. Piensa en ella como una acción "pública".
 
 ```tsx title="src/components/login/login.tsx"
 import { globalAction$ } from '@builder.io/qwik-city';
