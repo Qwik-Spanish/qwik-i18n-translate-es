@@ -16,15 +16,15 @@ contributors:
 
 # React Vs Qwik
 
-Several examples comparing React and Qwik.
+Varios ejemplos comparando React y Qwik.
 
-## Hello world component
+## Componente "Hello world"
 
 ### ⚡️ Qwik
 
 ```tsx
 export const HelloWorld = component$(() => {
-  return <div>Hello world</div>;
+  return <div>Hola mundo</div>;
 });
 ```
 
@@ -36,13 +36,13 @@ export function HelloWorld() {
 }
 ```
 
-## Button with a click handler
+## Botón con un controlador de clics
 
 ### ⚡️ Qwik
 
 ```tsx
 export const Button = component$(() => {
-  return <button onClick$={() => console.log('click')}>Click me</button>;
+  return <button onClick$={() => console.log('clic')}>Haz clic</button>;
 });
 ```
 
@@ -50,11 +50,11 @@ export const Button = component$(() => {
 
 ```tsx
 export function Button() {
-  return <button onClick={() => console.log('click')}>Click me</button>;
+  return <button onClick={() => console.log('clic')}>Haz clic</button>;
 }
 ```
 
-## Using Props 
+## Usando Props
 
 ### ⚡️ Qwik
 
@@ -71,8 +71,8 @@ interface ChildProps {
 export const Child = component$<ChildProps>(({ userData }) => {
   return (
     <>
-      <button onClick$={() => userData.count++}>Increment</button>
-      <p>Count: {userData.count}</p>
+      <button onClick$={() => userData.count++}>Incrementar</button>
+      <p>Conteo: {userData.count}</p>
     </>
   );
 });
@@ -98,21 +98,21 @@ interface ChildProps {
 export const Child = ((props: ChildProps) => {
   return (
     <>
-      <button onClick={props.increment}>Increment</button>
-      <p>Count: {props.count}</p>
+      <button onClick={props.increment}>Incrementar</button>
+      <p>Conteo: {props.count}</p>
     </>
   );
 })
 ```
 
-## Declare local state
+## Declarar estado local
 
 ### ⚡️ Qwik
 
 ```tsx
 export const LocalStateExample = component$(() => {
   const count = useSignal(0);
-  return <div>Value is: {count.value}</div>;
+  return <div>El valor es: {count.value}</div>;
 });
 ```
 
@@ -121,11 +121,11 @@ export const LocalStateExample = component$(() => {
 ```tsx
 export function UseStateExample() {
   const [value, setValue] = useState(0);
-  return <div>Value is: {value}</div>;
+  return <div>El valor es: {value}</div>;
 }
 ```
 
-## Create a counter component
+## Crear un componente de contador
 
 ### ⚡️ Qwik
 
@@ -134,8 +134,8 @@ export const Counter = component$(() => {
   const count = useSignal(0);
   return (
     <>
-      <p>Value is: {count.value}</p>
-      <button onClick$={() => count.value++}>Increment</button>
+      <p>El valor es: {count.value}</p>
+      <button onClick$={() => count.value++}>Incrementar</button>
     </>
   );
 });
@@ -148,15 +148,12 @@ export function Counter() {
   const [count, setCount] = useState(0);
   return (
     <>
-      <p>Value is: {count}</p>
-      <button onClick={() => setCount(count + 1)}>Increment</button>
+      <p>El valor es: {count}</p>
+      <button onClick={() => setCount(count + 1)}>Incrementar</button>
     </>
   );
 }
 ```
-
-## Create a clock that increments every second
-
 ### ⚡️ Qwik
 
 ```tsx
@@ -169,7 +166,7 @@ export const Clock = component$(() => {
     cleanup(() => clearInterval(interval));
   });
 
-  return <p>Seconds: {seconds.value}</p>;
+  return <p>Segundos: {seconds.value}</p>;
 });
 ```
 
@@ -183,12 +180,12 @@ export function Clock() {
       setSeconds(seconds + 1);
     }, 1000);
     return () => clearInterval(interval);
-  });
-  return <p>Seconds: {seconds}</p>;
+  }, []);
+  return <p>Segundos: {seconds}</p>;
 }
 ```
 
-## Perform a fetch request every time the state changes
+## Realizar una solicitud fetch cada vez que el estado cambie
 
 ### ⚡️ Qwik
 
@@ -206,7 +203,7 @@ export const Fetch = component$(() => {
 
   return (
     <>
-      <p>{responseJson.value?.name} has {responseJson.value?.stargazers_count} ✨'s</p>
+      <p>{responseJson.value?.name} tiene {responseJson.value?.stargazers_count} ✨</p>
       <input name="url" bind:value={url} />
     </>
   );
@@ -226,14 +223,14 @@ export function Fetch() {
   }, [url]);
   return (
     <>
-      <p>{responseJson?.name} has {responseJson?.stargazers_count} ✨'s</p>
+      <p>{responseJson?.name} tiene {responseJson?.stargazers_count} ✨</p>
       <input name="url" onInput={(ev) => setUrl((ev.target as HTMLInputElement).value)} />
     </>
   );
 }
 ```
 
-## Declare some context and consume it
+## Declarar un contexto y consumirlo
 
 ### ⚡️ Qwik
 
@@ -241,7 +238,7 @@ export function Fetch() {
 export const MyContext = createContextId('my-context');
 
 export const Parent = component$(() => {
-  const message = useSignal('some example value');
+  const message = useSignal('un valor de ejemplo');
   useContextProvider(MyContext, message);
   return (
     <>
@@ -259,11 +256,11 @@ export const Child = component$(() => {
 ### ⚛️ React
 
 ```tsx
-export const MyContext = createContext({ message: 'some example value' });
+export const MyContext = createContext({ message: 'un valor de ejemplo' });
 
 export default function Parent() {
   return (
-    <MyContext.Provider value={{ message: 'updated example value' }}>
+    <MyContext.Provider value={{ message: 'valor de ejemplo actualizado' }}>
       <Child />
     </MyContext.Provider>
   );
@@ -275,7 +272,7 @@ export const Child = () => {
 };
 ```
 
-## Create a debounced input
+## Crear un input con retardo (debounced)
 
 ### ⚡️ Qwik
 
@@ -320,14 +317,14 @@ export const DebouncedInput = () => {
 
   return (
     <>
-      <input value={value} onChange={(ev) => setValue((ev.target as HTMLInputElement).value))} />
+      <input value={value} onChange={(ev) => setValue(ev.target.value)} />
       <p>{debouncedValue}</p>
     </>
   );
 };
 ```
 
-## Change background color randomly every button click
+## Cambiar el color de fondo aleatoriamente al hacer clic en el botón
 
 ### ⚡️ Qwik
 
@@ -350,7 +347,7 @@ export const DynamicBackground = component$(() => {
           blue.value = Math.random() * 256;
         }}
       >
-        Change background
+        Cambiar fondo
       </button>
     </div>
   );
@@ -377,7 +374,7 @@ export function DynamicBackground() {
           setBlue(Math.random() * 256);
         }}
       >
-        Change background
+        Cambiar fondo
       </button>
     </div>
   );
