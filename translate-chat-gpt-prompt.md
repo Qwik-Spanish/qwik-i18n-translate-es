@@ -61,7 +61,7 @@ Y debe de aparecer algo como lo siguiente:
 
 > Cuando menciones "i18nIT", debes tener en cuenta los siguientes puntos:
 Omitir traducciones innecesarias y mantener los tecnicismos en inglés.
-No traducir los términos "clicks" y "click".
+No traducir los términos "clicks", "click", "hooks".
 Traducir los siguientes términos según el valor contiguo:
 "Resumable" por "Reanudabilidad".
 "Hydratation" por "Hidratación".
