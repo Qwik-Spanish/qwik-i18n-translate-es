@@ -6,50 +6,50 @@ contributors:
   - mhevery
 ---
 
-# Request handling
+# Manejo de solicitudes
 
-Each `layout.ts` and `index.ts` file inside the `src/routes` directory has the ability to access the current HTTP request, response, and URL. This allows you to retrieve and modify data, and even respond with custom content.
+Cada archivo `layout.ts` e `index.ts` dentro del directorio `src/routes` tiene la capacidad de acceder a la solicitud HTTP, la respuesta y la URL actual. Esto le permite recuperar y modificar datos, e incluso responder con contenido personalizado.
 
-Qwik City implements a middleware system based on the hirarchy of the `src/routes` directory. The middleware system is used to handle HTTP requests and responses, and is available to pages, layouts, and [endpoints](/docs/(qwikcity)/endpoints/index.mdx).
+Qwik City implementa un sistema de middleware basado en la jerarquía del directorio `src/routes`. El sistema de middleware se utiliza para manejar las solicitudes y respuestas HTTP, y está disponible para páginas, diseños y [puntos finales](/docs/(qwikcity)/endpoints/index.mdx).
 
-Each route has the ability to add HTTP request and response handlers, allowing for developers to retrieve and modify data. The handlers can also be used by [endpoints](/docs/(qwikcity)/endpoints/index.mdx), which only respond with data rather than a page's HTML.
+Cada ruta tiene la capacidad de agregar controladores de solicitud y respuesta HTTP, lo que permite a los desarrolladores recuperar y modificar datos. Los controladores también pueden ser utilizados por [puntos finales](/docs/(qwikcity)/endpoints/index.mdx), que solo responden con datos en lugar del HTML de una página.
 
-This feature enables you to handle any request event, have side effects on the request pipeline, just before you render the component and respond with custom content. It is available to pages, layouts and endpoint routes, but not on regular components.
+Esta característica le permite manejar cualquier evento de solicitud, tener efectos secundarios en el pipeline de solicitud justo antes de renderizar el componente y responder con contenido personalizado. Está disponible para páginas, diseños y rutas de puntos finales, pero no en componentes regulares.
 
-## Request and Response Handlers
+## Controladores de solicitud y respuesta
 
-On pages, layouts, and [endpoints](/docs/(qwikcity)/endpoints/index.mdx), we can access request data by implementing request handler functions such as `onGet`, `onPost`, `onPut`, etc. These functions are executed according to the [HTTP method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) used for this route.
+En páginas, diseños y [puntos finales](/docs/(qwikcity)/endpoints/index.mdx), podemos acceder a los datos de la solicitud implementando funciones de controlador de solicitud como `onGet`, `onPost`, `onPut`, etc. Estas funciones se ejecutan según el [método HTTP](https://developer.mozilla.org/es/docs/Web/HTTP/Methods) utilizado para esta ruta.
 
-Additonally, an `onRequest` function can be used to handle any request method, rather than a specific one. For example, if both `onGet` and `onRequest` is provided, for a `GET` request, the `onGet` will be called. However, in this scenario, if a `POST` request method came in, then the `onRequest` handler would be called since an `onPost` was not provided.
-The `onRequest` is available as a catch-all to any request methods that do not have a specific method.
+Además, se puede utilizar una función `onRequest` para manejar cualquier método de solicitud, en lugar de uno específico. Por ejemplo, si se proporcionan tanto `onGet` como `onRequest`, para una solicitud `GET`, se llamará a `onGet`. Sin embargo, en este escenario, si se recibe un método de solicitud `POST`, se llamará al controlador `onRequest`, ya que no se proporcionó un `onPost`.
+El `onRequest` está disponible como un controlador general para cualquier método de solicitud que no tenga un método específico.
 
 ```tsx
 import type { RequestHandler } from '@builder.io/qwik-city';
 
 export const onGet: RequestHandler<ProductData> = async ({ params }) => {
-  // put your DB access here (hard coding data for simplicity)
+  // Coloca aquí el acceso a la base de datos (se está utilizando datos codificados para simplificar)
   return {
     skuId: params.skuId,
     price: 123.45,
-    description: `Description for ${params.skuId}`,
+    description: `Descripción para ${params.skuId}`,
   };
 };
 ```
 
-## Request Event
+## Evento de solicitud
 
-The request handler functions receive a `RequestEvent` argument which has the following properties:
+Las funciones de controlador de solicitud reciben un argumento `RequestEvent` que tiene las siguientes propiedades:
 
-| Field      | Description                                                                   |
-| ---------- | ----------------------------------------------------------------------------- |
-| `request`  | The request object                                                            |
-| `response` | The response object, which can be used to set response `headers` and `status` |
-| `url`      | URL which includes `pathname`, `hostname`, etc.                               |
-| `next`     | Next middleware function                                                      |
-| `abort`    | Request abort function                                                        |
-| `params`   | Custom user params found within the URL                                       |
-| `cookie`   | Get and set cookies.                                                          |
-| `platform` | Platform data object (useful for Cloudflare, Netlify, etc)                    |
+| Campo       | Descripción                                                                   |
+| ----------- | ----------------------------------------------------------------------------- |
+| `request`   | El objeto de solicitud                                                         |
+| `response`  | El objeto de respuesta, que se puede utilizar para establecer los `headers` y `status` de la respuesta |
+| `url`       | URL que incluye `pathname`, `hostname`, etc.                                   |
+| `next`      | Función de middleware siguiente                                                |
+| `abort`     | Función para cancelar la solicitud                                             |
+| `params`    | Parámetros personalizados encontrados dentro de la URL                         |
+| `cookie`    | Obtener y establecer cookies                                                   |
+| `platform`  | Objeto de datos de plataforma (útil para Cloudflare, Netlify, etc.)             |
 
 ### Cookie
 
@@ -63,7 +63,7 @@ interface Cookie {
 ```
 
 **get**
-Takes a string with the cookie name and returns the `CookieValue`, if present and null if not.
+Toma una cadena con el nombre de la cookie y devuelve el `CookieValue`, si está presente, y `null` si no.
 
 ```tsx
 interface CookieValue {
@@ -73,19 +73,19 @@ interface CookieValue {
 }
 ```
 
-A cookie value is a simple record with three fields:
+Un valor de cookie es un registro sencillo con tres campos:
 
-1. `value`: Contains the cookie value as a string
-2. `json()`: Runs `JSON.parse()` on the value and returns the result
-3. `number()`: Runs `Number()` on the value and returns the result
+1. `value`: Contiene el valor de la cookie como una cadena
+2. `json()`: Ejecuta `JSON.parse()` en el valor y devuelve el resultado
+3. `number()`: Ejecuta `Number()` en el valor y devuelve el resultado
 
 **getAll**
-Returns an object with all cookies, if any. _This is sometimes required if the names of cookies are unknown and must be parsed through._
+Devuelve un objeto con todas las cookies, si las hay. _Esto a veces es necesario si se desconocen los nombres de las cookies y se deben analizar._
 
 **set**
-Takes a key and value and creates a header that will be appended to the response. Value can be a `string | number | Record<string, any>`
+Toma una clave y un valor y crea una cabecera que se añadirá a la respuesta. El valor puede ser una `string | number | Record<string, any>`.
 
-As a third argument, you can optionally provide a `CookieOptions` record for setting additional fields.
+Como tercer argumento, opcionalmente puedes proporcionar un registro `CookieOptions` para establecer campos adicionales.
 
 ```tsx
 export interface CookieOptions {
@@ -99,25 +99,25 @@ export interface CookieOptions {
 }
 ```
 
-For more information on these attributes and their values, please refer to [the MDN article on the Set-Cookie header](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes).
+Para obtener más información sobre estos atributos y sus valores, consulta [el artículo de MDN sobre la cabecera Set-Cookie](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Set-Cookie#attributes).
 
 **delete**
-Appends a header with the provided key to the cookie. The new header will have an expired date in the `expires` field, telling the browers to remove it.
+Añade una cabecera con la clave proporcionada a la cookie. La nueva cabecera tendrá una fecha de vencimiento en el campo `expires`, lo que indica al navegador que la elimine.
 
 ```tsx
 cookie.delete('my-cookie');
-// equivalent to
+// equivalente a
 cookie.set('my-cookie', 'deleted', new Date(0));
 ```
 
-Optionally, you can set the path and/or domain when deleting the cookie. If your cookie was created with a path/domain, you must set these fields for the deletion to take effect.
+Opcionalmente, puedes establecer la ruta y/o el dominio al eliminar la cookie. Si la cookie se creó con una ruta/dominio, debes establecer estos campos para que se efectúe la eliminación.
 
 ```tsx
 cookie.delete('my-cookie', { domain: 'https://qwik.builder.io', path: '/docs/' });
 ```
 
 **has**
-A convenience method which returns true or false based on the presence of the provided key in cookie.
+Un método conveniente que devuelve `true` o `false` en función de la presencia de la clave proporcionada en la cookie.
 
 ```tsx
 !!cookie.get('my-cookie');
