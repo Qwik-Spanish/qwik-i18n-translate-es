@@ -1,5 +1,5 @@
 ---
-title: Qwik City - Pages
+title: Qwik City - Páginas (Pages)
 contributors:
   - adamdbradley
   - manucorporat
@@ -9,52 +9,52 @@ contributors:
   - nnelgxorz
 ---
 
-# Pages
+# Páginas (Pages)
 
-Both pages are created by adding a new `index.tsx` file in the `src/routes` directory. Pages exports a `default` Qwik component, which will be rendered as the content of the page.
+Tanto las páginas como los endpoints se crean agregando un nuevo archivo `index.tsx` en el directorio `src/routes`. Las páginas exportan un componente `default` de Qwik, que se renderizará como el contenido de la página.
 
 ```tsx title="src/routes/some/path/index.tsx"
 import { component$ } from '@builder.io/qwik';
 
-// Notice the default export
+// Observa la exportación predeterminada
 export default component$(() => {
-  return <h1>Hello World!</h1>;
+  return <h1>¡Hola Mundo!</h1>;
 });
 ```
 
-> The only difference between a page and an endpoint is that an endpoint only exports a `onRequest`, `onGet`, `onPost`, `onPut`, `onDelete`, `onPatch`, `onHead` function, which will be used to handle the incoming request.
+> La única diferencia entre una página y un endpoint es que un endpoint solo exporta una función `onRequest`, `onGet`, `onPost`, `onPut`, `onDelete`, `onPatch` u `onHead`, que se utilizará para manejar la solicitud entrante.
 
 
-## `head` export
+## Exportación de `head`
 
-Every page can export a `head` property (or function) that returns a `DocumentHead` object. The `DocumentHead` object is used to resolve the title of the page, as well as the meta, links and styles.
+Toda página puede exportar una propiedad `head` (o una función) que retorna un objeto `DocumentHead`. El objeto `DocumentHead` se utiliza para resolver el título de la página, así como las etiquetas meta, link (enlaces) y style (estilos).
 
-This API allows you to set the title of the page, as well as the meta, open graph, twitter tags and links. This is useful for SEO and social sharing.
+Esta API te permite establecer el título de la página, así como las etiquetas meta, open graph, etiquetas de Twitter y enlaces. Esto es útil para SEO y para compartir en redes sociales.
 
 ```tsx {8} /head/ title="src/routes/about/index.tsx"
 import { component$ } from '@builder.io/qwik';
 import type { DocumentHead } from '@builder.io/qwik-city';
 
 export default component$(() => {
-  return <h1>About page</h1>;
+  return <h1>Acerca de</h1>;
 });
 
 export const head: DocumentHead = {
-  // This will used to resolve the <title> of the page
-  title: 'About page',
+  // Esto se utilizará para resolver el <title> de la página
+  title: 'Acerca de',
   meta: [
     {
       name: 'description',
-      content: 'This is the about page',
+      content: 'Esta es la página Acerca de',
     },
     // Open graph
     {
       property: 'og:title',
-      content: 'About page',
+      content: 'Acerca de',
     },
     {
       property: 'og:description',
-      content: 'This is the about page',
+      content: 'Esta es la página Acerca de',
     },
   ],
   link: [
@@ -66,19 +66,19 @@ export const head: DocumentHead = {
 };
 ```
 
-The example above sets the title, as well as some [Open Graph](https://ogp.me/) meta and the [canonical link](https://developers.google.com/search/docs/crawling-indexing/canonicalization).
+El ejemplo anterior establece el título, así como algunas etiquetas [Open Graph](https://ogp.me/) y el [enlace canónico](https://developers.google.com/search/docs/crawling-indexing/canonicalization).
 
-> HTML places the `<head>` tag as the first element within `<html>` (at the very top of the HTML content). The `<head>` section is not something that your route component renders directly because it would break the HTML streaming.
+> HTML coloca la etiqueta `<head>` como el primer elemento dentro de la etiqueta `<html>` (en la parte superior del contenido HTML). La sección `<head>` no es algo que el componente de ruta (route component) renderice directamente, ya que rompería el streaming HTML.
 
-Look into `useDocumentHead()` to read and consume the `DocumentHead` object from within your component.
+Consulta `useDocumentHead()` para leer y utilizar el objeto `DocumentHead` desde dentro de tu componente.
 
-### Dynamic head
+### Head dinámico
 
-You can also export a function that returns a `DocumentHead` object, allowing to programatically set the `<title>`, `<meta>` or `<link>` tags.
+También puedes exportar una función que retorna un objeto `DocumentHead`, lo que permite configurar programáticamente las etiquetas `<title>`, `<meta>` o `<link>`.
 
-This allows to configure the `<head>`, including the title, meta or links using data from `routeLoader$()` or `routeAction$()`.
+Esto permite configurar el `<head>`, incluyendo el título, las etiquetas meta o los enlaces, utilizando datos de `routeLoader$()` o `routeAction$()`.
 
-We can use the `resolveValue` method to get the value of a `routeLoader$()` or `routeAction$()` within the `head` function.
+Podemos usar el método `resolveValue` para obtener el valor de un `routeLoader$()` o `routeAction$()` dentro de la función `head`.
 
 ```tsx title="src/routes/jokes/[jokeId]/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -86,18 +86,18 @@ import { routeLoader$ } from '@builder.io/qwik-city';
 import type { DocumentHead } from '@builder.io/qwik-city';
 
 export const useJoke = routeLoader$(async (requestEvent) => {
-  // Fetch a joke from a public API
+  // Obtener una broma de una API pública
   const jokeId = requestEvent.params.jokeId;
   const response = await fetch(`https://api.chucknorris.io/jokes/${jokeId}`);
   const joke = await response.json();
   return joke;
 });
 
-// Now we can export a function that returns a DocumentHead object
+// Ahora podemos exportar una función que retorna un objeto DocumentHead
 export const head: DocumentHead = ({resolveValue, params}) => {
   const joke = resolveValue(useJoke);
   return {
-    title: `Joke "${joke.title}"`,
+    title: `Broma "${joke.title}"`,
     meta: [
       {
         name: 'description',
@@ -112,9 +112,9 @@ export const head: DocumentHead = ({resolveValue, params}) => {
 };
 ```
 
-### Nested layouts and head
+### Layouts anidados y head
 
-An advanced case is that a [layout](/docs/(qwikcity)/layout/index.mdx) may want to modify the document title of an already resolved document head. In the example below, the page component returns the title of `Foo`. Next, the containing layout component can read the value of the page's document head and modify it. In this example, the layout component is adding `MyCompany - ` to the title, so that when rendered, the title will be `MyCompany - Foo`. Every layout in the stack has the opportunity to return a new value.
+Un caso avanzado es cuando un [layout](/docs/(qwikcity)/layout/index.mdx) desea modificar el título del documento de un `DocumentHead` ya resuelto. En el siguiente ejemplo, el componente de página (page component) devuelve el título "Foo". Luego, el componente de layout (layout component) contenedor puede leer el valor del `DocumentHead` de la página y modificarlo. En este ejemplo, el componente de layout agrega `MyCompany - ` al título, de modo que cuando se renderice, el título será `MyCompany - Foo`. Cada layout en la pila tiene la oportunidad de retornar un nuevo valor.
 
 ```bash
 ──src/
