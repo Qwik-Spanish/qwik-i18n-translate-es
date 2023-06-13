@@ -1,5 +1,5 @@
 ---
-title: Qwik City - Layout & Middleware
+title: Qwik City - Layout y Middleware
 contributors:
   - manucorporat
   - adamdbradley
@@ -9,46 +9,46 @@ contributors:
   - the-r3aper7
 ---
 
-# Nested layouts
+# Layouts anidados
 
-Layouts provide **nested UI and request handling (middleware)** to a set of routes:
+Los layouts proporcionan una **interfaz de usuario anidada y manejo de solicitudes (middleware)** para un conjunto de rutas:
 
-- **Shared request handling**: Accomplished by adding an `onRequest` method.
-- **Shared UI**: Accomplished by `export default` a Qwik component.
+- **Manejo de solicitudes compartidas**: Se logra agregando un método `onRequest`.
+- **Interfaz compartida**: Se logra mediante la exportación predeterminada `export default` de un componente Qwik.
 
-## Example
+## Ejemplo
 
-Let's put together all the concepts we have learned so far to build a full app.
+Vamos a juntar todos los conceptos que hemos aprendido hasta ahora para construir una aplicación completa.
 
-In the proposed example, we have a site with 2 pages: `https://example.com` and `https://example.com/about`, and we want to add a common header and footer to all the pages, the only difference between the pages is the content in the middle.
+En el ejemplo propuesto, tenemos un sitio con 2 páginas: `https://example.com` y `https://example.com/about`, y queremos agregar un encabezado (header) común y un pie de página (footer) a todas las páginas, la única diferencia entre las páginas es el contenido en el medio.
 
 ```
 ┌───────────────────────────────────────────────────┐
-│ Header                                            │
+│ Encabezado                                        │
 ├─────────┬─────────────────────────────────────────┤
-│ Menu    │ <ROUTE_SPECIFIC_CONTENT>                │
-│ - home  │                                         │
-│ - about │                                         │
+│ Menu    │ <CONTENIDO_ESPECÍFICO_DE_LA_RUTA>       │
+│ - home  |                                         │
+│ - about |                                         │
 │         │                                         │
 ├─────────┴─────────────────────────────────────────┤
-│ Footer                                            │
+│ Pie de página                                     │
 └───────────────────────────────────────────────────┘
 ```
 
-First, we create three components: `<Header>`, `<Footer>`, and `<Menu>`.
+Primero, creamos tres componentes: `<Header>`, `<Footer>` y `<Menu>`.
 
-> The developer could copy-paste these components manually into each page component, but that is repetitive and error-prone, **instead, we can use layouts to automatically reuse common parts.**
+> El desarrollador podría copiar y pegar estos componentes manualmente en cada componente de la página, pero eso es repetitivo y propenso a errores. **En cambio, podemos usar layouts para reutilizar automáticamente las partes comunes.**
 
-### Routes directory
+### Directorio de rutas
 
 ```bash
 src/
 ├── components/
-│   ├── header.tsx         # Header component implementation
-│   ├── footer.tsx         # Footer component implementation
-│   └── menu.tsx           # Menu component implementation
+│   ├── header.tsx         # Implementación del componente Encabezado
+│   ├── footer.tsx         # Implementación del componente Pie de página
+│   └── menu.tsx           # Implementación del componente Menú
 └── routes/
-    ├── layout.tsx         # Layout implementation using: <Header>, <Footer>, and <Menu>
+    ├── layout.tsx         # Implementación del layout utilizando: <Header>, <Footer> y <Menu>
     ├── about/
     │   └── index.tsx      # https://example.com/about
     └── index.tsx          # https://example.com
@@ -56,7 +56,7 @@ src/
 
 ### `src/routes/layout.tsx`
 
-It will be used for all routes under the `src/routes` directory. It will render the `Header`, `Menu`, and `Footer` components, and also render the nested routes under the `Slot` component.
+Se utilizará para todas las rutas dentro del directorio `src/routes`. Renderizará los componentes `Header`, `Menu` y `Footer`, y también renderizará las rutas anidadas dentro del componente `Slot`.
 
 ```tsx title="src/routes/layout.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -66,7 +66,7 @@ export default component$(() => {
     <>
       <Header />
       <Menu />
-      <Slot /> {/* <== This is where the route will be inserted */}
+      <Slot /> {/* <== Aquí es donde se insertará la ruta */}
       <Footer />
     </>
   );
@@ -75,7 +75,7 @@ export default component$(() => {
 
 ### `src/routes/index.tsx`
 
-This is the main route for the site. It will be rendered under the `Slot` component in the `src/routes/layout.tsx` file, so even though it doesn't have any of the `Header`, `Menu`, or `Footer` components, it will still be rendered with them.
+Esta es la ruta principal del sitio. Se renderizará dentro del componente `Slot` en el archivo `src/routes/layout.tsx`, por lo que, aunque no tenga ninguno de los componentes `Header`, `Menu` o `Footer`, se renderizará junto con ellos.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -87,7 +87,7 @@ export default component$(() => {
 
 ### `src/routes/about/index.tsx`
 
-Same as the `src/routes/index.tsx` file, but for the `about` route, similary it will be rendered under the `Slot` component in the `src/routes/layout.tsx` file, so even though it doesn't have any of the `Header`, `Menu`, or `Footer` components, it will still be rendered with them.
+Similar al archivo `src/routes/index.tsx`, pero para la ruta `about`, también se renderizará dentro del componente `Slot` en el archivo `src/routes/layout.tsx`, por lo que, aunque no tenga los componentes `Header`, `Menu` o `Footer`, se renderizará junto con ellos.
 
 ```tsx title="src/routes/about/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -97,7 +97,7 @@ export default component$(() => {
 });
 ```
 
-When we run the app, Qwik will render the `About` nested inside the `RootLayout`
+Cuando ejecutemos la aplicación, Qwik renderizará el componente `About` anidado dentro del `RootLayout`
 
 ```tsx
 <RootLayout>
