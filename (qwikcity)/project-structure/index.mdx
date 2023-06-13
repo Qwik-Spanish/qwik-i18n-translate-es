@@ -1,14 +1,14 @@
 ---
-title: Qwik City - Project Structure
+title: Qwik City - Estructura del proyecto
 contributors:
   - manucorporat
   - steve8708
   - mhevery
 ---
 
-# Project Structure
+# Estructura del proyecto
 
-A typical Qwik project looks like this:
+Un proyecto típico de Qwik se ve así:
 
 ```bash
 qwik-app-demo
@@ -34,52 +34,52 @@ qwik-app-demo
 └── vite.config.ts
 ```
 
-## Project files
+## Archivos del proyecto
 
 ### `src/routes/`
 
-The `src/routes/` directory is a special directory for Qwik City since it's the directory where Qwik City will look for your pages. Folders and files inside this directory have a special meaning and they will be mapped to the URL of your app.
+El directorio `src/routes/` es un directorio especial en Qwik City, ya que es el directorio donde Qwik City buscará tus páginas. Las carpetas y archivos dentro de este directorio tienen un significado especial y se mapearán a la URL de tu aplicación.
 
-- `src/routes/index.tsx` is the homepage of your app.
-- `src/routes/layout.tsx` is the root layout of your app, all pages will be rendered inside this layout.
+- `src/routes/index.tsx` es la página de inicio de tu aplicación.
+- `src/routes/layout.tsx` es el esquema raíz (root layout) de tu aplicación, todas las páginas se renderizarán dentro de este layout.
 
-> Refer to the [Routing](/docs/routing) section for more information.
+> Consulta la sección de [Enrutamiento](/docs/routing) para obtener más información.
 
 ### `src/components/`
 
-The `src/components/` directory is a directory by convention. All Qwik starters will have this directory, but you can change it if you want. This directory is where you should put your components, ie, reusable pieces of code that can be used in multiple places. They are not routes or layouts, but they can be used inside them.
+El directorio `src/components/` es un directorio por convención. Todos los proyectos de Qwik tendrán este directorio, pero puedes cambiarlo si lo deseas. Aquí es donde debes poner tus componentes, es decir, piezas de código reutilizables que se pueden usar en varios lugares. No son rutas ni layouts, pero se pueden usar dentro de ellos.
 
-For example, a `Button` component should be inside `src/components/button/button.tsx`.
+Por ejemplo, un componente `Button` debería estar dentro de `src/components/button/button.tsx`.
 
 ### `public/`
 
-The `public/` directory contains static assets such as images, fonts, and icons. When you build your app, these files will be copied to the `dist/` directory and served at the root.
+El directorio `public/` contiene activos estáticos (static assets) como imágenes, fuentes e iconos. Cuando compilas tu aplicación, estos archivos se copiarán al directorio `dist/` y se servirán en la raíz.
 
-Refer to [Vite configuration for more information](https://vitejs.dev/guide/build.html#public-base-path).
+Consulta la [configuración de Vite para más información](https://vitejs.dev/guide/build.html#public-base-path).
 
 ### `src/entry.ssr.tsx`
 
-SSR entry point, in all cases the application is rendered outside the browser, this entry point will be the common one.
+Punto de entrada SSR (rendizado del lado del servidor). En todos los casos en que la aplicación se renderiza fuera del navegador, este punto de entrada (entry point) será el común.
 
-- Server (express, cloudflare...)
+- Servidor (express, cloudflare...)
 - npm run start
 - npm run preview
 - npm run build
 
 ### `src/root.tsx`
 
-The `src/root.tsx` file is the entry point for the application tree. It's the first component that will be rendered. It's the root of the tree.
+El archivo `src/root.tsx` es el punto de entrada del árbol de la aplicación. Es el primer componente que se renderizará. Es la raíz del árbol.
 
 ### `src/global.css`
 
-The `src/global.css` file is a global CSS file, if you need to define some CSS that is used in multiple places in your app, you can define it here.
+El archivo `src/global.css` es un archivo CSS global. Si necesitas definir algún CSS que se utiliza en varios lugares de tu aplicación, puedes definirlo aquí.
 
-The root component (`src/root.tsx`) imports this file by default.
+El componente raíz (`src/root.tsx`) importa este archivo de forma predeterminada.
 
 ### `tsconfig.json`
 
-The `tsconfig.json` file contains the TypeScript compiler configuration. It's standard for any TypeScript project.
+El archivo `tsconfig.json` contiene la configuración del compilador de TypeScript. Es estándar para cualquier proyecto de TypeScript.
 
 ### `vite.config.ts`
 
-Qwik uses Vite to build the project. The `vite.config.ts` file contains the Vite configuration. It's standard for any Vite project. Please refer to the [Vite documentation](https://vitejs.dev/config/) for more information.
+Qwik utiliza Vite para construir el proyecto. El archivo `vite.config.ts` contiene la configuración de Vite. Es estándar para cualquier proyecto de Vite. Consulta la [documentación de Vite](https://vitejs.dev/config/) para obtener más información.
