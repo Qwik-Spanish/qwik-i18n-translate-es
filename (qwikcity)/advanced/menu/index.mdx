@@ -36,7 +36,7 @@ src/
 Al navegar a `https://example.com/some/path`, se activan los siguientes archivos:
 
 - `src/routes/some/path/index.tsx`: Este componente se utilizará para renderizar el contenido de la página.
-- `src/routes/some/layout.tsx`: Este diseño se utilizará para proporcionar contenido alrededor de `src/routes/some/path/index.tsx`. Internamente, el diseño puede usar `src/routes/some/menu.md` para renderizar los menús.
+- `src/routes/some/layout.tsx`: Este layout se utilizará para proporcionar contenido alrededor de `src/routes/some/path/index.tsx`. Internamente, el diseño puede usar `src/routes/some/menu.md` para renderizar los menús.
 - `src/routes/some/menu.md`: Este archivo se utilizará para declarar la estructura del menú que se renderizará mediante `src/routes/some/layout.tsx`.
 
 ## Declaración de la estructura del menú
@@ -90,9 +90,9 @@ El ejemplo anterior devolverá:
 }
 ```
 
-## Uso de `ContentMenu` en un diseño
+## Uso de `ContentMenu` en un layout (plantilla)
 
-Si bien [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) se puede invocar desde cualquier componente que forme parte de la ruta actual, generalmente se utiliza en un componente de diseño (o en un componente utilizado por el diseño) para renderizar el menú. A continuación se muestra un ejemplo de uso:
+Si bien [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) se puede invocar desde cualquier componente que forme parte de la ruta actual, generalmente se utiliza en un componente del layout (o en un componente utilizado por el diseño) para renderizar el menú. A continuación se muestra un ejemplo de uso:
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
