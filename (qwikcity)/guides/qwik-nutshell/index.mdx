@@ -57,7 +57,7 @@ export const MyComponent = component$((props: MyComponentProps) => {
         }}
       >
         <h1>Conteo: {count.value}</h1>
-        <MyOtherComponent class="forma-correcta" /> {/* ✅ */}
+        <MyOtherComponent class="correct-way" /> {/* ✅ */}
         {count.value > 10 && <p>El conteo es mayor que 10</p>}
         {count.value > 10 ? <p>El conteo es mayor que 10</p> : <p>El conteo es menor que 10</p>}
       </main>
@@ -199,7 +199,7 @@ La función `$(...)` y cualquier función que termine con `$` son especiales en 
 ```tsx
 // Ejemplos válidos de funciones `$`.
 import { $, component$, useSignal } from '@builder.io/qwik';
-import { importedFunction } from './mi-otro-modulo';
+import { importedFunction } from './my-other-module';
 
 export function exportedFunction() {
   console.log('función exportada');
@@ -207,23 +207,23 @@ export function exportedFunction() {
 
 export default component$(() => {
   // El primer argumento es una función.
-  const valido1 = $((event) => {
+  const valid1 = $((event) => {
     console.log('input', event.target.name, event.target.value);
   });
 
   // El primer argumento es un identificador importado.
-  const valido2 = $(importedFunction);
+  const valid2 = $(importedFunction);
 
   // El primer argumento es un identificador declarado en el nivel superior del mismo módulo.
-  const valido3 = $(exportedFunction);
+  const valid3 = $(exportedFunction);
 
   // El primer argumento es una expresión sin variables locales.
-  const valido4 = $([1, 2, { a: 'hola' }]);
+  const valid4 = $([1, 2, { a: 'hola' }]);
 
   // El primer argumento es una función que captura una variable local.
-  const variableLocal = 1;
-  const valido5 = $((event) => {
-    console.log('variable local', variableLocal);
+  const localVariable = 1;
+  const valid5 = $((event) => {
+    console.log('variable local', localVariable);
   });
 });
 ```
@@ -233,25 +233,25 @@ Aquí hay algunos ejemplos de funciones `$` inválidas.
 ```tsx
 // Ejemplos inválidos de funciones `$`.
 import { $, component$, useSignal } from '@builder.io/qwik';
-import { importedVariable } from './mi-otro-modulo';
+import { importedVariable } from './my-other-module';
 
 export default component$(() => {
   const noSerializable = new CustomClass();
-  const variableLocal = 1;
+  const localVariable = 1;
 
   // El primer argumento es una variable local.
-  const invalido1 = $(variableLocal);
+  const invalid1 = $(localVariable);
 
   // El primer argumento es una función que captura una variable local no serializable.
-  const invalido2 = $((event) => {
+  const invalid2 = $((event) => {
     console.log('clase personalizada', noSerializable);
   });
 
   // El primer argumento es una expresión que utiliza una variable local.
-  const invalido3 = $(variableLocal + 1);
+  const invalid3 = $(localVariable + 1);
 
   // El primer argumento es una expresión que utiliza una variable importada.
-  const invalido4 = $(importedVariable + 'hola');
+  const invalid4 = $(importedVariable + 'hola');
 });
 ```
 ## Estado reactivo
@@ -388,25 +388,25 @@ export const Counter = component$(() => {
 ```tsx
 import { component$, useSignal, useVisibleTask$ } from '@builder.io/qwik';
 
-export const Reloj = component$(() => {
-  const tiempo = useSignal(0);
+export const Clock = component$(() => {
+  const time = useSignal(0);
 
   // El hook `useVisibleTask$` se utiliza para crear una tarea que se ejecuta de forma activa en el cliente.
   useVisibleTask$((taskContext) => {
     // Dado que esta TareaVisible no está rastreando ninguna señal, solo se ejecutará una vez.
 
-    const intervalo = setInterval(() => {
-      tiempo.value = new Date();
+    const interval = setInterval(() => {
+      time.value = new Date();
     }, 1000);
 
     // La función `cleanup` se llama cuando el componente se desmonta o cuando la tarea se vuelve a ejecutar.
-    taskContext.cleanup(() => clearInterval(intervalo));
+    taskContext.cleanup(() => clearInterval(interval));
   });
 
   return (
     <>
-      <h1>Reloj</h1>
-      <h1>Segundos transcurridos: {tiempo.value}</h1>
+      <h1>Clock</h1>
+      <h1>Segundos transcurridos: {time.value}</h1>
     </>
   );
 });
@@ -481,8 +481,8 @@ export default component$(() => {
   return (
     <>
       <h1>Inicio</h1>
-      <Link href="/acerca/">Navegar a /acerca/ en la SPA</Link>
-      <a href="/acerca/">Navegar a /acerca/ en la página completa</a>
+      <Link href="/about/">Navegar a /about/ en la SPA</Link>
+      <a href="/about/">Navegar a /about/ en la página completa</a>
     </>
   );
 });
