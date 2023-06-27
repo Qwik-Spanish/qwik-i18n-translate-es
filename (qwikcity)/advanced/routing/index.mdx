@@ -7,89 +7,88 @@ contributors:
   - mhevery
 ---
 
-# Advanced Routing
+# Enrutamiento Avanzado
+## Manejo de página 404
 
-## 404 Page Handling
+Es posible que cualquier usuario visite una URL que no existe en tu sitio. Por ejemplo, si un usuario visita `https://example.com/no-existe`, el servidor debería responder con un código de estado HTTP 404, y la página debería tener al menos alguna explicación, en lugar de mostrar una página en blanco.
 
-It's possible for any user to visit a URL that doesn't exist on your site. For example, if a user visits `https://example.com/does-not-exist`, then the server should respond with a [404 HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/404), and the page should have at least some sort of explanation, rather than just a blank page.
+Para cualquier ruta determinada, Qwik City puede elegir la mejor manera de manejar la respuesta 404 para el usuario, ya sea con la página 404 predeterminada, una página 404 personalizada o una página 404 generada dinámicamente.
 
-For any given route, Qwik City can choose how to best handle the 404 response for the user, whether it's with the default 404 page, a custom 404 page, or a dynamically generated 404 page.
+### Página 404 predeterminada
 
-### Default 404 Page
+En lugar de mostrar una página en blanco, por defecto Qwik City proporciona una página 404 genérica para cualquier ruta que no se maneje. La página 404 predeterminada se renderiza como una opción de respaldo cuando no se encuentra una página 404 personalizada. La página predeterminada de Qwik City está bien, pero recomendamos proporcionar una página 404 personalizada para que el usuario pueda tener una mejor experiencia, como mostrar un encabezado común y una navegación para que el usuario pueda encontrar la página que está buscando.
 
-Rather than showing a blank page, by default Qwik City provides a generic 404 page for any route that isn't handled. The default 404 page is rendered as a fallback when a custom 404 page was not found. Qwik City's default page is alright and all, but we recommend providing a custom 404 so the user can be given a better experience, such as providing the common header and navigation so the user can find the page they're looking for.
+### Página 404 personalizada
 
-### Custom 404 Page
+En lugar de mostrar la respuesta 404 genérica (aburrida), es posible proporcionar una página 404 personalizada utilizando los mismos diseños familiares que el resto de tu sitio.
 
-Instead of showing the generic (boring) 404 response, it's possible to provide a custom 404 page using the same familar layouts as the rest of your site.
-
-To create a custom 404 page, add a `404.tsx` file to the root `src/routes` directory.
+Para crear una página 404 personalizada, agrega un archivo `404.tsx` al directorio raíz `src/routes`.
 
 ```bash
 src/
 └── routes/
-    ├── 404.tsx            # Custom 404
-    ├── layout.tsx         # Default layout
+    ├── 404.tsx            # Página 404 personalizada
+    ├── layout.tsx         # Diseño predeterminado
     └── index.tsx          # https://example.com/
 ```
 
-In the example above, the `404.tsx` page will also use the `layout.tsx` layout, since it is a sibling of the layout in the same directory.
+En el ejemplo anterior, la página `404.tsx` también utilizará el diseño `layout.tsx`, ya que es un archivo hermano del diseño en el mismo directorio.
 
-Additionally, using Qwik City's directory-based routing allows for custom 404 pages to be created at different paths. For example, if `src/routes/account/404.tsx` was also added to the structure, then the custom account 404 page would only be applied to the `/account/*` routes, while all other 404s would use the root `404.tsx` page.
+Además, utilizando el enrutamiento basado en directorios de Qwik City, es posible crear páginas 404 personalizadas en diferentes rutas. Por ejemplo, si se agrega `src/routes/account/404.tsx` a la estructura, entonces la página de error 404 personalizada de la cuenta solo se aplicará a las rutas `/account/*`, mientras que todos los demás errores 404 utilizarán la página `404.tsx` del directorio raíz.
 
-> Note: During development and in preview mode, the custom 404 pages will be not render, but instead the default Qwik City 404 page will show. However, when building the app for production, the custom 404 page will be statically generated as a static `404.html` file.
+> Nota: Durante el desarrollo y en el modo de vista previa, las páginas 404 personalizadas no se renderizarán, en su lugar se mostrará la página 404 predeterminada de Qwik City. Sin embargo, al compilar la aplicación para producción, la página 404 personalizada se generará estáticamente como un archivo estático `404.html`.
 
 ```bash
 src/
 └── routes/
     ├── account/
-    │   └── 404.tsx        # Custom Account 404
+    │   └── 404.tsx        # Página 404 personalizada de la cuenta
     │   └── index.tsx      # https://example.com/account/
-    ├── 404.tsx            # Custom 404
-    ├── layout.tsx         # Default layout
+    ├── 404.tsx            # Página 404 personalizada
+    ├── layout.tsx         # Diseño predeterminado
     └── index.tsx          # https://example.com/
 ```
 
-Also note that custom 404 pages are statically generated at build-time, meaning they end up as static `404.html` file, rather than each being a server-side rendered page. Creating static `404.html` pages helps ensure your HTTP server isn't bothered server-side rendering 404 pages and eating up resources.
+Además, ten en cuenta que las páginas 404 personalizadas se generan estáticamente durante la compilación, lo que significa que terminan como un archivo estático `404.html`, en lugar de ser páginas renderizadas en el servidor. Al crear páginas estáticas `404.html`, se garantiza que el servidor HTTP no se ocupe de la renderización de páginas 404 en el lado del servidor y consuma recursos innecesarios.
 
-### Dynamic 404 Page
+### Página 404 dinámica
 
-When rendering a page, the default is to always respond with a [200 HTTP status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/200), which tells the browser all is good and the route you went to does exists. However, it's also possible to handle rendering the page, but manually setting the response status code to something other than 200, such as 404.
+Cuando se renderiza una página, lo predeterminado es siempre responder con un código de estado HTTP 200, que indica al navegador que todo está bien y que la ruta a la que se accedió existe. Sin embargo, también es posible manejar la renderización de la página, pero configurando manualmente el código de estado de respuesta en algo distinto de 200, como 404.
 
-For example, let's say we have a product page with a URL such as `https://example.com/product/abc`. The product page would be handled using `src/routes/product/[id]/index.tsx` directory-based route, and `[id]` is a dynamic param in the URL.
+Por ejemplo, supongamos que tenemos una página de producto con una URL como `https://example.com/producto/abc`. La página del producto se manejaría utilizando una ruta basada en directorios como `src/routes/producto/[id]/index.tsx`, donde `[id]` es un parámetro dinámico en la URL.
 
-In this example, `id` is used as a key to load the product data from the database. When the product data is found, great, we'll correctly render data. However, if the product data is not found in the database, we can still handle rendering this page, but instead responding with a 404 HTTP status code.
+En este ejemplo, `id` se utiliza como clave para cargar los datos del producto desde la base de datos. Si se encuentran los datos del producto, genial, los renderizaremos correctamente. Sin embargo, si los datos del producto no se encuentran en la base de datos, aún podemos manejar la renderización de esta página, pero en lugar de eso, responderemos con un código de estado HTTP 404.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
 import { routeLoader$ } from '@builder.io/qwik-city';
 
 export const useProductLoader = routeLoader$(async ({ params, status }) => {
-  // Example database call using the id param
-  // The database could return null if the product is not found
+  // Ejemplo de llamada a la base de datos utilizando el parámetro id
+  // La base de datos podría devolver null si no se encuentra el producto
   const data = await productDatabase.get(params.id);
 
   if (!data) {
-    // Product data was not found
-    // Set the status code to 404
+    // No se encontraron datos del producto
+    // Configurar el código de estado en 404
     status(404);
   }
 
-  // return the data (which may be null)
+  // Devolver los datos (que pueden ser null)
   return data;
 });
 
 export default component$(() => {
-  // get the product data from the loader
+  // Obtener los datos del producto desde el cargador
   const product = useProductLoader();
 
   if (!product.value) {
-    // no product data found
-    // so render our own custom product 404
-    return <p>Sorry, looks like we don't have this product.</p>;
+    // No se encontraron datos del producto
+    // así que renderizamos nuestra propia página 404 personalizada para productos
+    return <p>Lo sentimos, parece que no tenemos este producto.</p>;
   }
 
-  // product data was found, so let's render it
+  // Se encontraron los datos del producto, así que los renderizamos
   return (
     <div>
       <h1>{product.value.name}</h1>
@@ -100,42 +99,42 @@ export default component$(() => {
 });
 ```
 
-## Grouped Layouts
+## Diseño Agrupado (Grouped Layout)
 
-Common purpose routes are often placed into directories so they can share layouts, and so related source files are logically grouped next to each other. However, it may be desirable that the directory, which was used to group similar files and share layouts, is excluded from the public-facing URL. This is where "grouped" layouts come in (also referred to as a "pathless" layout route).
+A menudo, las rutas con un propósito común se agrupan en directorios para que puedan compartir diseños y para que los archivos relacionados estén lógicamente agrupados. Sin embargo, puede ser deseable excluir el nombre del directorio, que se utilizó para agrupar archivos similares y compartir diseños, de la URL visible públicamente. Aquí es donde entran en juego los "diseños agrupados" (también conocidos como rutas de diseño "sin ruta").
 
-By surrounding any directory name with parentheses, such as `(name)`, then the directory name itself will not be included in the URL pathname.
+Al rodear cualquier nombre de directorio con paréntesis, como `(nombre)`, el propio nombre del directorio no se incluirá en la ruta de la URL.
 
-For example, let's say an app placed all _account_ routes together in a directory, however, `/account/` could be dropped from the URL for cleaner, shorter URLs. In the example below, notice that the paths are within the `src/routes/(account)/` directory. However, the URL paths exclude `(account)/`.
-
-```bash
-src/
-└── routes/
-    └── (account)/             # Notice the parentheses
-        ├── layout.tsx         # Shared account layout
-        └── profile/
-            └── index.tsx      # https://example.com/profile
-        └── settings/
-            └── index.tsx      # https://example.com/settings
-```
-
-## Named Layout
-
-At times related routes need to have drastically different layouts from their siblings. It is possible to define multiple layouts for different sibling routes. A single default layout and any number of named layouts. The child route can then request a specific named-layout.
-
-Qwik City defines the convention that layouts are within `src/routes` and the filename starts with `layout`. That's why the default layout is named `layout.tsx`. A named layout also starts with `layout` followed by a dash `-` and a unique name, such as `layout-narrow.tsx`.
+Por ejemplo, supongamos que una aplicación coloca todas las rutas de "cuenta" juntas en un directorio, sin embargo, `/cuenta/` se podría omitir de la URL para tener URLs más limpias y cortas. En el siguiente ejemplo, observa que las rutas se encuentran dentro del directorio `src/routes/(cuenta)/`. Sin embargo, las rutas de la URL excluyen `(cuenta)/`.
 
 ```bash
 src/
 └── routes/
-    ├── contact/
-    │   └── index@narrow.tsx      # https://example.com/contact (Layout: layout-narrow.tsx)
-    ├── layout.tsx                # Default layout
-    ├── layout-narrow.tsx         # Default named layout
-    └── index.tsx                 # https://example.com/ (Layout: layout.tsx)
+    └── (cuenta)/                # Observa los paréntesis
+        ├── layout.tsx           # Diseño compartido para cuenta
+        └── perfil/
+            └── index.tsx        # https://ejemplo.com/perfil
+        └── ajustes/
+            └── index.tsx        # https://ejemplo.com/ajustes
 ```
 
-- `https://example.com/`
+## Diseño con Nombre (Named Layouts)
+
+A veces, las rutas relacionadas necesitan tener diseños drásticamente diferentes de sus rutas hermanas. Es posible definir múltiples diseños para diferentes rutas hermanas: un diseño predeterminado y cualquier número de diseños con nombres. La ruta secundaria puede solicitar un diseño específico mediante su nombre.
+
+Qwik City establece la convención de que los diseños se encuentran dentro de `src/routes` y el nombre del archivo comienza con `layout`. Por eso el diseño predeterminado se llama `layout.tsx`. Un diseño con nombre también comienza con `layout`, seguido de un guion `-` y un nombre único, como `layout-estrecho.tsx`.
+
+```bash
+src/
+└── routes/
+    ├── contacto/
+    │   └── index@special.tsx    # https://ejemplo.com/contacto (Diseño: layout-special.tsx)
+    ├── layout.tsx                # Diseño predeterminado
+    ├── layout-special.tsx       # Diseño con nombre predeterminado
+    └── index.tsx                 # https://ejemplo.com/ (Diseño: layout.tsx)
+```
+
+- `https://ejemplo.com/`
   ```
   ┌──────────────────────────────────────────────────┐
   │       src/routes/layout.tsx                      │
@@ -146,37 +145,37 @@ src/
   │                                                  │
   └──────────────────────────────────────────────────┘
   ```
-- `https://example.com/contact`
+- `https://ejemplo.com/contacto`
   ```
   ┌──────────────────────────────────────────────────┐
-  │       src/routes/layout-narrow.tsx               │
+  │       src/routes/layout-special.tsx               │
   │  ┌────────────────────────────────────────────┐  │
-  │  │    src/routes/contact/index@narrow.tsx     │  │
+  │  │    src/routes/contact/index@special.tsx     │  │
   │  │                                            │  │
   │  └────────────────────────────────────────────┘  │
   │                                                  │
   └──────────────────────────────────────────────────┘
   ```
 
-## Nested Layout
+## Diseño anidado (Nested Layout)
 
-Most times it is desirable to nest layouts into each other. A page's content can be nested in numerous wrapping layouts, which is determined by the directory structure.
+En la mayoría de los casos, es deseable anidar diseños entre sí. El contenido de una página se puede anidar en numerosos diseños contenedores, lo cual está determinado por la estructura de directorios.
 
 ```bash
 src/
 └── routes/
-    ├── layout.tsx           # Parent layout
+    ├── layout.tsx           # Diseño padre
     └── about/
-        ├── layout.tsx       # Child layout
-        └── index.tsx        # https://example.com/about
+        ├── layout.tsx       # Diseño hijo
+        └── index.tsx        # https://ejemplo.com/about
 ```
 
-In the above example, there are two layouts that apply themselves around the `/about` page component.
+En el ejemplo anterior, hay dos diseños que se aplican alrededor del componente de la página `/about`.
 
 1. `src/routes/layout.tsx`
 2. `src/routes/about/layout.tsx`
 
-In this case, the layouts will nest each other with the page within each of them.
+En este caso, los diseños se anidarán uno dentro del otro con la página en su interior.
 
 ```
 ┌────────────────────────────────────────────────┐
@@ -199,7 +198,7 @@ import { component$, Slot } from '@builder.io/qwik';
 export default component$(() => {
   return (
     <main>
-      <Slot /> {/* <== Child layout/route inserted here */}
+      <Slot /> {/* <== Aquí se inserta el diseño/ruta hijo */}
     </main>
   );
 });
@@ -211,7 +210,7 @@ import { component$, Slot } from '@builder.io/qwik';
 export default component$(() => {
   return (
     <section>
-      <Slot /> {/* <== Child layout/route inserted here */}
+      <Slot /> {/* <== Aquí se inserta el diseño/ruta hijo */}
     </section>
   );
 });
@@ -221,25 +220,24 @@ export default component$(() => {
 import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  return <h1>About</h1>;
+  return <h1>Acerca de</h1>;
 });
 ```
 
-The above example would render the html:
+En el ejemplo anterior, se generaría el siguiente HTML:
 
 ```html
 <main>
   <section>
-    <h1>About</h1>
+    <h1>Acerca de</h1>
   </section>
 </main>
 ```
 
 ## `plugin.ts`
 
-`plugin.ts` and `plugin@<name>.ts` files can be created in the root of the `src/routes` directory to handle any incoming request before even the root layout executes.
+Se pueden crear archivos `plugin.ts` y `plugin@<nombre>.ts` en la raíz del directorio `src/routes` para manejar cualquier solicitud entrante antes de que se ejecute el diseño raíz.
 
-You can have multiple `plugin.ts` files, each with a different name. For example, `plugin@auth.ts` and `plugin@security.ts`. The `@<name>` is optional and and it's only used for developers to help identify the plugin.
+Puedes tener varios archivos `plugin.ts`, cada uno con un nombre diferente. Por ejemplo, `plugin@auth.ts` y `plugin@security.ts`. El `@<nombre>` es opcional y se utiliza únicamente para que los desarrolladores puedan identificar el plugin.
 
-Requests handlers like `onRequest`, `onGet`, `onPost`, etc. are called before `server$` functions are executed.
-
+Los manejadores de solicitudes como `onRequest`, `onGet`, `onPost`, etc. se llaman antes de que se ejecuten las funciones `server$`.

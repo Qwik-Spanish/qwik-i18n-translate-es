@@ -1,5 +1,5 @@
 ---
-title: Qwik City Speculative Module Fetching
+title: Qwik City - Recuperación Especulativa de Módulos
 contributors:
   - ulic75
   - mhevery
@@ -8,138 +8,138 @@ contributors:
   - manucorporat
 ---
 
-# Speculative Module Fetching
+# Recuperación Especulativa de Módulos (Speculative Module Fetching)
 
-Qwik is able to load page and become interactive extremely fast due to its ability to startup _without_ JavaScript. In addition to this, Speculative Module Fetching is a powerful feature that allows Qwik to pre-populate the browser's cache in a background thread.
+Qwik es capaz de cargar páginas y volverse interactivo extremadamente rápido gracias a su capacidad de iniciar _sin_ JavaScript. Además de esto, la Recuperación Especulativa de Módulos es una característica poderosa que permite a Qwik prellenar (pre-populate) la caché del navegador por medio de un hilo en segundo plano (background thread).
 
-The goal of Qwik is not to pre-populate the cache with the entire application, but to have already cached what's possible _at that time_. When the Qwik optimizer breaks apart the application, it's able to understand possible user interactions. And from this, it's just as important that it's able to understand what's not possible from user interaction, and to not bother loading those bundles.
+El objetivo de Qwik no es prellenar la caché con toda la aplicación, sino tener en caché lo que es posible _en ese momento_. Cuando el optimizador de Qwik descompone la aplicación, puede comprender las posibles interacciones del usuario. Y a partir de esto, es igualmente importante que pueda comprender lo que no es posible a partir de la interacción del usuario y no cargar esos paquetes.
 
-- [Pre-populating the Cache with a Service Worker](#pre-populating-the-cache-with-a-service-worker)
-- [Caching Request and Response Pairs](#caching-request-and-response-pairs)
-- [Parallelizing Network Requests](#parallelizing-network-requests)
+- [Prellenar la Caché con un Service Worker](#pre-populating-the-cache-with-a-service-worker)
+- [Pares de Petición y Respuesta en Caché](#caching-request-and-response-pairs)
+- [Paralelización de Peticiones de Red](#parallelizing-network-requests)
 
-### Pre-populating the Cache Per Page
+### Prellenar la Caché por Página
 
-Each page load will pre-populate the cache with bundles that _could_ be executed by the user, at that moment, on the page. For example, let's say that the page has a click listener on a button. When the page loads, the very first thing the service worker does is ensure the bundle for that click listener is already waiting in the [cache](#cache-api). When the user clicks the button, and Qwik makes a request to the event listener's bundle, the goal is that the bundle is already sitting in the [browser's cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) ready to execute.
+Cada carga de página prellenará la caché con los paquetes que _podrían_ ser ejecutados por el usuario en ese momento, en la página. Por ejemplo, supongamos que la página tiene un listener (escuchador) de click en un botón. Cuando la página se carga, lo primero que hace el service worker es asegurarse de que el paquete para ese listener de click ya esté esperando en la [caché](#cache-api). Cuando el usuario hace click en el botón y Qwik realiza una solicitud al paquete del listener de eventos, el objetivo es que el paquete ya esté en la [caché del navegador](https://developer.mozilla.org/en-US/docs/Web/API/Cache) listo para ejecutarse.
 
-### Pre-populating the Per Interaction
+### Prellenado por Interacción
 
-You can think of the page load as the first user interaction, which pre-populates the cache with what the next user interaction _could_ be. When a follow-up interaction happens, such as opening a modal or menu, then Qwik will again emit another event with additional bundles that could be used since the last interaction happened. Pre-populating the cache not only happens on page load, but continuously as users interact with the application.
+Puedes pensar en la carga de la página como la primera interacción del usuario, que prellena la caché con lo que podría ser la siguiente interacción del usuario. Cuando ocurre una interacción a continuación, como abrir un modal o un menú, Qwik emitirá otro evento con paquetes adicionales que podrían utilizarse desde la última interacción. El prellenado de la caché no solo ocurre al cargar la página, sino continuamente a medida que los usuarios interactúan con la aplicación.
 
-### Pre-populate Cache Event
+### Evento de Prellenado de Caché
 
-The recommended strategy is to use a [service worker](#pre-populating-the-cache-with-a-service-worker) to populate the [browser's cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache). The Qwik framework itself should use the [prefetchEvent](../../../(qwik)/advanced/prefetching/index.mdx#prefetching-implementation) implementation, which is already the default.
+La estrategia recomendada es utilizar un [service worker](#pre-populating-the-cache-with-a-service-worker) para poblar la [caché del navegador](https://developer.mozilla.org/en-US/docs/Web/API/Cache). El propio framework de Qwik debería utilizar la implementación de [prefetchEvent](../../../(qwik)/advanced/prefetching/index.mdx#prefetching-implementation), que ya es la configuración predeterminada.
 
-## Pre-populating the Cache with a Service Worker
+## Prellenar la Caché con un Service Worker
 
-Traditionally, a service worker is used to cache most, or all, of the bundles that an application uses. [Service workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) are commonly seen only as a way to make an application work offline.
+Tradicionalmente, se utiliza un service worker para almacenar en caché la mayoría o todos los paquetes que utiliza una aplicación. Los [Service Workers](https://developer.mozilla.org/en-US/docs/Web/API/Service_Worker_API/Using_Service_Workers) se suelen ver únicamente como una forma de hacer que una aplicación funcione sin conexión.
 
-Qwik City, however, uses service workers quite differently to provide a powerful caching strategy. Instead, the goal is not to download the entire application, but rather to use the service worker to dynamically pre-populate the cache with what's _possible_ to execute. By _not_ downloading the entire application, resources are freed up, enabling the user to only request the necessary parts of the app they _could_ use to complete their current task on the screen.
+Sin embargo, Qwik City utiliza los service workers de manera bastante diferente para proporcionar una estrategia de almacenamiento en caché poderosa. En su lugar, el objetivo no es descargar toda la aplicación, sino utilizar el service worker para prellenar dinámicamente la caché con lo que podría ser _posible_ ejecutar. Al _no_ descargar toda la aplicación, se liberan recursos, lo que permite al usuario solicitar únicamente las partes necesarias de la aplicación que se _podrían_ utilizar para completar la tarea actual en la pantalla.
 
-Additionally, the service worker will automatically add listeners for these events emitted from Qwik.
+Además, el service worker añadirá automáticamente listeners para estos eventos emitidos desde Qwik.
 
-### Background Task
+### Tarea en Segundo Plano
 
-An advantage of using a service worker is that it's also an extension of a [worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), which runs in a background thread.
+Una ventaja de utilizar un service worker es que también es una extensión de un [worker](https://developer.mozilla.org/en-US/docs/Web/API/Web_Workers_API), que se ejecuta en un hilo en segundo plano.
 
-> Web Workers makes it possible to run a script operation in a background thread separate from the main execution thread of a web application. The advantage of this is that laborious processing can be performed in a separate thread, allowing the main (usually the UI) thread to run without being blocked/slowed down.
+> Los Web Workers hacen posible ejecutar una operación de script en un hilo en segundo plano separado del hilo principal de ejecución de una aplicación web. La ventaja de esto es que se puede realizar un procesamiento laborioso en un hilo separado, lo que permite que el hilo principal (normalmente el de la interfaz de usuario) se ejecute sin ser bloqueado o ralentizado.
 
-By pre-populating the cache from within a service worker (which is a worker), we're able to essentially run the code in a background task, in order to not interfere with the main UI thread. By not interfering with the main UI we're able to help improve the performance of the Qwik application for users.
+Al prellenar la caché desde un service worker (el cual es un worker), podemos ejecutar esencialmente el código en una tarea en segundo plano para no interferir con el hilo principal de la interfaz de usuario. Al no interferir con la interfaz de usuario principal, podemos ayudar a mejorar el rendimiento de la aplicación Qwik para los usuarios.
 
-### Interactively Pre-populating the Cache
+### Prellenar la Caché de forma Interactiva
 
-Qwik itself should be configured to use the [prefetchEvent](../../../(qwik)/advanced/prefetching/index.mdx#prefetching-implementation) implementation (which is also Qwik's default). When Qwik emits the event, the service worker registration actively forwards the event data to the installed and active service worker.
+Qwik mismo debe configurarse para utilizar la implementación de [prefetchEvent](../../../(qwik)/advanced/prefetching/index.mdx#prefetching-implementation) (que también es la configuración predeterminada de Qwik). Cuando Qwik emite el evento, el registro del service worker envía activamente los datos del evento al service worker que está instalado y activo.
 
-The service worker (which runs in a background thread) then fetches the modules and adds them to the browser's cache. “The main thread only needs to emit data about the required bundles, while the service worker’s sole focus is to cache those bundles. To achieve this, the service worker pre-populates the browser’s [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache).
+El service worker (que se ejecuta en un hilo en segundo plano) luego busca los módulos y los agrega a la caché del navegador. "El hilo principal solo necesita emitir datos sobre los paquetes requeridos, mientras que el service worker está enfocado únicamente en almacenar en caché esos paquetes". Para lograr esto, el service worker prellena la [caché del navegador](https://developer.mozilla.org/en-US/docs/Web/API/Cache).
 
-1. If the browser already has it cached? Great, do nothing!
-2. If the browser hasn't already cached this bundle, then let's kick off the fetch request.
+1. ¿El navegador ya lo tiene en caché? ¡Genial, no hacer nada!
+2. Si el navegador aún no tiene en caché este paquete, entonces vamos a iniciar la solicitud de recuperación (fetch).
 
-Read more about [Caching Request and Response Pairs](#caching-request-and-response-pairs).
+Lee más sobre [Pares de Petición y Respuesta en Caché](#caching-request-and-response-pairs).
 
-Additionally, the service worker ensures that multiple requests for the same bundle do not happen at the same time. More about this in the [Parallelizing Network Requests](#parallelizing-network-requests) documentation.
+Además, el service worker se asegura de que no se realicen múltiples solicitudes al mismo paquete al mismo tiempo. Más sobre esto en la documentación de [Paralelización de Peticiones de Red](#parallelizing-network-requests).
 
-## Caching Request and Response Pairs
+## Pares de Petición y Respuesta en Caché (Request and Response Pairs)
 
-In many traditional frameworks, the preferred strategy is to use `<link>` with a `rel` attribute of `prefetch`, `preload` or `modulepreload`. However, there are [enough known issues](../../../(qwik)/advanced/prefetching/index.mdx#link-rel) that Qwik has preferred to not make `link` the default prefetching strategy (though it still can be [configured](../../../(qwik)/advanced/prefetching/index.mdx)).
+En muchos frameworks tradicionales, la estrategia preferida es utilizar `<link>` con un atributo `rel` de `prefetch`, `preload` o `modulepreload`. Sin embargo, hay [suficientes problemas conocidos](../../../(qwik)/advanced/prefetching/index.mdx#link-rel) como para que Qwik haya preferido no utilizar `link` como la estrategia de prellenado en caché por defecto (aunque aún se puede [configurar](../../../(qwik)/advanced/prefetching/index.mdx)).
 
-Instead, Qwik prefers to use a newer approach that takes full advantage of the browser's [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache), which is also better supported compared to [modulepreload](../../../(qwik)/advanced/prefetching/index.mdx#link-rel).
+En su lugar, Qwik prefiere utilizar un enfoque más reciente que aprovecha al máximo la [API de Caché](https://developer.mozilla.org/en-US/docs/Web/API/Cache) del navegador, la cual también tiene mejor compatibilidad en comparación con [modulepreload](../../../(qwik)/advanced/prefetching/index.mdx#link-rel).
 
-### Cache API
+### API de Caché
 
-The [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache), often associated with service workers, is a way to store request and response pairs in order for an application to work offline. In addition to enabling applications to work without connectivity, the same Cache API provides an extremely powerful caching mechanism available to Qwik.
+La [API de Caché](https://developer.mozilla.org/en-US/docs/Web/API/Cache), a menudo asociada con los service workers, es una forma de almacenar pares de peticiones (request) y respuestas (response) para que una aplicación pueda funcionar sin conexión. Además de permitir que las aplicaciones funcionen sin conectividad, esta misma API de Caché proporciona un mecanismo de almacenamiento en caché extremadamente potente disponible para Qwik.
 
-Using the installed and activated [service worker](#pre-populating-the-cache-with-a-service-worker) to intercept requests, Qwik is able to handle specific requests for _known_ bundles. In contrast to the common way service workers are used, the default does not attempt to handle all requests, but rather, only known bundles generated by Qwik. The site's installed service worker can still be [customized by each site](#user-service-worker-code).
+Utilizando el [service worker](#pre-populating-the-cache-with-a-service-worker) instalado y activado para interceptar las peticiones, Qwik es capaz de manejar peticiones específicas de paquetes _conocidos_. A diferencia del modo común en que se utilizan los service workers, la configuración predeterminada no intenta manejar todas las peticiones, sino solo los paquetes conocidos generados por Qwik. El service worker instalado en el sitio todavía puede [personalizarse por cada sitio](#user-service-worker-code).
 
-An advantage of Qwik's optimizer is it also generates a `q-manifest.json` file. The manifest provides a detailed module graph of not only how bundles are associated, but also which symbols are within each bundle. This same module graph data is provided to the service worker which allows for every network request for known bundles to be handled by the cache.
+Una ventaja del optimizador de Qwik es que también genera un archivo `q-manifest.json`. El manifiesto proporciona un grafo de módulos detallado que no solo muestra cómo se asocian los paquetes, sino también qué símbolos se encuentran en cada paquete. Estos mismos datos del grafo de módulos se proporcionan al service worker, lo que permite que cada petición de red de paquetes conocidos sea manejada por la caché.
 
-### Dynamic Imports and Caching
+### Importaciones Dinámicas y Almacenamiento en Caché
 
-When Qwik requests a module it uses a dynamic `import()`. For example, let's say a user interaction happened, requiring Qwik to execute a dynamic import for `/build/q-abc.js`. The code to do so would look something like this:
+Cuando Qwik solicita un módulo, utiliza una importación dinámica con `import()`. Por ejemplo, supongamos que se produce una interacción del usuario que requiere que Qwik ejecute una importación dinámica para `/build/q-abc.js`. El código para hacerlo se vería así:
 
 ```ts
 const module = await import('/build/q-abc.js');
 ```
 
-What's important here is that Qwik itself has no knowledge of a prefetching or caching strategy. It's simply making a request for a URL. However, because we've installed a service worker, and the service worker is intercepting requests, it's able to inspect the URL and say, "look, this is a request for `/build/q-abc.js`! This is one of our bundles! Let's first check to see if we already have this in the cache before we do an actual network request."
+Lo importante aquí es que Qwik en sí mismo no tiene conocimiento de una estrategia de prellenado en caché o almacenamiento en caché. Simplemente está realizando una petición de una URL. Sin embargo, debido a que hemos instalado un service worker y este intercepta las solicitudes, puede inspeccionar la URL y decir: "¡Mira, esta es una solicitud para `/build/q-abc.js`! ¡Este es uno de nuestros paquetes! Primero comprobemos si ya tenemos esto en la caché antes de hacer una solicitud de red real."
 
-This is where the power of the service worker and Cache API comes in! Qwik first pre-populates the cache for modules the user may soon request within another thread. And better yet, if it's already cached, then there's no need for the browser to do anything.
+¡Aquí es donde entra en juego la potencia del service worker y la API de Caché! Qwik primero prellena la caché para los módulos que el usuario puede solicitar pronto en otro hilo. Y lo que es mejor, si el módulo solicitado está en la caché el navegador no necesita hacer nada.
 
-Other benefits include [Parallelizing Network Requests](#parallelizing-network-requests).
+Otros beneficios incluyen [Paralelización de solicitudes de red](#parallelizing-network-requests).
 
-## Parallelizing Network Requests
+## Paralelización de solicitudes de Red
 
-In the [Caching Request and Response Pairs](#cache-api) docs we explained the powerful combination of the [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) and [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker) APIs. However, we can take it even one step further by ensuring duplicate requests are not created for the same bundle, and we can prevent network waterfalls, all from within the background thread.
+En la documentación de [Pares de Petición y Respuesta en Caché](#cache-api), explicamos la poderosa combinación de las APIs de [Cache](https://developer.mozilla.org/en-US/docs/Web/API/Cache) y [Service Worker](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorker). Sin embargo, podemos llevarlo aún más lejos al asegurarnos de que no se creen peticiones duplicadas para el mismo paquete y prevenir cascadas en la red, todo desde el hilo en segundo plano.
 
-### Avoiding Duplicate Requests
+### Evitando Peticiones Duplicadas
 
-As an example, let's say an end-user currently has a slow 3G connection. When they first request the landing page, as fast as this slow network allows, the device downloads the HTML and renders the content (an area where Qwik really shines). On this slow connection, it'd be a shame if they'd have to also download a few more hundred kilobytes just to [make their app work and become interactive](https://www.builder.io/blog/hydration-is-pure-overhead).
+A modo de ejemplo, supongamos que un usuario final tiene una conexión 3G lenta. Cuando solicitan la página de inicio por primera vez, tan rápido como lo permita esta conexión lenta, el dispositivo descarga el HTML y renderiza el contenido (un área en la que Qwik realmente destaca). En esta conexión lenta, sería una lástima si también tuvieran que descargar unos cientos de kilobytes adicionales solo para que su aplicación funcione y se vuelva interactiva.
 
-However, because the app was built with Qwik, the end-user doesn't need to download the entire application for it to become interactive. Instead, the end-user already downloaded the SSR rendered HTML app, and any interactive parts, such as an "Add to cart" button, can be prefetched immediately. 
+Sin embargo, debido a que la aplicación se construyó con Qwik, el usuario final no necesita descargar toda la aplicación para que se vuelva interactiva. En cambio, el usuario final ya ha descargado la aplicación HTML renderizada por SSR y cualquier parte interactiva, como un botón "Agregar al carrito" que pudo ser pre-recuperado (prefetch) de inmediato.
 
-> Note that we're only prefetching the actual listener code, and _not_ the entire stack of the component tree render functions.
+> Ten en cuenta que solo estamos pre-recuperando el código de listener necesario, y _no_ toda la pila de funciones de renderización del árbol de componentes.
 
-In this extremely common real-world example of a device with a slow connection, the device immediately starts to pre-populate the cache for the possible interactions that are visible by the end-user. However, due to their slow connection, even though we started to cache the modules as soon as possible in a [background thread](#background-task), the fetch request itself could still be in flight.
+En este ejemplo extremadamente común en el mundo real de un dispositivo con una conexión lenta, el dispositivo comienza de inmediato a prellenar la caché para las interacciones posibles que son visibles para el usuario final. Sin embargo, debido a su conexión lenta, incluso si comenzamos a almacenar en caché los módulos tan pronto como sea posible en un [hilo en segundo plano](#background-task), la petición de recuperación (fetch) en sí misma aún podría estar en curso.
 
-For demo purposes, let's say the fetching for this bundle takes two seconds. However, after one second of viewing the page, the user clicks on the button. In a traditional framework, there's a good chance that absolutely nothing would happen! If the framework hasn't finished downloading, hydrating and re-rendering, the event listener can't be added to the button yet. Which in turn means that the user's interaction would just be lost.
+Para fines de demostración, supongamos que la recuperación de este paquete tarda dos segundos. Sin embargo, después de un segundo de ver la página, el usuario hace click en el botón. ¡En un framework tradicional, existe una buena posibilidad de que no suceda absolutamente nada! Si el framework no ha terminado de descargar, hidratar y volver a renderizar, el listener de eventos aún no se puede agregar al botón. Lo que significa que la interacción del usuario simplemente se perdería.
 
-However, with Qwik's caching, if the user clicked the button, and we already started a request one second ago, and it has one second left until it's fully received, then the end-user only has to wait for one second. Remember, they're on a slow 3G connection in this demo. Luckily the user already received the full rendered landing page, so they're already looking at a completed page. Next, they're only pre-populating the cache with the bits of the app they could interact with, and their slow connection is dedicated to just those bundle(s). This is in contrast to their slow connection downloading all of the app, just to execute one listener.
+Sin embargo, con el almacenamiento en caché de Qwik, si el usuario hace click en el botón y ya hemos iniciado una petición hace un segundo, y queda un segundo para que se reciba por completo, entonces el usuario final solo tiene que esperar un segundo. Recuerda, están en una conexión 3G lenta en esta demostración. Afortunadamente, el usuario ya ha recibido la página de inicio renderizada por completo, por lo que ya está viendo una página completa. A continuación, solo se está prellenando la caché con las partes de la aplicación con las que podría interactuar, y su conexión lenta se dedica solo a esos paquetes. Esto contrasta con su conexión lenta que descarga toda la aplicación solo para ejecutar un listener.
 
-Qwik is able to intercept requests for known bundles, and if a fetch in a background thread is already in flight, and then a user requests the same bundle, it'll ensure that the second request is able to re-use the initial one, which may already be done downloading. Trying to perform any of this with the [link](../../../(qwik)/advanced/prefetching/index.mdx#link-rel) also shows why Qwik preferred to not make it the default, but instead uses the caching API and intercepts requests with a service worker.
+Qwik es capaz de interceptar peticiones de paquetes conocidos, y si una solicitud de recuperación en un hilo en segundo plano ya está en curso y luego un usuario solicita el mismo paquete, se asegurará de que la segunda solicitud pueda reutilizar la inicial, que puede que ya haya terminado de descargarse. Intentar realizar esto con [link](../../../(qwik)/advanced/prefetching/index.mdx#link-rel) también muestra por qué Qwik prefiere no hacerlo por defecto, sino que utiliza la API de almacenamiento en caché e intercepta solicitudes con un service worker.
 
-### Reducing Network Waterfalls
+### Reducción de las Cascadas en la Red
 
-A network waterfall is when numerous requests happen one after another, like steps downstairs, rather than in parallel. A waterfall of network requests will usually hurt performance because it increases the time until all modules are downloaded, rather than each module starting to download at the same time.
+Una cascada en la red ocurre cuando numerosas peticiones ocurren una tras otra, como pasos de escalera, en lugar de hacerlo en paralelo. Una cascada de estas solicitudes en la red generalmente afectará el rendimiento porque incrementa el tiempo hasta que se descargan todos los módulos, en lugar de que cada módulo comience a descargarse al mismo tiempo.
 
-Below is an example with three modules: A, B and C. Module A imports B, and B imports C. The HTML document is what starts the waterfall by first requesting Module A.
+A continuación se muestra un ejemplo con tres módulos: A, B y C. El módulo A importa B y B importa C. El documento HTML es lo que inicia la cascada al solicitar primero el módulo A.
 
 ```ts
 import './b.js';
-console.log('Module A');
+console.log('Módulo A');
 ```
 
 ```ts
 import './c.js';
-console.log('Module B');
+console.log('Módulo B');
 ```
 
 ```ts
-console.log('Module C');
+console.log('Módulo C');
 ```
 
 ```html
 <script type="module" src="./a.js"></script>
 ```
 
-In this example, when Module `A` is first requested, the browser has no idea that it should also start requesting Module `B` and `C`. It doesn't even know it needs to start requesting Module `B`, until AFTER Module `A` has finished downloading. It's a common problem in that the browser doesn't know ahead of time what it should start to request, until after each module has finished downloading.
+En este ejemplo, cuando se solicita por primera vez el módulo `A`, el navegador no tiene idea de que también debería comenzar a solicitar los módulos `B` y `C`. Ni siquiera sabe que necesita comenzar a solicitar el módulo `B` hasta DESPUÉS de que el módulo `A` haya terminado de descargarse. Es un problema común en el que el navegador no sabe de antemano qué debe comenzar a solicitar hasta que cada módulo haya terminado de descargarse.
 
-However, because our service worker contains a module graph generated from the manifest, we do know all of the modules which _will_ be requested next. So when either user interaction or a prefetch for a bundle happens, the browser initiates the request for all of the bundles that _will_ be requested. This allows us to drastically reduce the time it takes to request all bundles.
+Sin embargo, debido a que nuestro service worker contiene un grafo de módulos generado a partir del manifiesto, conocemos todos los módulos que se solicitarán a continuación. Entonces, cuando ocurre una interacción del usuario o una pre-recuperación de un paquete, el navegador inicia la petición de todos los paquetes que _serán_ solicitados. Esto nos permite reducir drásticamente el tiempo necesario para solicitar todos los paquetes.
 
-## User Service Worker Code
+## Código del Service Worker del Usuario
 
-The default service worker that is installed by Qwik City can still be controlled entirely by the application. For example, the source file `src/routes/service-worker.ts` becomes `/service-worker.js`, which is the script requested by the browser. Notice how its place within `src/routes` still follows the same directory-based routing pattern.
+El service worker predeterminado que se instala con Qwik City puede ser controlado completamente por la aplicación. Por ejemplo, el archivo fuente `src/routes/service-worker.ts` se convierte en `/service-worker.js`, que es el script solicitado por el navegador. Observa cómo su ubicación dentro de `src/routes` sigue el mismo patrón de enrutamiento basado en directorios.
 
-Below is an example of a default `src/routes/service-worker.ts` source file:
+A continuación se muestra un ejemplo de un archivo fuente `src/routes/service-worker.ts` predeterminado:
 
 ```ts
 import { setupServiceWorker } from '@builder.io/qwik-city/service-worker';
@@ -151,38 +151,38 @@ addEventListener('install', () => self.skipWaiting());
 addEventListener('activate', () => self.clients.claim());
 ```
 
-The source code for `src/routes/service-worker.ts` can be modified by the developer however they'd like. This includes opting-in, or opting-out, of setting up Qwik City's service worker.
+El código fuente de `src/routes/service-worker.ts` puede ser modificado por el desarrollador de la manera que desee. Esto incluye optar por usar o no el service worker de Qwik City.
 
-Notice that the `setupServiceWorker()` function is imported from `@builder.io/qwik-city/service-worker` and executed at the top of the source file. If, and where, this function is called can be modified by the developer. For example, the developer may want to handle the fetch requests first, in which case they'd add their own fetch listener above `setupServiceWorker()`. Or if they didn't want to use Qwik City's service worker at all, they would just have to remove `setupServiceWorker()` from the file.
+Observa que la función `setupServiceWorker()` se importa de `@builder.io/qwik-city/service-worker` y se ejecuta al principio del archivo fuente. Si se llama y dónde, a esta función, puede ser modificado por el desarrollador. Por ejemplo, el desarrollador puede querer manejar primero las solicitudes fetch, en cuyo caso agregaría su propio listener de fetch arriba de `setupServiceWorker()`. O si no quisiera usar el service worker de Qwik City en absoluto, simplemente tendría que eliminar `setupServiceWorker()` del archivo.
 
-Additionally, the default `src/routes/service-worker.ts` file comes with an [install](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/install_event) and [activate](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/activate_event) event listeners, each added at the bottom of the file. The callbacks provided are the recommended callbacks. However, the developer can modify these callbacks depending on their own app's requirements.
+Además, el archivo `src/routes/service-worker.ts` predeterminado viene con event listeners de [instalación](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/install_event) y [activación](https://developer.mozilla.org/en-US/docs/Web/API/ServiceWorkerGlobalScope/activate_event), cada uno agregado al final del archivo. Los callbacks proporcionados son los recomendados. Sin embargo, el desarrollador puede modificar estos callbacks según los requisitos de su propia aplicación.
 
-Another important note is that Qwik City's request intercepting is _only_ for Qwik bundles, it does not attempt to handle any requests which are not a part of its build.
+Otro dato importante es que la interceptación de peticiones de Qwik City es _únicamente_ para paquetes de Qwik, no intenta manejar ninguna solicitud que no forme parte de su construcción.
 
-So while Qwik City does provide a way to help prefetch and cache bundles, it does not take full control of the app's service worker. This still allows developers to add their service worker logic without conflicting with Qwik.
+Por lo tanto, aunque Qwik City proporciona una forma de ayudar a pre-recuperar (prefetch) y almacenar en caché paquetes, no toma el control total del service worker de la aplicación. Esto permite que los desarrolladores agreguen su propia lógica del service worker sin conflictos con Qwik.
 
-## Disabled During Development and Preview
+## Desactivado durante el Desarrollo y la Vista Previa
 
-One gotcha during development and using Vite's preview mode is that the service worker is disabled which also disables speculative module fetching. During development we want to always ensure the latest development code is being used, rather than previous code. 
+Un detalle a tener en cuenta durante el desarrollo y el uso del modo de vista previa de Vite es que el service worker está desactivado, lo que también deshabilita la recuperación especulativa de módulos. Durante el desarrollo, queremos asegurarnos siempre de usar el código de desarrollo más reciente, en lugar del código anterior.
 
-Speculative module fetching only kicks on a production build. To see speculative module fetching in action you'll need to run the production build on a server other than development or preview.
+La recuperación especulativa de módulos solo se activa en una compilación de producción. Para ver la recuperación especulativa de módulos en acción, deberás ejecutar la compilación de producción en un servidor distinto al de desarrollo o vista previa.
 
-### HTTP Cache vs. Service Worker Cache
+### Caché HTTP vs. Caché del Service Worker
 
-Speculative module fetching may appear to not be working partly due to the various levels of caching. For example, the browser itself may cache requests in its [HTTP cache](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching), and the service worker may cache requests in the [Cache API](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Just emptying one of the caches may not be enough to see the effects of speculative module fetching.
+La recuperación especulativa de módulos puede parecer que no está funcionando debido a los diferentes niveles de caché. Por ejemplo, el propio navegador puede almacenar solicitudes en su [caché HTTP](https://developer.mozilla.org/en-US/docs/Web/HTTP/Caching), y el service worker puede almacenar solicitudes en la [API de caché](https://developer.mozilla.org/en-US/docs/Web/API/Cache). Vaciar una de las cachés puede no ser suficiente para ver los efectos de la recuperación especulativa de módulos.
 
-### Misleading Empty Cache and Hard Reload
+### Cuidado al "Vaciar Caché y Forzar Recarga"
 
-When developers run [Empty Cache and Hard Reload](https://developer.chrome.com/blog/hard-reload/), it's a bit misleading because it actually _only_ empties the browser's HTTP cache. It's not, however, emptying the service worker's cache. Even though the browser's HTTP cache is empty, the service worker still has the previous cached requests.
+Cuando los desarrolladores ejecutan [vaciar caché y forzar recarga](https://developer.chrome.com/blog/hard-reload/), es un poco engañoso porque en realidad _solo_ vacía la caché HTTP del navegador. Sin embargo, no vacía la caché del service worker. Aunque la caché HTTP del navegador esté vacía, el service worker aún tiene las peticiones previas almacenadas en caché.
 
-Additionally, when "Empty Cache and Hard Reload" is used, the browser sends a `no-cache` cache-control header in the _request_ to the server. Because the request has a `no-cache` cache-control header, the service worker purposely does not use its own cache, and instead the browser performs the usual HTTP fetch again.
+Además, cuando se utiliza "vaciar caché y forzar recarga", el navegador envía una cabecera de control de caché `no-cache` en la _petición_ al servidor. Debido a que la petición tiene una cabecera de control de caché `no-cache`, el servidor generalmente considera la petición como nueva y envía una respuesta completa, lo que significa que todos los módulos se descargan de nuevo, en lugar de solo los que son necesarios.
 
-### Emptying the Service Worker Cache
+### Vaciar la Caché del Service Worker
 
-The recommended way to test specualtive module fetching is to:
+La forma recomendada de probar la recuperación especulativa de módulos es:
 
-- **Unregister the service worker**: In Chrome DevTools, go to the Application tab, and under Service Workers, click the "Unregister" link for the for your site's service worker.
-- **Delete the "QwikBuild" Cache Storage**: In Chrome DevTools, go to the Application tab, and under Cache Storage on the left side, right click "Delete" on the "QwikBuild" cache storage.
-- **Do not hard reload**: Instead of hard reloading, which would send a no-cache cache-control to the service worker, just click the URL bar and hit enter. This will send a normal request as if you were a first time visitor.
+- **Deshabilitar el service worker**: En Chrome DevTools, ve a la pestaña Application y, en Service Workers, haz click en el enlace "Unregister" para el service worker de tu sitio.
+- **Eliminar el almacenamiento en caché "QwikBuild"**: En Chrome DevTools, ve a la pestaña Application y, en Cache Storage en el lado izquierdo, haz click derecho en "Delete" en el almacenamiento en caché "QwikBuild".
+- **No forzar la recarga**: En lugar de hacer una recarga forzada, que enviaría una cabecera de control de caché "no-cache" al service worker, simplemente haz click en la barra de URL y presiona Enter. Esto enviará una solicitud normal como si fueras un visitante nuevo.
 
-Note that this process is only for testing the speculative module fetching, and is not required for new builds. Each build will create a new service worker, and the old service worker will be automatically unregistered.
+De esta manera, estás seguro de que estás probando la última compilación de producción sin ninguna interferencia de la caché del service worker o del navegador.
