@@ -534,17 +534,15 @@ export const head: DocumentHead = ({resolveValue}) => {
 
 La función `routeLoader$()` toma una función que devuelve una promesa. La promesa se resuelve en el servidor y el valor resuelto se pasa al hook `useCustomLoader$()`. El hook `useCustomLoader$()` es un hook personalizado que se crea con la función `routeLoader$()`. El hook `useCustomLoader$()` devuelve una `Signal` que contiene el valor resuelto de la promesa devuelta por la función `routeLoader$()`. El hook `useCustomLoader$()` volverá a renderizar el componente cuando cambie la ruta y se vuelva a ejecutar la función `routeLoader$()`.
 
-## Handle form submissions
-
-Qwik provides the `routeAction$()` API exported from `@builder.io/qwik-city` to handle form requests on the server. `routeAction$()` is only executed on the server when the form is submitted.
+Qwik proporciona la API `routeAction$()` exportada desde `@builder.io/qwik-city` para manejar las solicitudes de formularios en el servidor. `routeAction$()` solo se ejecuta en el servidor cuando se envía el formulario.
 
 ```tsx title="src/routes/user/[userID]/index.tsx"
 
 import { component$ } from '@builder.io/qwik';
 import { routeAction$, Form, zod$, z } from '@builder.io/qwik-city';
 
-// The `routeAction$()` function is used to create a data loader that will be executed on the server when the form is submitted.
-// The return of `routeAction$()` is a custom use hook, which can be used to access the data returned from `routeAction$()`.
+// La función `routeAction$()` se utiliza para crear un cargador de datos que se ejecutará en el servidor cuando se envíe el formulario.
+// El resultado de `routeAction$()` es un hook personalizado que se puede utilizar para acceder a los datos devueltos por `routeAction$()`.
 export const useUserUpdate = routeAction$(async (data, requestContext) => {
   const user = await db.table('users').get(requestContext.params.userID);
   user.name = data.name;
@@ -559,38 +557,37 @@ export const useUserUpdate = routeAction$(async (data, requestContext) => {
 }));
 
 export default component$(() => {
-  // The `useUserUpdate` hook will return a `ActionStore<T>` containing the `value` returned from `routeAction$()`, and some other properties, such as `submit()`, which is used to submit the form programmatically, and `isRunning`. All of these properties are reactive, and will re-render the component whenever they change.
+  // El hook `useUserUpdate` devolverá un `ActionStore<T>` que contiene el `value` devuelto por `routeAction$()`, y otras propiedades, como `submit()`, que se utiliza para enviar el formulario programáticamente, y `isRunning`. Todas estas propiedades son reactivas y volverán a renderizar el componente cuando cambien.
   const userData = useUserUpdate();
-  // userData.value is the value returned from `routeAction$()`, which is `undefined` before the form is submitted.
-  // userData.formData is the form data that was submitted, it is `undefined` before the form is submitted.
-  // userData.isRunning is a boolean that is true when the form is being submitted.
-  // userData.submit() is a function that can be used to submit the form programmatically.
-  // userData.actionPath is the path to the action, which is used to submit the form.
+  // userData.value es el valor devuelto por `routeAction$()`, que es `undefined` antes de enviar el formulario.
+  // userData.formData es los datos del formulario que se enviaron, es `undefined` antes de enviar el formulario.
+  // userData.isRunning es un booleano que es verdadero cuando se está enviando el formulario.
+  // userData.submit() es una función que se puede utilizar para enviar el formulario programáticamente.
+  // userData.actionPath es la ruta a la acción, que se utiliza para enviar el formulario.
   return (
     <main>
-      <h1>User data</h1>
+      <h1>Datos del usuario</h1>
       <Form action={userData}>
         <div>
-          <label>User name: <input name="name" defaultValue={userData.formData?.get('name')} /></label>
+          <label>Nombre de usuario: <input name="name" defaultValue={userData.formData?.get('name')} /></label>
         </div>
         <div>
-          <label>User email: <input name="email" defaultValue={userData.formData?.get('email')} /></label>
+          <label>Email de usuario: <input name="email" defaultValue={userData.formData?.get('email')} /></label>
         </div>
-        <button type="submit">Update</button>
+        <button type="submit">Actualizar</button>
       </form>
     </main>
   );
 });
 ```
 
-The `routeAction$()` is used on pair with the `Form` component exported from `@builder.io/qwik-city`. The `Form` component is a wrapper around the native HTML `<form>` element. The `Form` component takes an `ActionStore<T>` as the `action` property. The `ActionStore<T>` is the return value of the `routeAction$()` function.
+`routeAction$()` se utiliza junto con el componente `Form` exportado desde `@builder.io/qwik-city`. El componente `Form` es un contenedor alrededor del elemento HTML nativo `<form>`. El componente `Form` toma un `ActionStore<T>` como propiedad `action`. El `ActionStore<T>` es el valor de retorno de la función `routeAction$()`.
 
+## Ejecutar el código únicamente en el navegador
 
-## Run code only in the browser
+Dado que Qwik ejecuta el mismo código en el servidor y en el navegador, no puedes usar `window` u otras API del navegador en tu código, porque no existen cuando el código se ejecuta en el servidor.
 
-Since Qwik executes the same code on the server and in the browser, you cannot use `window` or other browser APIs in your code, because they don't exist when the code is executed on the server.
-
-If you want to access browser APIs, such as `window`, `document`, `localStorage`, `sessionStorage`, `webgl` etc, you need to check if the code is running in the browser before accessing the browser APIs.
+Si deseas acceder a las API del navegador, como `window`, `document`, `localStorage`, `sessionStorage`, `webgl`, etc., debes verificar si el código se está ejecutando en el navegador antes de acceder a las API del navegador.
 
 ```tsx
 import { component$, useTask$, useVisibleTask$, useSignal } from '@builder.io/qwik';
@@ -599,19 +596,19 @@ import { isBrowser } from '@builder.io/qwik/build';
 export default component$(() => {
   const ref = useSignal<Element>();
 
-  // useVisibleTask$ will only run on the browser
+  // useVisibleTask$ se ejecutará solo en el navegador
   useVisibleTask$(() => {
-    // No need to check for `isBrowser` before accessing the DOM, because useVisibleTask$ will only run on the browser
+    // No es necesario verificar `isBrowser` antes de acceder al DOM, porque useVisibleTask$ se ejecutará solo en el navegador
     ref.value?.focus();
-    document.title = 'Hello world';
+    document.title = 'Hola mundo';
   });
 
-  // useTask might run on the server, so you need to check for `isBrowser` before accessing the DOM
+  // useTask puede ejecutarse en el servidor, por lo que debes verificar `isBrowser` antes de acceder al DOM
   useTask$(() => {
     if (isBrowser) {
-      // This code will only run in the browser only when the component is first rendered there
+      // Este código se ejecutará solo en el navegador cuando el componente se renderice allí por primera vez
       ref.value?.focus();
-      document.title = 'Hello world';
+      document.title = 'Hola mundo';
     }
   });
 
@@ -619,32 +616,31 @@ export default component$(() => {
     <button
       ref={ref}
       onClick$={() => {
-        // All event handlers are only executed in the browser, so it's safe to access the DOM
+        // Todos los controladores de eventos se ejecutan solo en el navegador, por lo que es seguro acceder al DOM
         ref.value?.focus();
-        document.title = 'Hello world';
+        document.title = 'Hola mundo';
       }}
     >
-      Click me
+      Haz click aquí
     </button>
   );
 });
 ```
-
 ### `useVisibleTask$(() => { ... })`
 
-This API will declare a VisibleTask that is ensured to run only on the client/browser. It will never run on the server.
+Esta API declara una VisibleTask que se asegura de que se ejecute solo en el cliente/navegador. Nunca se ejecutará en el servidor.
 
-### JSX event handlers
+### Manejadores de eventos JSX
 
-JSX handlers such as `onClick$` and `onInput$` are only executed on the client. This is because they are DOM events, since there is no DOM on the server, they will not be executed on the server.
+Los manejadores JSX, como `onClick$` y `onInput$`, solo se ejecutan en el cliente. Esto se debe a que son eventos del DOM, y dado que no hay DOM en el servidor, no se ejecutarán en el servidor.
 
-### `isBrowser` conditional
+### Condicional `isBrowser`
 
-Qwik provides a `isBrowser` boolean exported from `@builder.io/qwik/build`. You can use this to ensure that code only runs on the browser.
+Qwik proporciona un booleano `isBrowser` exportado desde `@builder.io/qwik/build`. Puedes usar esto para asegurarte de que el código se ejecute solo en el navegador.
 
-## Run code only on the server
+## Ejecutar código solo en el servidor
 
-Sometimes you need to run code only on the server, such as fetching data or accessing a database. To solve this problem, Qwik provides a few APIs to run code only on the server.
+A veces necesitas ejecutar código solo en el servidor, como obtener datos o acceder a una base de datos. Para resolver este problema, Qwik proporciona algunas API para ejecutar código solo en el servidor.
 
 ```tsx
 import { component$, useTask$ } from '@builder.io/qwik';
@@ -653,14 +649,14 @@ import { isServer } from '@builder.io/qwik/build';
 
 
 export const useGetProducts = routeLoader$((requestEvent) => {
-  // This code will only run on the server
+  // Este código se ejecutará solo en el servidor
   const db = await openDB(requestEvent.env.get('DB_PRIVATE_KEY'));
   const product = await db.table('products').select();
   return product;
 })
 
 const encryptInServer = server$(function(message: string) {
-  // `this` is the `requestEvent
+  // `this` es el `requestEvent
   const secretKey = this.env.get('SECRET_KEY');
   const encryptedMessage = encrypt(message, secretKey);
   return encryptedMessage;
@@ -669,7 +665,7 @@ const encryptInServer = server$(function(message: string) {
 export default component$(() => {
   useTask$(() => {
     if (isServer) {
-      // This code will only run on the server only when the component is first rendered in the server
+      // Este código se ejecutará solo en el servidor cuando el componente se renderice allí por primera vez
     }
   });
 
@@ -677,20 +673,20 @@ export default component$(() => {
     <>
       <button
         onClick$={server$(() => {
-          // This code will only run on the server when the button is clicked
+          // Este código se ejecutará solo en el servidor cuando se haga clic en el botón
         })}
       >
-        Click me
+        Haz click aquí
       </button>
 
       <button
         onClick$={() => {
-          // This code will call the server function, and wait for the result
-          const encrypted = await encryptInServer('Hello world');
+          // Este código llamará a la función del servidor y esperará el resultado
+          const encrypted = await encryptInServer('Hola mundo');
           console.log(encrypted);
         }}
       >
-        Click me
+        Haz click aquí
       </button>
     </>
   );
@@ -699,16 +695,16 @@ export default component$(() => {
 
 ### `routeAction$()`
 
-The `routeAction$()` is a special component that is only executed on the server. It's used handle form submissions, and other actions. For example, you can use it to add a user to a database, and then redirect to the user profile page.
+`routeAction$()` es un componente especial que se ejecuta solo en el servidor. Se utiliza para manejar envíos de formularios y otras acciones. Por ejemplo, se puede utilizar para agregar un usuario a una base de datos y luego redirigir a la página de perfil del usuario.
 
 ### `routeLoader$()`
 
-The `routeLoader$()` is a special component that is only executed on the server. It's used to fetch data, and then render the page. For example, you can use it to fetch data from an API, and then render the page with the data.
+`routeLoader$()` es un componente especial que se ejecuta solo en el servidor. Se utiliza para obtener datos y luego renderizar la página. Por ejemplo, se puede utilizar para obtener datos de una API y luego renderizar la página con los datos.
 
 ### `server$((...args) => { ... })`
 
-The `server$()` is a special way to declare functions that only run in the server. If called from the client, they will behave like a RPC call, and will be executed on the server. They can take any serializable arguments, and return any serializable value.
+`server$()` es una forma especial de declarar funciones que solo se ejecutan en el servidor. Si se llaman desde el cliente, se comportarán como una llamada RPC y se ejecutarán en el servidor. Pueden tomar cualquier argumento serializable y devolver cualquier valor serializable.
 
-### `isServer` conditional
+### El condicional `isServer`
 
-Qwik provides a `isServer` boolean exported from `@builder.io/qwik/build`. You can use this to ensure that code only runs on the server.
+Qwik proporciona un booleano `isServer` exportado desde `@builder.io/qwik/build`. Puedes usar esto para asegurarte de que el código se ejecute solo en el servidor. 
