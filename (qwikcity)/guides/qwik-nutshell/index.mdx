@@ -65,6 +65,7 @@ export const MyComponent = component$((props: MyComponentProps) => {
   );
 });
 ```
+
 ### Renderizando una lista de elementos
 
 Al igual que en React, puedes renderizar una lista de elementos utilizando la función `map`, sin embargo, cada elemento de la lista debe tener una propiedad `key` única. La `key` debe ser una cadena de texto o un número, y debe ser única dentro de la lista.
@@ -434,7 +435,9 @@ export default component$(() => {
 });
 ```
 
-Es muy importante exportar el componente como la exportación predeterminada, de lo contrario, el enrutador no podrá encontrarlo.
+Es muy importante exportar el componente como exportación predeterminada (default export), de lo contrario, el enrutador no podrá encontrarlo.
+
+### Parámetros de Ruta
 
 Puedes crear rutas dinámicas agregando una carpeta con `[parametro]` en la ruta. Por ejemplo, `src/routes/user/[id]/index.tsx` creará una ruta en `/user/:id/`. Para acceder al parámetro de la ruta, puedes utilizar el hook `useLocation` exportado de `@builder.io/qwik-city`.
 
@@ -487,6 +490,9 @@ export default component$(() => {
   );
 });
 ```
+
+## Fetching (recuperación) / Carga de datos
+
 La forma recomendada de cargar datos desde el servidor es utilizar la función `routeLoader$()` exportada de `@builder.io/qwik-city`. La función `routeLoader$()` se utiliza para crear un cargador de datos que se ejecutará en el servidor antes de que se renderice la ruta. El resultado de `routeLoader$()` debe exportarse como una exportación con nombre desde el archivo de ruta, es decir, solo se puede utilizar en un archivo `index.tsx` dentro de `src/routes/`.
 
 ```tsx title="src/routes/user/[userID]/index.tsx"
@@ -534,6 +540,8 @@ export const head: DocumentHead = ({resolveValue}) => {
 
 La función `routeLoader$()` toma una función que devuelve una promesa. La promesa se resuelve en el servidor y el valor resuelto se pasa al hook `useCustomLoader$()`. El hook `useCustomLoader$()` es un hook personalizado que se crea con la función `routeLoader$()`. El hook `useCustomLoader$()` devuelve una `Signal` que contiene el valor resuelto de la promesa devuelta por la función `routeLoader$()`. El hook `useCustomLoader$()` volverá a renderizar el componente cuando cambie la ruta y se vuelva a ejecutar la función `routeLoader$()`.
 
+## Manejo de envío de formularios
+
 Qwik proporciona la API `routeAction$()` exportada desde `@builder.io/qwik-city` para manejar las solicitudes de formularios en el servidor. `routeAction$()` solo se ejecuta en el servidor cuando se envía el formulario.
 
 ```tsx title="src/routes/user/[userID]/index.tsx"
@@ -542,7 +550,7 @@ import { component$ } from '@builder.io/qwik';
 import { routeAction$, Form, zod$, z } from '@builder.io/qwik-city';
 
 // La función `routeAction$()` se utiliza para crear un cargador de datos que se ejecutará en el servidor cuando se envíe el formulario.
-// El resultado de `routeAction$()` es un hook personalizado que se puede utilizar para acceder a los datos devueltos por `routeAction$()`.
+// El retorno de `routeAction$()` es un hook personalizado que se puede utilizar para acceder a los datos devueltos por `routeAction$()`.
 export const useUserUpdate = routeAction$(async (data, requestContext) => {
   const user = await db.table('users').get(requestContext.params.userID);
   user.name = data.name;
@@ -557,7 +565,7 @@ export const useUserUpdate = routeAction$(async (data, requestContext) => {
 }));
 
 export default component$(() => {
-  // El hook `useUserUpdate` devolverá un `ActionStore<T>` que contiene el `value` devuelto por `routeAction$()`, y otras propiedades, como `submit()`, que se utiliza para enviar el formulario programáticamente, y `isRunning`. Todas estas propiedades son reactivas y volverán a renderizar el componente cuando cambien.
+  // El hook `useUserUpdate` devolverá un `ActionStore<T>` que contiene el `value` devuelto por `routeAction$()`, y otras propiedades, como `submit()`, que se utiliza para enviar el formulario programáticamente, e `isRunning`. Todas estas propiedades son reactivas y volverán a renderizar el componente cuando cambien.
   const userData = useUserUpdate();
   // userData.value es el valor devuelto por `routeAction$()`, que es `undefined` antes de enviar el formulario.
   // userData.formData es los datos del formulario que se enviaron, es `undefined` antes de enviar el formulario.
@@ -703,7 +711,7 @@ export default component$(() => {
 
 ### `server$((...args) => { ... })`
 
-`server$()` es una forma especial de declarar funciones que solo se ejecutan en el servidor. Si se llaman desde el cliente, se comportarán como una llamada RPC y se ejecutarán en el servidor. Pueden tomar cualquier argumento serializable y devolver cualquier valor serializable.
+`server$()` es una forma especial de declarar funciones que solo se ejecutan en el servidor. Si se llaman desde el cliente, se comportarán como una RPC (llamada a procedimiento remoto) y se ejecutarán en el servidor. Pueden tomar cualquier argumento serializable y devolver cualquier valor serializable.
 
 ### El condicional `isServer`
 
