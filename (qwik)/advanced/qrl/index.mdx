@@ -11,89 +11,97 @@ contributors:
 
 # QRL
 
-QRL (Qwik URL) is a particular form of URL that Qwik uses to lazy load content.
+Denominamos QRL (Qwik URL) a una forma particular de URL que Qwik utiliza para cargar contenido de lazy load.
 
-QRLs:
+Las QRLs tienen las siguientes peculiaridades:
 
-- are specially formatted URLs that are left as attributes in the HTML to tell Qwik where the handlers for the code should be loaded from.
-- point to a JavaScript chunk to be lazy-loaded.
-- Contain a symbol name which needs to be retrieved from the chunk.
-- May contain lexically scoped object references. (Captured variables from closures.)
-- If relative, use `q:base` for resolution.
+- son URLs con un formato especial que se dejan como atributos en el HTML para decirle a Qwik de dónde se deben cargar los handlers para el código.
+- apuntan al chunk de JavaScript que debe ser lazy loaded.
+- continene el nombre de un símbolo que necesitamos recuperar del chunk.
+- puede contener referencias a objetos del lexical scope (Variables capturadas de closures).
+- Si son relativas, usan `q:base` para su resolución.
 
-## QRL Encoding
+## Codificación QRL
 
 ```
 ./path/to/chunk.js#SymbolName
 ```
 
-In its simplest form, the QRL contains a URL (such as `./path/to/chunk.js`) that the browser can use to lazy-load a resource, and a `SymbolName` to retrieve from the lazy-loaded chunk.
+En su forma más simple, la QRL contiene una URL (como `./path/to/chunk.js`) que el navegador puede utilizar para cargar de manera lazy load un recurso, y un `SymbolName` para recuperar del fragmento que será lazy loaded.
 
-Qwik uses `q:base` to resolve a QRL into an absolute URL if the URL is relative. (If no `q:base` attribute is present, then `document.baseURI` is used as a base.)
+Qwik utiliza `q:base` para resolver una QRL en una URL absoluta si la URL es relativa. Si no está presente el atributo `q:base`, entonces se utiliza `document.baseURI` como base.
 
-## Encoding lexically scoped captured variables
+## Codificación de variables capturadas de alcance léxico
 
-QRLs can also restore lexically scoped variables. In that case, the variables are encoded in the QRL at the end in the form of an array of indexes into the `q:obj` attribute.
+Las QRLs también pueden restaurar variables de alcance léxico. En ese caso, las variables se codifican en la QRL al final en forma de un array de índices en el atributo `q:obj`
 
 ```
 ./path/to/chunk.js#SymbolName[0,2]
 ```
 
-The array is used by `useLexicalScope()` to restore the variables.
+El hook `useLexicalScope()` usa ese array para restaurar las variables.
 
-### Example
+### Ejemplo
 
-Let's look at an example of how all of the pieces of the QRL tie together.
+Veamos un ejemplo de cómo todas las piezas de la QRL se unen.
 
-The developer writes code for a simple component.
+El desarrollador escribe código para un componente simple.
 
 ```tsx
 export const Counter = component$((props: { step: number }) => {
-  const count = useSignal(0);
+  const count = useSignal(0)
 
-  return <button onClick$={() => (count.value += props.step || 1)}>{count.value}</button>;
-});
+  return (
+    <button onClick$={() => (count.value += props.step || 1)}>
+      {count.value}
+    </button>
+  )
+})
 ```
 
-The optimizer breaks above code into pieces like so:
+El optimizador divide el código anterior en piezas así:
 
 ```tsx
-const Counter = component(qrl('./chunk-a.js', 'Counter_onMount'));
+const Counter = component(qrl('./chunk-a.js', 'Counter_onMount'))
 ```
 
 ```tsx title="chunk-a.js"
 export const Counter_onMount = (props) => {
-  const count = useSignal(0);
-  return qrl('./chunk-b.js', 'Counter_onRender', [count, props]);
-};
+  const count = useSignal(0)
+  return qrl('./chunk-b.js', 'Counter_onRender', [count, props])
+}
 ```
 
 ```tsx title="chunk-b.js"
 const Counter_onRender = () => {
-  const [count, props] = useLexicalScope();
+  const [count, props] = useLexicalScope()
   return (
-    <button onClick$={qrl('./chunk-c.js', 'Counter_onClick', [count, props])}>{count.value}</button>
-  );
-};
+    <button onClick$={qrl('./chunk-c.js', 'Counter_onClick', [count, props])}>
+      {count.value}
+    </button>
+  )
+}
 ```
 
 ```tsx title="chunk-c.js"
 const Counter_onClick = () => {
-  const [count, props] = useLexicalScope();
-  return (count.value += props.step || 1);
-};
+  const [count, props] = useLexicalScope()
+  return (count.value += props.step || 1)
+}
 ```
 
-### Rendered HTML
+### HTML renderizado
 
-After the above code gets executed, it produces this HTML.
+Después de que se ejecute el código anterior, se produce el siguiente HTML.
 
-Assume: `http://localhost/index.html`
+Supongamos que: `http://localhost/index.html`
 
 ```html
 <html>
   <body q:base="/build/">
-    <button q:obj="456, 123" on:click="./chunk-c.js#Counter_onClick[0,1]">0</button>
+    <button q:obj="456, 123" on:click="./chunk-c.js#Counter_onClick[0,1]">
+      0
+    </button>
     <script>
       /*Qwikloader script*/
     </script>
@@ -104,47 +112,47 @@ Assume: `http://localhost/index.html`
 </html>
 ```
 
-The main thing to note is the `on:click` attribute. This attribute gets read by the Qwikloader when the user clicks on the button.
+Lo principal a tener en cuenta es el atributo `on:click`. El Qwikloader se encargará de leer este atributo en cuanto el usuario haga click en el botón.
 
-1. HTML is loaded in the browser, and Qwikloader registers a global `click` listener. No other JavaScript is loaded/executed at this point.
-2. User clicks on the `<button>`. This fires a `click` event which bubbles up and is handled by the Qwikloader.
-3. Qwikloader retraces the event bubble path and looks for `on:click` attribute, which it finds on `<button>`.
-4. Qwikloader now tries to load the corresponding chunk. To do that, the Qwikloader needs to resolve the relative path of `./chunk-c.js`. It uses these values to build an absolute path starting at `<button>` and walking towards the document.
+1. El HTML se carga en el navegador y el Qwikloader registra un listener global de tipo `click`. En este punto, no se carga/ejecuta ningún otro JavaScript.
+2. El usuario hace click en el `<button>`. Esto dispara un evento `click` que se propaga hacia arriba y es gestionado por el Qwikloader.
+3. El Qwikloader rastrea la ruta de propagación del evento y busca el atributo `on:click`, que encuentra en `<button>`.
+4. Ahora el Qwikloader intentará cargar el chunk correspondiente. Para hacerlo, necesita resolver la ruta relativa de `./chunk-c.js`. Usa estos valores para construir una ruta absoluta comenzando en `<button>` y que vaya hacia el documento.
    - `on:click="./chunk-c.js#Counter_onClick[0,2]"`
    - `<body q:base="/build/">`
    - `document.baseURI = "http://localhost/index.html"`
-   - The resulting absolute URL is `http://localhost/build/chunk-c.js` which Qwikloader fetches.
-5. Qwikloader now retrieves the `Counter_onClick` reference from `http://localhost/build/chunk-c.js` and invokes it.
+   - La URL absoluta que resulta al final y que será a la que el Qwikloader le hará el fetch es `http://localhost/build/chunk-c.js`.
+5. Entonces el Qwikloader recupera la referencia `Counter_onClick` de `http://localhost/build/chunk-c.js` y la invoca.
    ```tsx
    const Counter_onClick = () => {
-     const [count, props] = useLexicalScope();
-     return (count.value += props.step || 1);
-   };
+     const [count, props] = useLexicalScope()
+     return (count.value += props.step || 1)
+   }
    ```
-6. At this point, the execution is handed off from Qwikloader to the lazy-loaded chunk. This is done so that the Qwikloader can be as small as possible as it is inlined into the HTML.
-7. `useLexicalScope` is imported from `@builder.io/qwik` and is responsible for retrieving the `count` and `props`.
+6. En este punto, la ejecución es transferida desde Qwikloader al chunk que es lazy loaded. Esto se hace para que Qwikloader pueda ser lo más pequeño posible ya que está en línea en el HTML.
+7. Se importa `useLexicalScope` de `@builder.io/qwik` para que recupere `count` y `props`.
    `const [count, props] = useLexicalScope();`
-8. Parse the `<script type="qwik/json">{...json...}</script>` JSON and distribute the deserialized objects per `q:obj` attribute. In our case
-   - `<div q:id="123" q:obj="456" q:host>` gets object with id `123`. This will be the `count` created in the `Counter_onMount` function.
-   - `<button q:obj="456, 123"` gets `count` as well as a reference to the `<div q:id="457">`
-9. Once the `qwik/json` is deserialized, `useLexicalScope` can use the QRL's `[0,1]` array to look into `q:obj="456, 123"` to retrieve object with id `456` and `123`, which are props of `<div q:id="123" q:obj="456" q:host>` as well as `store` from `Counter_onMount` function.
+8. Se parsea el JSON `<script type="qwik/json">{...json...}</script>` y de distribuye el objeto deserializado a través del atributo `q:obj`. En nuestro caso:
+   - `<div q:id="123" q:obj="456" q:host>` recibe el objeto con el id `123`. Este será el `count` creado en la función `Counter_onMount`.
+   - `<button q:obj="456, 123"` recibe tanto el `count` como la referencia al `<div q:id="457">`
+9. Una vez que el `qwik/json` se deserializa, `useLexicalScope` puede usar el arreglo de la QRL `[0,1]` para mirar en `q:obj="456, 123"` y recuperar el objecto con el id `456` y `123`, que son las props del `<div q:id="123" q:obj="456" q:host>` al igual que el `store` de la función `Counter_onMount`.
 
-> **NOTE:** For performance reasons the `q:obj` and `<script type="qwik/json">` are only updated when the application is deserialized into HTML. When the application is running, these attributes may have stale values.
+> **NOTE:** Por razones de rendimiento, el `q:obj` y el `<script type="qwik/json">` solo se actualizan cuando la aplicación se deserializa en el HTML. Cuando la aplicación esté funcionando, puede ser que sus valores se hayan quedado obsoletos.
 
-## Why not just dynamic `import()`?
+## ¿Por qué no hacer simplemente `import()` de forma dinámica?
 
-Browsers already have dynamic import mechanisms available from `import()`. Why not use that instead of inventing a new QRL format?
+Si los navegadores ya disponen de mecanismos para hacer `import()`, ¿por qué no hacerlo de esa forma en lugar de inventar este nuevo formato QRL?
 
-There are several reasons:
+Hay unas cuantas razones:
 
-1. For Qwik to work, the QRLs need to be serialized into HTML. This is problematic for dynamic `import()` because there is no easy way to retrieve the relative URL from the `import('./some-path.js')` so that it can be placed in the HTML.
-2. Dynamic imports deal with chunks, but they have no mechanism to refer to a specific symbol in the chunk.
-3. Dynamic imports have relative paths to the file which imported it. This is a problem because when the relative path is placed in HTML, it loses the context which defines relative to what. When the framework reads the path from HTML and tries to import it as `import(element.getAttribute('on:click'))`, the framework will become the context for relative path resolution. This is wrong as the original context before serialization to the HTML was different.
-4. QRLs encode information about the lexically scoped variables that were captured in the closure and need to be restored.
-5. Dynamic import requires that the developer writes `import('./file-a.js')`, which means the developer is in charge of deciding where the lazy-loaded boundaries are. This limits the ability of the tooling to move code around in an automated way.
+1. Para que Qwik funcione, las QRLs deben ser serializadas en HTML. Esto se vuelve problemático para el `import()` dinámico ya que no hay una manera sencilla de recuperar la URL relativa del `import('./some-path.js')` para colocarla luego en el HTML.
+2. Si bien es cierto que los imports dinámicos pueden tratar los chunks, no tienen mecanismos para referenciar un símbolo específico dentro del fragmento.
+3. Las importaciones dinámicas tienen rutas relativas al archivo que las importó. Esto es un problema porque cuando la ruta relativa se coloca en HTML, pierde el contexto que define a qué es relativo. Cuando Qwik trata de leer la ruta desde el HTML e intenta importarla con `import(element.getAttribute('on:click'))`, el framework se convertirá entonces en el contexto para la resolución de la ruta relativa, y esto es incorrecto ya que el contexto original antes de la serialización al HTML era diferente.
+4. Las QRLs codifican información sobre las variables de alcance léxico que fueron capturadas en el closure y necesitan ser restauradas.
+5. La importanción dinámica requiere que el desarrollador escriba `import('./file-a.js')`, lo cual significa que es el propio desarrollador el que decide dónde están los límites del lazy load. Esto limitaría la capacidad de las herramientas para mover y manejar el código de una manera automatizada.
 
-Because of the above differences, Qwik introduces QRLs as a mechanism for lazy loading closures into a Qwik application.
+Debido a las diferencias anteriores, Qwik introduce los QRLs como un mecanismo para cargar los closures de forma lazy load en una aplicación Qwik.
 
-## See Also
+## Ver también
 
-- `qrl`: API used to create QRLs.
+- `qrl`: API usada para crear QRLs.

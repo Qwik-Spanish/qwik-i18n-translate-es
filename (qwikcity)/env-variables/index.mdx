@@ -1,24 +1,24 @@
 ---
-title: Qwik City - Environment variables
+title: Qwik City - Variables de entorno
 contributors:
   - manucorporat
 ---
 
-# Environment variables
+# Variables de entorno (Environment variables)
 
-Qwik apps can read environment variables in two main ways: **build-time variables** and **server-side variables**.
+Las aplicaciones de Qwik pueden leer variables de entorno de dos formas principales: **variables de tiempo de compilación** y **variables del lado del servidor**.
 
-> `process.env` is a Node.js only API, and should be avoided at all costs.
+> `process.env` es una API exclusiva de Node.js y se debe evitar a toda costa.
 
-## Build-time variables
+## Variables de tiempo de compilación (build-time)
 
-Build-time variables are powered by [Vite](https://vitejs.dev/guide/env-and-mode.html). They are defined in `.env` files and are available **in the browser and in the server-side code**.
+Las variables de tiempo de compilación son impulsadas por [Vite](https://vitejs.dev/guide/env-and-mode.html). Se definen en archivos `.env` y están disponibles **en el navegador y en el código del lado del servidor**.
 
-> **IMPORTANT! DO NOT** use `import.meta.env.PUBLIC_*` to store any sensitive information, such as API keys, secrets, passworlds, etc. **Only public data**.
+> **IMPORTANTE: NO** utilices `import.meta.env.PUBLIC_*` para almacenar información confidencial, como claves de API, secretos, contraseñas, etc. **Solo datos públicos**.
 
-Notice that build-time variables should be considered as **public**, since they will be hardcoded in the browser build, which can be easily read by anyone.
+Ten en cuenta que las variables de tiempo de compilación se deben considerar como **públicas**, ya que se codificarán directamente en la construcción del navegador y cualquiera podrá leerlas fácilmente.
 
-Build-time variables are prefixed by default with `PUBLIC_` and can be accessed with with `import.meta.env.PUBLIC_*`.
+Las variables de tiempo de compilación tienen por defecto el prefijo `PUBLIC_` y se pueden acceder mediante `import.meta.env.PUBLIC_*`.
 
 ```tsx title=".env" /PUBLIC_API_URL/#a
 PUBLIC_API_URL=https://api.example.com
@@ -28,20 +28,20 @@ PUBLIC_API_URL=https://api.example.com
 import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  // `import.meta.env.PUBLIC_*` variables can be read anywhere, including browser
+  // Las variables `import.meta.env.PUBLIC_*` se pueden leer en cualquier lugar, incluido el navegador
   return <div>PUBLIC_API_URL: {import.meta.env.PUBLIC_API_URL}</div>
 })
 ```
 
-> `import.meta.env.PUBLIC_*` variables can be read anywhere, but do not put any sensitive information in them, since they will be visible to the client.
+> Las variables `import.meta.env.PUBLIC_*` se pueden leer en cualquier lugar. No incluyas información confidencial en ellas, ya que serán visibles para el cliente.
 
-## Server-side variables
+## Variables del lado del servidor (server-side)
 
-Server-side variables are fundamentally runtime variables that are only available in the server-side code.
+Las variables del lado del servidor son fundamentalmente variables en tiempo de ejecución que solo están disponibles en el código del lado del servidor.
 
-They are not known at build-time and are not available in the browser, so they can be considered as **private**.
+No se conocen en tiempo de compilación y no están disponibles en el navegador, por lo que se pueden considerar como **privadas**.
 
-Server-side variables can only be accessed in server-only APIs that expose the `RequestEvent` object, such as `routeLoader$()`, `routeAction$()`, `server$()` and endpoint handlers such as `onGet`, `onPost, `onRequest, etc.
+Las variables del lado del servidor solo se pueden acceder en las API exclusivas del servidor que exponen el objeto `RequestEvent`, como `routeLoader$()`, `routeAction$()`, `server$()` y handlers de endpoint como `onGet`, `onPost`, `onRequest, etc.
 
 ```tsx /DB_PRIVATE_KEY/ title="src/routes/index.tsx"
 import {
@@ -68,19 +68,19 @@ export const useLoader = routeLoader$(async (requestEvent) => {
 });
 
 export const serverFunction = server$(function () {
-  // `this` is the `RequestEvent` object
+  // `this` es el objeto `RequestEvent`
   console.log(this.env.get('DB_PRIVATE_KEY'));
 });
 ```
 
-### Defining server-side variables
+### Definición de variables del lado del servidor
 
-During development server-side variables can be defined in the `.env.local` file, this file is ignored by git by default, so it is safe to put sensitive information in it.
+Durante el desarrollo, las variables del lado del servidor se pueden definir en el archivo `.env.local`, este archivo se ignora por defecto en Git, por lo que es seguro colocar información confidencial en él.
 
 ```env title=".env.local"
 DB_PRIVATE_KEY=123456789
 ```
 
-> Make sure you never commit `.env.local` files to git.
+> Asegúrate de nunca hacer commit de los archivos `.env.local` en Git.
 
-During production, **setting server-side variables is very platform specific**. Most of the platforms allow you to set environment variables from their dashboard, or CLI. Please, refer to your platform (cloudflare, vercel, netlify) documentation for more information.
+Durante producción, **configurar las variables del lado del servidor es muy específico de la plataforma**. La mayoría de las plataformas te permiten configurar variables de entorno desde su panel de control o línea de comandos. Consulta la documentación de tu plataforma (cloudflare, vercel, netlify) para obtener más información.

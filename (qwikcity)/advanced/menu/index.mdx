@@ -12,16 +12,16 @@ contributors:
   - AnthonyPAlicea
 ---
 
-# Menu
+# Menú
 
-Menus allow you to describe the site navigation structure in a simple declarative way. Menus come in two steps:
+Los menús te permiten describir la estructura de navegación del sitio de manera simple y declarativa. Los menús constan de dos pasos:
 
-1. Defining a `menu.md` file that contains the menu structure for the directory it's in.
-2. Using the [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) function to retrieve the menu structure in a template for rendering. [Read more here](/docs/(qwikcity)/api/index.mdx#usecontent)
+1. Definir un archivo `menu.md` que contenga la estructura del menú para el directorio en el que se encuentra.
+2. Utilizar la función [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) para recuperar la estructura del menú en una plantilla para su renderización. [Lee más aquí](/docs/(qwikcity)/api/index.mdx#usecontent)
 
-## File Structure
+## Estructura de archivos
 
-First layout files as follows:
+Organiza los archivos de la siguiente manera:
 
 ```bash
 src/
@@ -33,18 +33,18 @@ src/
             └── index.tsx  # https://example.com/some/path
 ```
 
-Navigating to `https://example.com/some/path` activates:
+Al navegar a `https://example.com/some/path`, se activan los siguientes archivos:
 
-- `src/routes/some/path/index.tsx`: This component will be used for rendering the page content.
-- `src/routes/some/layout.tsx`: This layout will be used to provide content around the `src/routes/some/path/index.tsx`. Internally the layout can use `src/routes/some/menu.md` to render the menus.
-- `src/routes/some/menu.md`: This file will be used to declare the menu structure which will be rendered by `src/routes/some/layout.tsx`.
+- `src/routes/some/path/index.tsx`: Este componente se utilizará para renderizar el contenido de la página.
+- `src/routes/some/layout.tsx`: Este layout se utilizará para proporcionar contenido alrededor de `src/routes/some/path/index.tsx`. Internamente, el diseño puede usar `src/routes/some/menu.md` para renderizar los menús.
+- `src/routes/some/menu.md`: Este archivo se utilizará para declarar la estructura del menú que se renderizará mediante `src/routes/some/layout.tsx`.
 
-## Declaring Menu Structure
+## Declaración de la estructura del menú
 
-Use `menu.md` to declare the menu structure.
+Utiliza `menu.md` para declarar la estructura del menú.
 
-- Use the headings (`#`, `##`, etc..) to define menu depth
-- Use the bulleted list (`-`) to define menu items.
+- Utiliza los encabezados (`#`, `##`, etc.) para definir la profundidad del menú.
+- Utiliza una lista con viñetas (`-`) para definir los elementos del menú.
 
 ```markdown title="src/route/some/menu.md"
 # Docs
@@ -58,11 +58,11 @@ Use `menu.md` to declare the menu structure.
 - [Basics](/docs/(qwik)/components/basics/index.mdx)
 ```
 
-## Retrieving Menu Structure
+## Recuperación de la estructura del menú
 
-At runtime, any component can retrieve the menu with [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) hook. The type returned is `ContentMenu`.
+En tiempo de ejecución, cualquier componente puede recuperar el menú utilizando el hook [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent). El tipo devuelto es `ContentMenu`.
 
-The example above will return:
+El ejemplo anterior devolverá:
 
 ```javascript
 {
@@ -90,9 +90,9 @@ The example above will return:
 }
 ```
 
-## Using `ContentMenu` in a layout
+## Uso de `ContentMenu` en un layout (plantilla)
 
-While [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) can be invoked from any component that is part of the current route. It is typically used in a layout component (or a component used by layout) to render the menu. An example usage is shown here:
+Si bien [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) se puede invocar desde cualquier componente que forme parte de la ruta actual, generalmente se utiliza en un componente del layout (o en un componente utilizado por el diseño) para renderizar el menú. A continuación se muestra un ejemplo de uso:
 
 ```tsx
 import { component$ } from '@builder.io/qwik';

@@ -16,64 +16,63 @@ contributors:
   - mhevery
 ---
 
-# API reference
+# Referencia de la API
 
 ## `useContent()`
 
-The [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) function retrieves the nearest content information for the current route. The returned object includes:
+La función [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) recupera la información de contenido más próxima para la ruta actual. El objeto devuelto incluye:
 
 ```ts
 headings: ContentHeading[] | undefined;
 menu: ContentMenu | undefined;
 ```
 
-The `headings` array includes data about a markdown file's `<h1>` to `<h6>` [html heading elements](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/Heading_Elements).
+El array `headings` incluye datos sobre los elementos de encabezado HTML `<h1>` a `<h6>` de un archivo markdown.
 
-Menus are contextual data declared with `menu.md` files. See [menus file definition](/docs/(qwikcity)/advanced/menu/index.mdx) for more information on the file format and location.
+Los menús son datos contextuales declarados con archivos `menu.md`. Consulta [definición del archivo de menús](/docs/(qwikcity)/advanced/menu/index.mdx) para obtener más información sobre el formato y la ubicación del archivo.
 
 ## `useDocumentHead()`
 
-Use the `useDocumentHead()` function to read the document [head metadata](/docs/(qwikcity)/pages/index.mdx#head-export).
+Utiliza la función `useDocumentHead()` para leer los metadatos del encabezado del documento [head metadata](/docs/(qwikcity)/pages/index.mdx#head-export).
 
-`useDocumentHead()` retrieves a readonly `DocumentHead` object that includes:
+`useDocumentHead()` recupera un objeto de solo lectura `DocumentHead` que incluye:
 
 ```ts
 export interface DocumentHead {
   /**
-   * Represents the `<title>` element of the document.
+   * Representa el elemento `<title>` del documento.
    */
   readonly title?: string;
   /**
-   * Used to manually set meta tags in the head. Additionally, the `data`
-   * property could be used to set arbitrary data which the `<head>` component
-   * could later use to generate `<meta>` tags.
+   * Se utiliza para establecer manualmente metaetiquetas en el encabezado. Además, la propiedad `data`
+   * se puede utilizar para establecer datos arbitrarios que el componente `<head>` podría utilizar más adelante para generar etiquetas `<meta>`.
    */
   readonly meta?: readonly DocumentMeta[];
   /**
-   * Used to manually append `<link>` elements to the `<head>`.
+   * Se utiliza para agregar manualmente elementos `<link>` al `<head>`.
    */
   readonly links?: readonly DocumentLink[];
   /**
-   * Used to manually append `<style>` elements to the `<head>`.
+   * Se utiliza para agregar manualmente elementos `<style>` al `<head>`.
    */
   readonly styles?: readonly DocumentStyle[];
   /**
-   * Arbitrary object containing custom data. When the document head is created from
-   * markdown files, the frontmatter attributes that are not recognized as a well-known
-   * meta names (such as title, description, author, etc...), are stored in this property.
+   * Objeto arbitrario que contiene datos personalizados. Cuando se crea el encabezado del documento a partir
+   * de archivos markdown, los atributos de frontmatter que no se reconocen como nombres de metadatos conocidos
+   * (como título, descripción, autor, etc.) se almacenan en esta propiedad.
    */
   readonly frontmatter?: Readonly<Record<string, any>>;
 }
 ```
 
-All starters include a `<RouterHead>` component that is responsible for generating the `<head>` element of the document. It uses the `useDocumentHead()` function to retrieve the current head metadata and render the appropriate `<meta>`, `<link>`, `<style>` and `<title>` elements.
+Todos los starters incluyen un componente `<RouterHead>` que se encarga de generar el elemento `<head>` del documento. Utiliza la función `useDocumentHead()` para recuperar los metadatos de encabezado actuales y renderizar los elementos `<meta>`, `<link>`, `<style>` y `<title>` correspondientes.
 
 ```tsx title="src/components/router-head/router-head.tsx"
 import { component$ } from '@builder.io/qwik';
 import { useDocumentHead } from '@builder.io/qwik-city';
 
 /**
- * The RouterHead component is placed inside of the document `<head>` element.
+ * El componente RouterHead se coloca dentro del elemento `<head>` del documento.
  */
 export const RouterHead = component$(() => {
   const head = useDocumentHead();
@@ -103,38 +102,38 @@ export const RouterHead = component$(() => {
 
 ## `useLocation()`
 
-Use the [`useLocation()`](/docs/(qwikcity)/api/index.mdx#uselocation) function to retrieve a `RouteLocation` object for the current location.
+Utiliza la función [`useLocation()`](/docs/(qwikcity)/api/index.mdx#uselocation) para obtener un objeto `RouteLocation` para la ubicación actual.
 
-`useLocation()` allows developers to know the current URL, params as well as if the app is currently navigating, which is useful for showing a loading indicator.
+`useLocation()` permite a los desarrolladores conocer la URL actual, los parámetros y si la aplicación se encuentra actualmente en navegación, lo cual es útil para mostrar un indicador de carga.
 
 ```tsx
 export interface RouteLocation {
   /**
-   * Route params extracted from the URL.
+   * Parámetros de ruta extraídos de la URL.
    */
   readonly params: Record<string, string>;
   /**
-   * The current URL.
+   * La URL actual.
    */
   readonly url: URL;
   /**
-   * True if the app is currently navigating.
+   * Verdadero si la aplicación se encuentra actualmente en navegación.
    */
   readonly isNavigating: boolean;
 }
 ```
 
-The return value of [`useLocation()`](/docs/(qwikcity)/api/index.mdx#uselocation) is similar to `document.location`, but it is safe to use on the server where there is no global `location` object, and it's reactive so it can be tracked.
+El valor de retorno de [`useLocation()`](/docs/(qwikcity)/api/index.mdx#uselocation) es similar a `document.location`, pero se puede utilizar de forma segura en el servidor donde no existe un objeto `location` global, y es reactivo, por lo que se puede rastrear.
 
-### Path Route Parameters
+### Parámetros de Ruta de la Ruta
 
-`useLocation()` encodes the [Route Parameters](/docs/(qwikcity)/routing/index.mdx) as params.
+`useLocation()` codifica los [Parámetros de Ruta](/docs/(qwikcity)/routing/index.mdx) como parámetros.
 
-Assume you have:
+Supongamos que tienes:
 
-- File: `src/routes/sku/[skuId]/index.tsx`
-- User navigates to: `https://example.com/sku/1234`
-- Then the `skuId` can be retrieved through `useLocation().params.skuId`
+- Archivo: `src/routes/sku/[skuId]/index.tsx`
+- El usuario navega a: `https://example.com/sku/1234`
+- Luego, el `skuId` se puede obtener a través de `useLocation().params.skuId`
 
 ```tsx /useLocation/ title="src/routes/sku/[skuId]/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -146,7 +145,7 @@ export default component$(() => {
   return (
     <>
       <h1>SKU</h1>
-      {loc.isNavigating && <p>Loading...</p>}
+      {loc.isNavigating && <p>Cargando...</p>}
       <p>pathname: {loc.url.pathname}</p>
       <p>skuId: {loc.params.skuId}</p>
     </>
@@ -154,7 +153,7 @@ export default component$(() => {
 });
 ```
 
-The above code would generate:
+El código anterior generaría:
 
 ```html
 <h1>SKU</h1>
@@ -162,15 +161,15 @@ The above code would generate:
 <p>skuId: 1234</p>
 ```
 
-> Notice that `useLocation` is a read-only API, you should never attempt to mutate the values of the `loc` object returned. Instead look into the `useNavigate()` API.
+> Ten en cuenta que `useLocation` es una API de solo lectura, nunca debes intentar modificar los valores del objeto `loc` devuelto. En su lugar, consulta la API `useNavigate()`.
 
 ## `useNavigate()`
 
-The `useNavigate()` function allows to programatically navigate to the next page without involving a user click or causing a full-page reload. This is the API used by the `<Link>` component internally to support SPA navigation.
+La función `useNavigate()` permite navegar programáticamente a la siguiente página sin necesidad de que el usuario haga clic o que se recargue toda la página. Esta es la API utilizada internamente por el componente `<Link>` para admitir la navegación de SPA.
 
-This function returns a `nav()` function that can be used to "push" to a new path.
+Esta función devuelve una función `nav()` que se puede utilizar para "navegar" a una nueva ruta.
 
-Also, `useNavigate` can be used to SPA refresh the current page, by calling the `nav()` function without arguments.
+Además, `useNavigate` se puede utilizar para actualizar la página actual de SPA, llamando a la función `nav()` sin argumentos.
 
 ```tsx {12,21} /useNavigate/
 import { component$ } from '@builder.io/qwik';
@@ -183,33 +182,32 @@ export default component$(() => {
     <>
       <button
         onClick$={async () => {
-          // SPA navigate to /dashboard
+          // Navegar a /dashboard de SPA
           await nav('/dashboard');
         }}
       >
-        Go to dashboard
+        Ir al panel de control
       </button>
 
       <button
         onClick$={async() => {
-          // refresh page: call without arguments
+          // Actualizar la página: llamar sin argumentos
           await nav();
         }}
       >
-        Refresh page
+        Actualizar página
       </button>
     </>
   );
 });
 ```
+Este componente que tiene un botón, cuando hacemos click, Qwik City nos traerá el contenido de la ruta `/dashboard` sin recargar la página
 
-This component will have a button then when clicked, Qwik City will navigate to `/dashboard` without causing a page to reload.
-
-> Notice that for SEO, and accessibility it's better to use the `<Link>` component instead of `useNavigate()` programmatically to navigate to a new page after some user interaction.
+> Ten en cuenta que para SEO y accesibilidad, es mejor utilizar el componente `<Link>` en lugar de `useNavigate()` para navegar programáticamente a una nueva página después de alguna interacción del usuario.
 
 ## `routeLoader$()`
 
-The `routeLoader$()` function is used to declare a new Server Loader in the given page/endpoint or layout. Qwik City will execute all the declared loaders for the given route match. Qwik Components can later reference the loaders, by importing them and calling the `.use()` method in order to retrieve the data.
+La función `routeLoader$()` se utiliza para declarar un nuevo cargador de servidor en la página/endpoint o diseño especificado. Qwik City ejecutará todos los cargadores declarados para la coincidencia de ruta especificada. Los componentes de Qwik pueden hacer referencia a los cargadores más tarde, importándolos y llamando al método `.use()` para recuperar los datos.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -220,26 +218,26 @@ export const useGetTime = routeLoader$(async () => {
 });
 export default component$(() => {
   const signal = useGetTime(); // Signal<{time: Date}>
-  console.log('Date': signal.value.time);
+  console.log('Fecha': signal.value.time);
   return (
     <div>{signal.value.time.toISOString()}</div>
   )
 });
 ```
 
-Please refer to the [Route Loader](/docs/(qwikcity)/route-loader/index.mdx) section for more information.
+Consulta la sección [Cargador de Ruta](/docs/(qwikcity)/route-loader/index.mdx) para obtener más información.
 
 ## `routeAction$()`
 
-The `routeAction$()` function is used to declare a new Server Action in the given page/endpoint or layout. Qwik City will execute only the invoked action after some user interaction (such as a button click or a form submission).
+La función `routeAction$()` se utiliza para declarar una nueva acción de servidor en la página/endpoint o diseño especificado. Qwik City ejecutará solo la acción invocada después de alguna interacción del usuario (como un clic en un botón o el envío de un formulario).
 
-Please refer to the [Server Actions](/docs/(qwikcity)/action/index.mdx) section for more information.
+Consulta la sección [Acciones de Servidor](/docs/(qwikcity)/action/index.mdx) para obtener más información.
 
 ## `<QwikCityProvider>`
 
-The `QwikCityProvider` component initializes Qwik City in the existing document, providing the necessary context for Qwik City to work, such as [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) and `useLocation()`.
+El componente `QwikCityProvider` inicializa Qwik City en el documento existente, proporcionando el contexto necesario para que Qwik City funcione, como [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) y `useLocation()`.
 
-This component is usually located at the very root of your application, in most of the starters you will find it in the `src/root.tsx` file:
+Este componente generalmente se encuentra en la raíz de tu aplicación, en la mayoría de los casos se encuentra en el archivo `src/root.tsx`:
 
 ```tsx title="src/root.tsx"
 import { QwikCityProvider, RouterOutlet } from '@builder.io/qwik-city';
@@ -258,25 +256,25 @@ export default function Root() {
 }
 ```
 
-> `QwikCityProvider` does not render any DOM element, not even the matched route, it merely initializes Qwik City core logic, because of this reason, it should not be used more than once in the same app.
+> `QwikCityProvider` no renderiza ningún elemento DOM, ni siquiera la ruta coincidente, simplemente inicializa la lógica principal de Qwik City. Por esta razón, no debe usarse más de una vez en la misma aplicación.
 
 ## `<RouterOutlet>`
 
-This component is responsible for rendering the matched route at a given moment, it used internally the [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) and to render the current page, as well as all the nested layouts.
+Este componente se encarga de renderizar la ruta coincidente en un momento dado. Utiliza internamente [`useContent()`](/docs/(qwikcity)/api/index.mdx#usecontent) para renderizar la página actual, así como todos los diseños anidados.
 
-This component is usually located as a child of `<body>`, in most of the starters you will find it in the `src/root.tsx` file:
+Este componente generalmente se encuentra como hijo de `<body>`, en la mayoría de los casos se encuentra en el archivo `src/root.tsx`:
 
 ## `<Form>`
 
-The `Form` component is a wrapper around the native `<form>` element, and it's designed to work side by side with [Server Actions](/docs/(qwikcity)/action/index.mdx#using-actions-with-form).
+El componente `Form` es un contenedor del elemento nativo `<form>`, y está diseñado para funcionar junto con las [Acciones de Servidor](/docs/(qwikcity)/action/index.mdx#using-actions-with-form).
 
-Since this component uses the native `<form>` element, it will work with any browser with and without JavaScript enabled, in addition, it enhances the native `<form>` element by capturing the `submit` event and preventing the default behavior, so it will behave like a SPA (Single Page Navigation) instead of a full page reload.
+Dado que este componente utiliza el elemento nativo `<form>`, funcionará en cualquier navegador, tanto con JavaScript habilitado como deshabilitado. Además, mejora el comportamiento del elemento nativo `<form>` capturando el evento `submit` y previniendo el comportamiento predeterminado, por lo que se comportará como una navegación de SPA (Single Page Application) en lugar de una recarga completa de la página.
 
 ```tsx title="src/routes/login/index.tsx"
 import { component$ } from '@builder.io/qwik';
 import { Form, routeAction$ } from '@builder.io/qwik-city';
 
-// this action will be called when the form is submitted
+// esta acción se llamará cuando se envíe el formulario
 export const useLoginAction = routeAction$((data, { cookies, redirect }) => {
   if (validate(data.username, data.password)) {
     cookies.set('auth', getAuthToken(data.username));
@@ -291,7 +289,7 @@ export default component$(() => {
     <Form action={login}>
       <input type="text" name="username" />
       <input type="password" name="password" />
-      <button type="submit">Login</button>
+      <button type="submit">Iniciar sesión</button>
     </Form>
   );
 });
@@ -299,11 +297,11 @@ export default component$(() => {
 
 ## `<Link>`
 
-The `Link` component works like the `<a>` anchor element, but instead of causing a full page to reload, it will navigate as a SPA (Single Page Navigation). This is useful if you need to navigate without losing your current state.
+El componente `Link` funciona como el elemento de anclaje `<a>`, pero en lugar de causar una recarga completa de la página, navegará como una aplicación de una sola página (SPA). Esto es útil si necesitas navegar sin perder el estado actual.
 
-> Notice that full-page reloads in Qwik are extremely cheap, other frameworks abuse SPA links because a full-page reload requires JS to hydrate and re-execute everything. This is not the case for Qwik. We found in our internal testing that using `<a>` usually leads to the most snappy interactions.
+> Ten en cuenta que las recargas completas de página en Qwik son extremadamente rápidas. Otros frameworks abusan de los enlaces SPA porque una recarga completa de página requiere que JavaScript realice la hidratación y vuelva a ejecutar todo. Esto no es el caso de Qwik. En nuestras pruebas internas, hemos encontrado que el uso de `<a>` generalmente conduce a interacciones más rápidas.
 
-Under the hood, the `<Link>` component uses the [`useNavigate()`](/docs/(qwikcity)/api/index.mdx#usenavigate) API and prevents the default behavior of the native `<a>`:
+En el fondo, el componente `<Link>` utiliza la API [`useNavigate()`](/docs/(qwikcity)/api/index.mdx#usenavigate) y evita el comportamiento predeterminado del elemento nativo `<a>`:
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -326,7 +324,7 @@ export const Link = component$<LinkProps>((props) => {
 });
 ```
 
-### Usage
+### Uso
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -336,10 +334,10 @@ export default component$(() => {
   return (
     <div>
       <a href="/docs" class="my-link">
-        full-page reload
+        recarga completa de página
       </a>
       <Link href="/docs" class="my-link">
-        spa navigation
+        navegación de SPA
       </Link>
     </div>
   );

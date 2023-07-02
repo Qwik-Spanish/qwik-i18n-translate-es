@@ -1,5 +1,5 @@
 ---
-title: Think Qwik
+title: Filosofía Qwik
 contributors:
   - manucorporat
   - hayley
@@ -8,95 +8,95 @@ contributors:
   - mhevery
 ---
 
-# Think Qwik
+# Filosofía Qwik
 
-Qwik is very similar to other web frameworks at a high level. Qwik is a framework that renders a tree of components resulting in an interactive application.
+Qwik es muy similar a otros frameworks web a un nivel alto. Qwik es un framework que renderiza un árbol de componentes resultando en una aplicación interactiva.
 
-The unique part of Qwik is not in what it does but in how it achieves its goals. Qwik's goal is to have instant-on applications, even on mobile devices. Qwik achieves this through two main strategies:
+La parte única de Qwik no está en lo que hace, sino en cómo logra sus objetivos. El objetivo de Qwik es tener aplicaciones instantáneas, incluso en dispositivos móviles. Qwik logra esto a través de dos estrategias principales:
 
-1. Delay execution and download of JavaScript for as long as possible.
-2. Serialize the execution state of the application and the framework on the server and resume it on the client.
+1. Retrasar la ejecución y descarga de JavaScript tanto como sea posible.
+2. Serializar el estado de ejecución de la aplicación y el framework en el servidor, y lo reanuda en el cliente.
 
-The goal of Qwik is having only to download and execute the bare minimum of the application.
+El objetivo de Qwik es tener que descargar y ejecutar solo lo mínimo indispensable de la aplicación.
 
-## Delay Execution
+## Retrasando la ejecución
 
-> Delay execution of JavaScript as much as possible.
+> Retrasar la ejecución de JavaScript tanto como sea posible.
 
-Qwik applications startup fast because there is a minimal amount of JavaScript code to execute. (At its simplest, a Qwik application only needs about 1KB of JavaScript to become interactive.)
+Las aplicaciones de Qwik se inician rápidamente porque hay una cantidad mínima de código JavaScript para ejecutar. (En su forma más simple, una aplicación de Qwik solo necesita alrededor de 1KB de JavaScript para volverse interactiva).
 
-By aggressively delaying the application download and execution, Qwik can provide near-instant startup performance that the current generation of web frameworks can't match.
+Al retrasar de manera considerable la descarga y ejecución de la aplicación, Qwik puede proporcionar un rendimiento de inicio casi instantáneo que las generaciones actuales de frameworks web no pueden igualar.
 
-Qwik is fast not because it uses clever algorithms but because it is designed in a way where most of the JavaScript never needs to be downloaded or executed. Its speed comes from not doing things (such as hydration) that other frameworks have to do.
+Qwik es rápido no porque use algoritmos inteligentes, sino porque está diseñado de tal manera que la mayor parte del JavaScript nunca necesita descargarse ni ejecutarse. Su velocidad proviene de no realizar acciones (como la hidratación) que otros frameworks deben hacer.
 
-## Resumability & Serialization
+## Reanudabilidad y Serialización
 
-Resumability is discussed in detail [here](../concepts/resumable/index.mdx). Resumability allows Qwik applications to continue execution where the server left off. All frameworks need to keep track of internal data structures about the application's state. The current generation of frameworks does not preserve this information when transitioning from the server to the browser. As a result, the framework's data structures need to be rebuilt in the browser, duplicating the work that was done on the server. The rebuilding of data structures and attaching of listeners is called hydration.
+La reanudabilidad se discute en detalle [aquí](../concepts/resumable/index.mdx). La reanudabilidad permite que las aplicaciones de Qwik continúen la ejecución desde donde el servidor la dejó. Todos los frameworks necesitan llevar un seguimiento de las estructuras de datos internas sobre el estado de la aplicación. La generación actual de frameworks no conserva esta información al hacer la transición del servidor al navegador. Como resultado, las estructuras de datos del framework deben reconstruirse en el navegador, duplicando el trabajo que se realizó en el servidor. La reconstrucción de estructuras de datos y la vinculación de listeners se denomina hidratación.
 
-Qwik serializes listeners, internal data structures, and application state into the HTML during the server-browser handoff. Because all of the information is serialized in HTML, the client can just resume execution where the server left off.
+Qwik serializa listeners, estructuras de datos internas y el estado de la aplicación en el HTML durante el intercambio entre el servidor y el navegador. Debido a que toda la información se serializa en HTML, el cliente puede reanudar la ejecución desde donde el servidor la dejó.
 
-## What is the problem?
+## ¿Cuál es el problema?
 
-Modern websites require vast amounts of JavaScript to become interactive. Too much JavaScript manifests itself in two problems:
+Los sitios web modernos requieren una gran cantidad de JavaScript para volverse interactivos. El exceso de JavaScript se manifiesta en dos problemas:
 
-1. **Network bandwidth**: A large amount of code is shipped to the client, which may take a long time on slow networks.
-2. **Startup time**: Once on the client, the code needs to be executed (as part of hydration) to get the site interactive.
+1. **Ancho de banda de la red**: Se envía una gran cantidad de código al cliente, lo que puede llevar mucho tiempo en redes lentas.
+2. **Tiempo de inicio**: Una vez en el cliente, el código debe ejecutarse (como parte de la hidratación) para que el sitio sea interactivo.
 
-As our applications get more complex with a higher fidelity of interactivity, the amount of code has steadily increased over the years with no sign of stopping. Simply put, our sites are getting more complex. An increase in site complexity, in turn, requires more code. All of this code negatively impacts site startup performance.
+A medida que nuestras aplicaciones se vuelven más complejas con una mayor fidelidad de interactividad, la cantidad de código ha aumentado constantemente a lo largo de los años sin indicios de detenerse. En pocas palabras, nuestros sitios se vuelven más complejos. Un aumento en la complejidad del sitio, a su vez, requiere más código. Todo este código afecta negativamente el rendimiento de inicio del sitio.
 
-To make matters worse, JavaScript is single-threaded; therefore, our complex sites can't take advantage of modern multi-core CPUs.
+Para complicarlo aun más, JavaScript es monohilo (single-threaded); por lo tanto, nuestros sitios complejos no pueden aprovechar los CPU multinúcleo (multi-core) modernos.
 
-### How did we get here?
+### ¿Cómo llegamos hasta este punto?
 
-The solution to the above problem is both obvious and hard: Ship less JavaScript.
+La solución al problema anterior es tanto obvia como difícil: enviar menos JavaScript.
 
-It's obvious because we all agree that sites with less JavaScript would perform better.
+Es obvio porque todos estamos de acuerdo en que los sitios con menos JavaScript funcionarían mejor.
 
-It is hard because our tools don't help us to get there. Almost all of our tools solve problems in a way that makes shipping less JavaScript hard. This is because most of our tools are designed to solve a specific problem without thinking about the amount of JavaScript they generate.
+Es difícil porque nuestras herramientas no nos ayudan a llegar allí. Casi todas nuestras herramientas resuelven problemas de una manera que dificulta enviar menos JavaScript. Esto se debe a que la mayoría de nuestras herramientas están diseñadas para resolver un problema específico sin tener en cuenta la cantidad de JavaScript que generan.
 
-Do you need to solve rendering, styling, animation, A/B testing, analytics, etc.? There is a tool for that. Just import or add a `<script>` tag, and these tools will solve your problems, but at the expense of making the initial bundle bigger.
+¿Necesitas resolver el renderizado, el estilo, la animación, las pruebas A/B, la analítica, etc.? Hay una herramienta para eso. Solo agrega o importa una etiqueta `<script>`, y estas herramientas resolverán tus problemas, pero a costa de aumentar el tamaño del paquete (bundle) inicial.
 
-As an industry, we have failed to think about the implication of bundle size. Each tool solves a specific problem individually, but the size is not part of the equation. Size is the problem that emerges when you put all of the tools together, and by that point, there is very little the developer can do about it.
+Como industria, hemos fracasado al pensar en las implicaciones del tamaño del paquete. Cada herramienta resuelve individualmente un problema específico, pero el tamaño no es parte de la ecuación. El tamaño es el problema que surge cuando se juntan todas las herramientas y que, llegados hasta este punto, hay muy poco que el desarrollador pueda hacer al respecto.
 
-### What's the solution?
+### ¿Cuál es la solución?
 
-Qwik is designed from the ground up to address the size problem. Small bundle size is its initial goal, and all other design decisions are subservient to that goal.
+Qwik está diseñado desde cero para abordar el problema del tamaño. Un tamaño de paquete pequeño es su objetivo inicial, y todas las demás decisiones de diseño están subordinadas a ese objetivo.
 
-Qwik is not about creating less JavaScript. Qwik is about not having to ship all of that JavaScript to the client at once on application startup. Qwik is what you end up with when you take the idea of "delay loading of JavaScript" to the extreme.
+Qwik no se trata de crear menos JavaScript. Qwik se trata de no tener que enviar todo ese JavaScript al cliente de una vez al iniciar la aplicación. Qwik es el resultado cuando llevas la idea de "cargar JavaScript mediante lazy-load" al extremo.
 
-Yes, Qwik requires a different way of thinking and designing your application, but the result is near zero initial JavaScript with progressive JavaScript download based on user interactions.
+Sí, Qwik requiere una forma diferente de pensar y diseñar tu aplicación, pero el resultado es un JavaScript inicial casi nulo con una descarga progresiva de JavaScript basada en las interacciones del usuario.
 
-### Size should not be a developer problem
+### El tamaño no debería ser problema de los desarrolladores
 
-Today, size is the developers' problem. If you follow best practices for each of the frameworks, tools, etc., you will have a large bundle size. It is at that time when developers start to mitigate the problem with some sort of lazy loading boundaries etc. (But as anyone who has done this will tell you: the options are limited.)
+Hoy en día, el tamaño es un problema para los desarrolladores. Si sigues las mejores prácticas para cada uno de los frameworks, herramientas, etc., tendrás un tamaño de paquete grande. Es en ese momento cuando los desarrolladores comienzan a mitigar el problema con algún tipo de límites de carga lazy-load, etc. (Pero cualquier persona que lo haya intentado te dirá: las opciones son limitadas).
 
-Our industry best practices lead to large bundles, and the web is full of examples.
+Las buenas prácticas de nuestra industria conducen a paquetes grandes, y la web está llena de ejemplos.
 
-The mantra of Qwik is that bundle size should not be something that developers should think about. It should just naturally emerge as part of how the framework is designed.
+El lema de Qwik es que el tamaño del paquete no debería ser algo en lo que los desarrolladores deban pensar. Debería surgir de manera natural como parte del diseño del framework.
 
-Qwik is designed from the ground up to produce lots of lazy loadable boundaries. Tooling can break up your application into many lazy-loadable chunks, and the runtime can download them only when needed.
+Qwik está diseñado desde cero para producir muchos límites de carga lazy-load. Las herramientas pueden dividir tu aplicación en muchos fragmentos (chunks) que se pueden cargar de forma lazy-load, y el runtime puede descargarlas solo cuando sea necesario.
 
-### Why not fix existing frameworks/tools?
+### ¿Por qué no solucionar los frameworks/herramientas existentes?
 
-In short, the lazy loading philosophy must be done at a low level and can not be retroactively added to the existing frameworks/tools without changing them fundamentally. Such fundamental change would be incompatible with the framework/tools and their respective ecosystems, rendering them useless.
+En resumen, la filosofía de carga lazy-load debe implementarse a un nivel bajo y no se puede agregar de forma retroactiva a los frameworks/herramientas existentes sin cambiarlos fundamentalmente. Un cambio así de fundamental sería incompatible con el framework/las herramientas y sus respectivos ecosistemas, lo que los volvería inservibles.
 
-When a framework makes certain assumptions, such as that all rendering is synchronous, adding asynchronous lazy loading becomes pretty close to impossible. Or, if a framework recovers the listener location from templates, then download and execution of those templates is a must before the site can be interactive. These are just some of the more obvious examples, but in practice, there is a long tail of endless reasons why the current mental model does not fit the requirements of resumability.
+Cuando un framework hace ciertas suposiciones, como que todo el renderizado es síncrono, agregar una carga lazy-load asíncrona se vuelve bastante cercano a lo imposible. O si un framework recupera la ubicación del listener desde las plantillas, entonces la descarga y ejecución de esas plantillas es obligatoria antes de que el sitio pueda ser interactivo. Estos son solo algunos ejemplos más obvios, pero en la práctica, hay una larga lista de razones interminables por las que el modelo mental actual no se ajusta a los requisitos de la reanudabilidad.
 
-The above also means that it is not feasible for existing frameworks to add resumability as a feature. Existing frameworks will never be able to do what Qwik can (without breaking backward compatibility).
+Lo anterior también significa que no es factible que los frameworks/herramientas existentes agreguen la reanudabilidad como una característica. Los frameworks/herramientas existentes nunca podrán hacer lo que Qwik puede hacer (sin romper la compatibilidad con versiones anteriores).
 
-### Why are we building Qwik?
+### ¿Por qué estamos construyendo Qwik?
 
-Because we believe there is a better way to build sites. A way that does not involve massive amounts of JavaScript that must be downloaded eagerly on startup before your site becomes interactive. A way that allows the developer to think about adding features rather than how to break up the huge codebase into smaller chunks. A way to have instant-on sites for a better user experience. And all of that, in a way that is independent of the size of the application codebase.
+Porque creemos que hay una mejor manera de construir sitios. Una forma que no involucra grandes cantidades de JavaScript que deben descargarse precipitadamente (eagerly) al iniciar el sitio antes de que sea interactivo. Una forma que permite al desarrollador pensar en agregar características en lugar de cómo dividir la enorme base de código en fragmentos (chunks) más pequeños. Una forma de tener sitios instantáneos para una mejor experiencia del usuario. Y todo eso, de una manera independiente del tamaño de la base de código de la aplicación.
 
-## Does page speed really matter?
+## ¿Realmente importa la velocidad de la página?
 
-Put simply: slow sites deter visitors, costing businesses millions. Fast sites have better SEO, better UX, and are more profitable.
+En pocas palabras: los sitios lentos desincentivan a los visitantes, lo que les cuesta a las empresas millones de dólares. Los sitios rápidos tienen mejor SEO, mejor experiencia de usuario y son más rentables.
 
-Some examples from [web.dev](https://web.dev/tags/case-study/):
+Algunos ejemplos de [web.dev](https://web.dev/tags/case-study/):
 
-|                                                                                                                                                                                                                                               |                                                                                                                                                        |
-| --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| **Every 100ms faster → 1% more conversions** <br /> For Mobify, every 100ms decrease in homepage load speed worked out to a 1.11% increase in session-based conversion, yielding an average annual revenue increase of nearly $380,000.       | **50% faster → 12% more sales** <br /> When AutoAnything reduced page load time by half, they saw a boost of 12% to 13% in sales.                      |
-| **20% faster → 10% more conversions** <br /> Retailer Furniture Village audited their site speed and developed a plan to address the problems they found, leading to a 20% reduction in page load time and a 10% increase in conversion rate. | **40% faster → 15% more sign-ups** <br /> Pinterest reduced perceived wait times by 40% and this increased search engine traffic and sign-ups by 15%.  |
-| **850ms faster → 7% more conversions** <br /> COOK reduced average page load time by 850 milliseconds which increased conversions by 7%, decreased bounce rates by 7%, and increased pages per session by 10%.                                | **1 seconds slowness → 10% less users** <br /> The BBC found they lost an additional 10% of users for every additional second their site took to load. |
-|                                                                                                                                                                                                                                               |                                                                                                                                                        |
+|                                                                                                                                                                                                                                                                                                            |                                                                                                                                                                                                     |
+| ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Cada 100ms más rápido → 1% más de conversiones** <br /> Para Mobify, cada disminución de 100ms en la velocidad de carga de la página de inicio se tradujo en un aumento del 1.11% en la tasa de conversión basada en sesiones, lo que generó un aumento promedio de ingresos anuales de casi $380,000. | **50% más rápido → 12% más de ventas** <br /> Cuando AutoAnything redujo a la mitad el tiempo de carga de las páginas, observaron un aumento del 12% al 13% en las ventas.                          |
+| **20% más rápido → 10% más de conversiones** <br /> El minorista Furniture Village auditó la velocidad de su sitio y desarrolló un plan para abordar los problemas que encontraron, lo que llevó a una reducción del 20% en el tiempo de carga de la página y un aumento del 10% en la tasa de conversión. | **40% más rápido → 15% más de registros (sign-ups)** <br /> Pinterest redujo los tiempos de espera percibidos en un 40% y esto aumentó el tráfico de motores de búsqueda y los registros en un 15%. |
+| **850ms más rápido → 7% más de conversiones** <br /> COOK redujo el tiempo promedio de carga de la página en 850 milisegundos, lo que aumentó las conversiones en un 7%, disminuyó las tasas de rebote en un 7% y aumentó las páginas por sesión en un 10%.                                               | **1 segundo de lentitud → 10% menos usuarios** <br /> La BBC descubrió que perdían un 10% adicional de usuarios por cada segundo adicional que tardaba su sitio en cargarse.                        |
+|                                                                                                                                                                                                                                                                                                            |                                                                                                                                                                                                     |

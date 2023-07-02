@@ -320,7 +320,7 @@ export const DebouncedInput = () => {
 
   return (
     <>
-      <input value={value} onChange={(ev) => setValue((ev.target as HTMLInputElement).value))} />
+      <input value={value} onChange={(ev) => setValue(ev.target.value)} />
       <p>{debouncedValue}</p>
     </>
   );
