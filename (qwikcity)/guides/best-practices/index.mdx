@@ -95,7 +95,7 @@ Cuando tengas dudas, en lugar de utilizar `useVisibleTask$()`, utiliza:
 
 ## Evita acceder a `window.location` directamente
 
-No accedas directamente a `window.location`, utiliza el gancho `useLocation()` en su lugar.
+No accedas directamente a `window.location`, utiliza el hook `useLocation()` en su lugar.
 
 ```tsx title="Implementación subóptima"
 // ¡No hagas esto!
@@ -115,7 +115,7 @@ if (typeof window !== "undefined") {
 }
 ```
 
-Muchas acciones relacionadas con la información de la ubicación se pueden ejecutar durante la representación inicial en el lado del servidor, lo que resulta en HTML puro sin ningún gasto de JavaScript.
+Muchas acciones relacionadas con la información de la ubicación se pueden ejecutar durante el renderizado inicial en el lado del servidor, lo que resulta en HTML puro sin ningún gasto de JavaScript.
 
 Al forzar esta lógica a ejecutarse en el lado del cliente, se introduce una carga de JavaScript anticipada y provoca una carga ansiosa.
 
@@ -136,7 +136,7 @@ hacerAlgo(location.url.searchParams);
 
 ### Excepción
 
-Cuando se utiliza SSG para archivos puramente estáticos, es inevitable depender del servidor sin la información de ubicación actual durante el tiempo de compilación.
+Cuando se utiliza Static Site Generation (SSG) para archivos puramente estáticos, es inevitable depender del servidor sin la información de ubicación actual durante el tiempo de compilación.
 
 ¡Sin embargo, ten cuidado! Si la información requerida (como los parámetros de consulta) no se necesita hasta que ocurra un evento del usuario, incorpora la comprobación dentro de tu código de manejo de eventos.
 
