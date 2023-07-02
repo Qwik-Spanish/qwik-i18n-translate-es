@@ -10,13 +10,13 @@ contributors:
 
 La Generación de Sitios Estáticos, comúnmente conocida como "SSG" (por sus siglas en inglés), es el proceso de pre-renderizar las páginas web del sitio en archivos HTML estáticos. La ventaja de esto es que cuando un visitante solicita la página web, la respuesta es un archivo HTML pre-generado (un archivo estático) y no requiere que el HTML de la página "se reconstruya" en el navegador del visitante, ni que se cree dinámicamente por tu servidor (más sobre esto luego).
 
-Además, debido a la arquitectura subyacente de Qwik, el rendimiento de la página también se beneficia al no requerir un paso de "hidratación" de JavaScript, lo que puede reducir significativamente el rendimiento y ralentizar la interactividad del usuario. Al pre-renderizar archivos HTML estáticos con SSG y combinado con la [resumabilidad](../../../(qwik)/concepts/resumable/index.mdx) de Qwik, la generación estática de sitios ofrece muchos beneficios de rendimiento en comparación con las soluciones tradicionales.
+Además, debido a la arquitectura subyacente de Qwik, el rendimiento de la página también se beneficia al no requerir un paso de "hidratación" de JavaScript, lo que puede reducir significativamente el rendimiento y ralentizar la interactividad del usuario. Al pre-renderizar archivos HTML estáticos con SSG y combinado con la [reanudabilidad](../../../(qwik)/concepts/resumable/index.mdx) de Qwik, la generación estática de sitios ofrece muchos beneficios de rendimiento en comparación con las soluciones tradicionales.
 
 ## SSG vs. Renderizado en el Lado del Servidor (SSR)
 
-Qwik City es capaz de tomar una aplicación de Qwik, ya sea una "webapp" o un "sitio web", y generar HTML estático. Una vez que se genera como HTML, Qwik puede omitir fundamentalmente la reconstrucción de la aplicación mediante el uso de [resumabilidad](../../../(qwik)/concepts/resumable/index.mdx), ya que la aplicación ya se generó como HTML. Tanto la Generación de Sitios Estáticos (SSG) como el Renderizado en el Lado del Servidor (SSR) utilizan el mismo proceso para generar el HTML. La diferencia principal entre SSG y SSR, sin embargo, es "cuándo" se genera el HTML.
+Qwik City es capaz de tomar una aplicación de Qwik, ya sea una "webapp" o un "sitio web", y generar HTML estático. Una vez que se genera como HTML, Qwik puede omitir fundamentalmente la reconstrucción de la aplicación mediante el uso de [reanudabilidad](../../../(qwik)/concepts/resumable/index.mdx), ya que la aplicación ya se generó como HTML. Tanto la Generación de Sitios Estáticos (SSG) como el Renderizado en el Lado del Servidor (SSR) utilizan el mismo proceso para generar el HTML. La diferencia principal entre SSG y SSR, sin embargo, es "cuándo" se genera el HTML.
 
-En una configuración tradicional, SSG pre-renderiza cada página web en tiempo de construcción, mientras que SSR renderiza cada página web bajo demanda para cada solicitud HTTP. SSG solo necesita generar el HTML una vez por construcción, lo cual es excelente para las páginas web donde todos los visitantes deberían ver el mismo contenido. En contraste, SSR es excelente cuando la página web puede ser diferente para cada visitante y se necesita renderizar HTML personalizado para cada solicitud HTTP individual.
+En una configuración tradicional, SSG pre-renderiza cada página web en tiempo de construcción (build time), mientras que SSR renderiza cada página web bajo demanda para cada solicitud HTTP. SSG solo necesita generar el HTML una vez por construcción, lo cual es excelente para las páginas web donde todos los visitantes deberían ver el mismo contenido. En contraste, SSR es excelente cuando la página web puede ser diferente para cada visitante y se necesita renderizar HTML personalizado para cada solicitud HTTP individual.
 
 Por ejemplo, SSG es ideal para un blog o un sitio de documentación, donde todo el contenido debe ser el mismo para cada visitante. Mientras que SSR también puede funcionar bien para un blog, puede ser una carga innecesaria para tus servidores HTTP renderizar el contenido del blog para cada visitante, aunque todos terminen viendo el mismo HTML.
 
@@ -55,8 +55,6 @@ npm run preview
 
 El archivo `adapters/static/vite.config.ts` también incluye la configuración de SSG, que será personalizada para cada implementación.
 
-Por favor, avísame si puedo ayudarte con algo más.
-
 #### `origin`
 
 La URL `origin`, que es una combinación del esquema (protocolo) y el nombre de host (dominio). Por ejemplo, `https://qwik.builder.io` tiene el protocolo `https://` y el dominio `qwik.builder.io`. Sin embargo, la `origin` no incluye la `pathname`.
@@ -69,9 +67,9 @@ Si el sitio también comienza con una `pathname` distinta a `/`, por favor utili
 
 El `outDir` es un directorio de salida del sistema de archivos donde se deben escribir los archivos estáticos. En el ejemplo anterior, se utiliza [fileURLToPath](https://nodejs.org/api/url.html#urlfileurltopathurl) de Node para crear una ruta absoluta del sistema de archivos donde se escribirán los archivos HTML estáticos.
 
-### Entornos de ejecución de Javascript
+### Entornos de ejecución (Runtimes) de Javascript
 
-En un proyecto de Javascript, es bastante común que el tiempo de ejecución de la compilación se base en [Node.js](https://nodejs.org/en/docs/). Sin embargo, el núcleo de la generación de sitios estáticos de Qwik City no está limitado a usar únicamente Node.js, por eso se importa la función `qwikCityGenerate()` desde `@builder.io/qwik-city/static/node`. Al delimitar la función de generación a un tiempo de ejecución específico, como Node.js, Qwik City tiene la flexibilidad de generar SSG desde otros tiempos de ejecución en el futuro, como [Deno](https://deno.land/) o [Bun](https://bun.sh/).
+En un proyecto de Javascript, es bastante común que el tiempo de ejecución (runtime) de la compilación se base en [Node.js](https://nodejs.org/en/docs/). Sin embargo, el núcleo de la generación de sitios estáticos de Qwik City no está limitado a usar únicamente Node.js, por eso se importa la función `qwikCityGenerate()` desde `@builder.io/qwik-city/static/node`. Al delimitar la función de generación a un tiempo de ejecución específico, como Node.js, Qwik City tiene la flexibilidad de generar SSG desde otros tiempos de ejecución en el futuro, como [Deno](https://deno.land/) o [Bun](https://bun.sh/).
 
 ## Rutas dinámicas de SSG
 
@@ -103,14 +101,14 @@ export const onStaticGenerate: StaticGenerateHandler = async () => {
 
 En el ejemplo anterior, la función `onStaticGenerate()` carga los IDs de producto desde una función `loadProductIds()`. Esta función será personalizada para cada implementación, pero la idea general es que necesitarás cargar los datos para cada ID de producto y luego generar archivos HTML para cada ID de producto.
 
-La función `onStaticGenerate` debe ser exportada desde el nivel superior del módulo y debe devolver un objeto con una propiedad `params`. La propiedad `params` debe ser un array de objetos, donde cada objeto es un conjunto de parámetros para la ruta. Por ejemplo, si la ruta es `/producto/:id`, entonces el array `params` debe ser un array de objetos con una propiedad `id`.
+La función `onStaticGenerate` debe ser exportada desde el nivel superior del módulo y debe devolver un objeto con una propiedad `params`. La propiedad `params` debe ser un array de objetos, donde cada objeto es un conjunto de parámetros para la ruta. Por ejemplo, si la ruta es `/product/:id`, entonces el array `params` debe ser un array de objetos con una propiedad `id`.
 
 La estructura de directorios para este ejemplo sería:
 
 ```bash
 src/
 └── routes/
-    └── producto/
+    └── product/
         └── [id]/
             └── index.tsx
 ```
