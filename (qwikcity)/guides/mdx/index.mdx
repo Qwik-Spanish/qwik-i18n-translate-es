@@ -35,6 +35,7 @@ Este es un componente simple de saludo.
 ```
 
 El componente anterior se renderizará en `https://example.com/some/path`.
+
 ## Importando otros componentes.
 
 [MDX](https://mdxjs.com/) es una oportunidad creativa para crear contenido rápidamente ("Qwikly" 🙂) y si necesitas más interacción en tu página, puedes integrar sin problemas tus componentes Qwik de la siguiente manera:
@@ -149,7 +150,7 @@ El ejemplo anterior generará el siguiente código HTML.
 ```
 
 ## Leyendo datos del frontmatter
-Las claves del frontmatter son accesibles mediante el uso del gancho `useDocumentHead()`.
+Las claves del frontmatter son accesibles mediante el uso del hook `useDocumentHead()`.
 
 ```Markdown title="src/routes/some/path/index.mdx"
 ---
@@ -186,4 +187,3 @@ export const Tags = component$(() => {
   );
 });
 ```
-
