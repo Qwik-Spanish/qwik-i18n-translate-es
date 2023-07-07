@@ -88,35 +88,35 @@ Dentro del directorio `src/routes`, todos los archivos con el nombre `index` se 
 
 Las páginas/endpoints son los nodos hoja del árbol de enrutamiento, es decir, **los módulos que manejarán la solicitud y devolverán una respuesta HTTP**.
 
-### Page `index.tsx`
+### Página `index.tsx`
 
-When `index.tsx` or `index.ts` exports a Qwik component as the default export, Qwik City will render the component and return an HTML response as a webpage.
+Cuando `index.tsx` o `index.ts` exporta un componente de Qwik como la exportación predeterminada, Qwik City renderizará el componente y devolverá una respuesta HTML como una página web.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  return <h1>Hello World</h1>;
+  return <h1>Hola mundo</h1>;
 });
 ```
 
 ### Endpoint `index.ts`
 
-A `index.ts` can also access the HTTP request directly and return a raw HTTP response without involving any Qwik Component. This is done by exporting an `onRequest` method or `onGet`, `onPost`, `onPut`, `onDelete` depending on if you only want to handle a specific request given its HTTP method.
+Un archivo `index.ts` también puede acceder directamente a la solicitud HTTP y devolver una respuesta HTTP en bruto sin involucrar ningún componente de Qwik. Esto se hace exportando un método `onRequest` o `onGet`, `onPost`, `onPut`, `onDelete` dependiendo de si solo deseas manejar una solicitud específica según su método HTTP.
 
 ```tsx title="src/routes/index.ts"
 import type { RequestHandler } from '@builder.io/qwik-city';
 
 export const onGet: RequestHandler = ({ json }) => {
-  json(200, { message: 'Hello World' });
+  json(200, { message: 'Hola mundo' });
 };
 ```
 
-> Notice that in the last example, there is no default export. This is because we are not rendering a Qwik component, but rather we are handling the request directly and returning a JSON response. This is useful to implement RESTful APIs or any other type of HTTP endpoint.
+> Observa que en el último ejemplo no hay una exportación predeterminada. Esto se debe a que no estamos renderizando un componente de Qwik, sino que estamos manejando la solicitud directamente y devolviendo una respuesta JSON. Esto es útil para implementar APIs RESTful u cualquier otro tipo de punto final HTTP.
 
-### Page + Endpoint
+### Página + Endpoint
 
-As you can see in Qwik City there is no clear separation between pages and endpoints, in both cases, it's a `index.tsx` file that exports a Qwik component or an `onRequest` method. However, it's possible to combine both approaches. For example, you can export a `onRequest` method that will handle the request, and then render a Qwik component.
+Como puedes ver en Qwik City, no hay una separación clara entre páginas y endpoints, en ambos casos, es un archivo `index.tsx` que exporta un componente de Qwik o un método `onRequest`. Sin embargo, es posible combinar ambos enfoques. Por ejemplo, puedes exportar un método `onRequest` que maneje la solicitud y luego renderizar un componente de Qwik.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -125,16 +125,16 @@ import type { RequestHandler } from '@builder.io/qwik-city';
 export const onRequest: RequestHandler = ({ headers, query, json }) => {
   headers.set('Cache-Control', 'private');
   if (query.get('format') === 'json') {
-    json(200, { message: 'Hello World' });
+    json(200, { message: 'Hola mundo' });
   }
 };
 
 export default component$(() => {
-  return <h1>Hello World</h1>;
+  return <h1>Hola mundo</h1>;
 });
 ```
 
-> In this example, a request handle will always set the `Cache-Control` header to `private` and the page will be rendered as an HTML page, but if the request contains a `format=json` query param, the endpoint will return a JSON response instead.
+> En este ejemplo, el manejador de solicitud siempre establecerá el encabezado `Cache-Control` en `private` y la página se renderizará como una página HTML, pero si la solicitud contiene un parámetro de consulta `format=json`, el endpoint devolverá una respuesta JSON en su lugar.
 
 ## `layout.` files
 
