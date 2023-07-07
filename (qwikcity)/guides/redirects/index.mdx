@@ -6,24 +6,24 @@ contributors:
   - mhevery
 ---
 
-# Redirects
+# Redirecciones
 
-Sometimes you want to redirect a user from the current page to another page.
+A veces quieres redirigir a un usuario desde la página actual a otra página.
 
-Let's say a user tries to go to a dashboard page but has not logged in yet. We want them to be redirected to a login page so they can be authenticated.
+Supongamos que un usuario intenta acceder a una página de panel de control pero aún no ha iniciado sesión. Queremos redirigirlo a una página de inicio de sesión para que pueda autenticarse.
 
 ```tsx title="src/routes/dashboard.tsx"
 import type { RequestEvent } from '@builder.io/qwik-city';
-import { checkAuthorization } from '../auth'; // Your authorization code
-import type { DashboardData } from '../types'; // Your types
+import { checkAuthorization } from '../auth'; // Tu código de autorización
+import type { DashboardData } from '../types'; // Tus tipos
 
 export const onGet = async ({ cookie, redirect }: RequestEvent) => {
   const isAuthorized = checkAuthorization(cookie.get('cookie'));
 
   if (!isAuthorized) {
-    // User is not authorized!
-    // throw the redirect response to
-    // relocate the user to the log-in page
+    // ¡El usuario no está autorizado!
+    // Lanzamos una respuesta de redirección
+    // para redirigir al usuario a la página de inicio de sesión
     throw redirect(302, '/login');
   } else {
     // ...
@@ -31,19 +31,19 @@ export const onGet = async ({ cookie, redirect }: RequestEvent) => {
 };
 ```
 
-The `redirect()` function, which was destructured in the RequestHandler function arguments, takes a redirect status code and URL.
+La función `redirect()`, que se ha deestructurado en los argumentos de la función RequestHandler, toma un código de estado de redirección y una URL.
 
 ```tsx
 throw redirect(302, '/login');
 ```
 
-[Common redirect status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages):
+[Códigos de estado comunes para redirecciones](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages):
 
-- `301`: Moved Permanently. This and all future requests should be directed to the given URI.
-- `302`: Found. This response code means that the URI of requested resource has been changed temporarily. Further changes in the URI might be made in the future. Therefore, this same URI should be used by the client in future requests.
-- `307`: Temporary Redirect. The server sends this response to direct the client to get the requested resource at another URI with the same method that was used in the prior request. This has the same semantics as the 302 Found HTTP response code, with the exception that the user agent must not change the HTTP method used: if a POST was used in the first request, a POST must be used in the second request.
-- `308`: Permanent Redirect. This means that the resource is now permanently located at another URI, specified by the `Location` HTTP Response header. This has the same semantics as the 301 Moved Permanently HTTP response code, with the exception that the user agent must not change the HTTP method used: if a POST was used in the first request, a POST must be used in the second request.
+- `301`: Movido permanentemente. Esta y todas las solicitudes futuras deben dirigirse a la URI proporcionada.
+- `302`: Encontrado. Este código de respuesta significa que la URI del recurso solicitado ha sido cambiada temporalmente. Podrían realizarse cambios adicionales en la URI en el futuro. Por lo tanto, el cliente debería usar la misma URI en futuras solicitudes.
+- `307`: Redirección temporal. El servidor envía esta respuesta para indicarle al cliente que obtenga el recurso solicitado en otra URI con el mismo método que se utilizó en la solicitud anterior. Esto tiene la misma semántica que el código de respuesta 302 Found, con la excepción de que el agente de usuario no debe cambiar el método HTTP utilizado: si se utilizó un POST en la primera solicitud, se debe utilizar un POST en la segunda solicitud.
+- `308`: Redirección permanente. Esto significa que el recurso ahora se encuentra permanentemente en otra URI, especificada en la cabecera de respuesta HTTP `Location`. Esto tiene la misma semántica que el código de respuesta 301 Moved Permanently, con la excepción de que el agente de usuario no debe cambiar el método HTTP utilizado: si se utilizó un POST en la primera solicitud, se debe utilizar un POST en la segunda solicitud.
 
-If you do not provide a status code, Qwik City will default to a `302` Found status.
+Si no proporcionas un código de estado, Qwik City usará por defecto el código `302` Found.
 
-Read more about redirect status codes [here](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages).
+Lee más sobre los códigos de estado de redirección [aquí](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status#redirection_messages).

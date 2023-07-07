@@ -42,7 +42,7 @@ export function HelloWorld() {
 
 ```tsx
 export const Button = component$(() => {
-  return <button onClick$={() => console.log('clic')}>Haz clic</button>;
+  return <button onClick$={() => console.log('click')}>Haz click</button>;
 });
 ```
 
@@ -50,7 +50,7 @@ export const Button = component$(() => {
 
 ```tsx
 export function Button() {
-  return <button onClick={() => console.log('clic')}>Haz clic</button>;
+  return <button onClick={() => console.log('click')}>Haz click</button>;
 }
 ```
 
@@ -154,6 +154,9 @@ export function Counter() {
   );
 }
 ```
+
+## Crear un Reloj (Clock) que se incrementa cada segundo
+
 ### ⚡️ Qwik
 
 ```tsx
@@ -180,7 +183,7 @@ export function Clock() {
       setSeconds(seconds + 1);
     }, 1000);
     return () => clearInterval(interval);
-  }, []);
+  });
   return <p>Segundos: {seconds}</p>;
 }
 ```
@@ -324,7 +327,7 @@ export const DebouncedInput = () => {
 };
 ```
 
-## Cambiar el color de fondo aleatoriamente al hacer clic en el botón
+## Cambiar el color de fondo aleatoriamente al hacer click en el botón
 
 ### ⚡️ Qwik
 
@@ -381,7 +384,7 @@ export function DynamicBackground() {
 }
 ```
 
-## Create a component that renders a list of the presidents
+## Crear un componente que renderiza una lista de presidentes
 
 ### ⚡️ Qwik
 
