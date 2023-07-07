@@ -11,19 +11,19 @@ contributors:
   - AnthonyPAlicea
 ---
 
-# Routing
+# Enrutamiento
 
-Routing in Qwik City is file-system based like [Next.js](https://nextjs.org/docs/routing/introduction), [SvelteKit](https://kit.svelte.dev/docs/routing), [SolidStart](https://start.solidjs.com/core-concepts/routing) or [Remix](https://remix.run/docs/en/main/guides/routing). Files and directories in the `src/routes` have a role in the routing of your application.
+El enrutamiento en Qwik City se basa en el sistema de archivos, similar a [Next.js](https://nextjs.org/docs/routing/introduction), [SvelteKit](https://kit.svelte.dev/docs/routing), [SolidStart](https://start.solidjs.com/core-concepts/routing) o [Remix](https://remix.run/docs/en/main/guides/routing). Los archivos y directorios en `src/routes` desempeñan un papel en el enrutamiento de tu aplicación.
 
-- **📂 Directorios:** Describe los segmentos de URL que debe hacer coincidir el enrutador.
-- **📄 index. ficheros:** Página/endpoint.
-- **🖼️ layout. ficheros:** Nested layout/middleware.
+- **📂 Directorios:** Describen los segmentos de URL que deben coincidir con el enrutador.
+- **📄 Ficheros index:** Página/endpoint.
+- **🖼️ Ficheros layout:** Layout anidados/middleware.
 
 ## Enrutamiento basado en directorios
 
 Solo se utilizan los nombres de los directorios para hacer coincidir las solicitudes entrantes con las páginas/endpoints.
 
-Por ejemplo, si nosotros tenemos un fichero en la ruta `src/routes/some/path/index.tsx`, se asignará a la ruta la URL `https://example.com/some/path`.
+Por ejemplo, si tenemos un archivo en la ruta `src/routes/some/path/index.tsx`, se asignará a la ruta la URL `https://example.com/some/path`.
 
 ```bash
 src/
@@ -39,17 +39,17 @@ src/
     ├── [...catchall]/
     │   └── index.tsx         # https://example.com/anything/else/that/didnt/match
     │
-    └── layout.tsx            # Este layout se usa en toda las páginas
+    └── layout.tsx            # Este layout se usa en todas las páginas
 ```
 
-- **`[id]`** is a directory that represents a dynamic route segment, in this example `id` is the string parameter accessible by `getLocation().params.id`.
-- **`[...catchall]`** is a directory that represents a dynamic catch-all route, in this example `catchall` is the string parameter accessible by `getLocation().params.catchall`.
-- **Ficheros `index.tsx|mdx`** are the pages/endpoints.
-- **`layout.tsx` files** are the layouts.
+- **`[id]`** es un directorio que representa un segmento de ruta dinámica, en este ejemplo, `id` es el parámetro de cadena accesible mediante `getLocation().params.id`.
+- **`[...catchall]`** es un directorio que representa una ruta dinámica de captura de todo, en este ejemplo, `catchall` es el parámetro de cadena accesible mediante `getLocation().params.catchall`.
+- Los archivos **`index.tsx|mdx`** son las páginas/endpoints.
+- Los archivos **`layout.tsx`** son los layouts.
 
-### Dynamic route segments
+### Segmentos de ruta dinámicos
 
-Special named directories with square brackets, such as `[paramName]` and `[...catchAll]` can be used to match route segments which are dynamic:
+Directorios con nombres especiales entre corchetes, como `[paramName]` y `[...catchAll]`, se pueden utilizar para hacer coincidir segmentos de ruta que son dinámicos:
 
 ```
 src/routes/blog/index.tsx → /blog
@@ -70,7 +70,7 @@ src/
             └── index.tsx     # https://example.com/user/foo
 ```
 
-> The folder `[username]` can be any of the thousands of users that you have in your database. It would be impractical to create a route for each user. Instead, you need to define a Route Parameter (a part of the URL) that will be used to extract the `[username]`.
+> La carpeta `[username]` puede representar a cualquiera de los miles de usuarios que tienes en tu base de datos. Sería poco práctico crear una ruta para cada usuario. En su lugar, debes definir un parámetro de ruta (una parte de la URL) que se utilizará para extraer el `[username]`.
 
 ```tsx title="src/routes/user/[username]/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -78,15 +78,15 @@ import { useLocation } from '@builder.io/qwik-city';
 
 export default component$(() => {
   const loc = useLocation();
-  return <div>Hello {loc.params.username}!</div>;
+  return <div>¡Hola {loc.params.username}!</div>;
 });
 ```
 
-## `index.` files
+## Archivos `index.`
 
-Inside the `src/routes` directory, all files named `index` are considered pages/endpoints, Qwik supports the following extensions: `.ts`, `.tsx`, `.md` and `.mdx`.
+Dentro del directorio `src/routes`, todos los archivos con el nombre `index` se consideran páginas/endpoints. Qwik admite las siguientes extensiones: `.ts`, `.tsx`, `.md` y `.mdx`.
 
-Pages/endpoints are the leaf nodes of the routing tree, ie, **the modules that will handle the request and return an HTTP response**.
+Las páginas/endpoints son los nodos hoja del árbol de enrutamiento, es decir, **los módulos que manejarán la solicitud y devolverán una respuesta HTTP**.
 
 ### Page `index.tsx`
 
