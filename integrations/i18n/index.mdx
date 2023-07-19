@@ -1,67 +1,67 @@
 ---
-title: Internationalization
+title: Internacionalización
 contributors:
   - mhevery
   - manucorporat
 ---
 
-# Internationalization
+# Internacionalización
 
-Internationalization is a complex problem. Qwik does not solve the internationalization problem directly instead it only provides low-level APIs to allow other libraries to solve it.
+La internacionalización es un problema complejo. Qwik no resuelve directamente el problema de la internacionalización, en su lugar, solo proporciona APIs de bajo nivel para permitir que otras bibliotecas lo solucionen.
 
-## Runtime vs compile time translation
+## Traducción en tiempo de ejecución vs Traducción en tiempo de compilación
 
-At a high level there are two ways in which the translation problem can be solved:
+A alto nivel, existen dos formas de resolver el problema de la traducción:
 
-- Runtime: load a translation map and look up the translations at runtime.
-- Compile time: Have a compile step inline the translations into the output string.
+- Traducción en tiempo de ejecución: cargar un mapa de traducción y buscar las traducciones en tiempo de ejecución.
+- Traducción en tiempo de compilación: tener un paso de compilación que incruste las traducciones en la cadena de salida.
 
-Both of the above approaches have trade-offs that one should take into consideration.
+Ambos enfoques tienen ventajas y desventajas que deben tenerse en cuenta.
 
-The advantages of runtime approaches are:
+Las ventajas de los enfoques en tiempo de ejecución son:
 
-- Simplicity. Does not require an additional build step.
+- Simplicidad. No requiere un paso de compilación adicional.
 
-Disadvantages of the runtime approach are:
+Las desventajas del enfoque en tiempo de ejecución son:
 
-- Each string is present in triplicate:
-  1. Once as the original string in the code.
-  2. Once as a key in a translation map.
-  3. Once as a translated value in the translation map.
-- The tools don't know how to break up the translation map, for this reason, the whole translation map must be loaded eagerly on application startup. This is a problem because it undoes the effort Qwik put into breaking up and lazy load your codebase. In addition because translation maps are not broken up, the browser will download unnecessary translations. For example, translations for static components that will never re-render on the client.
-- There is a runtime cost to translation lookups.
+- Cada cadena está presente en tres lugares diferentes:
+  1. Una vez como la cadena original en el código.
+  2. Una vez como clave en un mapa de traducción.
+  3. Una vez como valor traducido en el mapa de traducción.
+- Las herramientas no saben cómo dividir el mapa de traducción; por esta razón, todo el mapa de traducción debe cargarse de forma precipitada al inicio de la aplicación. Esto es un problema porque deshace el esfuerzo de Qwik para dividir y cargar de forma lazy-load su base de código. Además, debido a que los mapas de traducción no se dividen, el navegador descargará traducciones innecesarias. Por ejemplo, traducciones para componentes estáticos que nunca se volverán a representar en el cliente.
+- Existe un costo en tiempo de ejecución para buscar las traducciones.
 
-The advantages of compile-time approaches are:
+Las ventajas de los enfoques en tiempo de compilación son:
 
-- Qwik's lazy loading of code now extends to the lazy loading of translation strings. (No unnecessary translation text is loaded)
-- No runtime translation map means strings are not in triplicate.
+- La carga lazy de código de Qwik ahora se extiende a la carga de cadenas de traducción. (No se cargan textos de traducción innecesarios)
+- No hay mapa de traducción en tiempo de ejecución, lo que significa que las cadenas no están en triplicado.
 
-Disadvantages of compile time approaches are:
+Las desventajas de los enfoques en tiempo de compilación son:
 
-- Extra build step.
-- Changing languages requires a page reload.
+- Paso de compilación adicional.
+- Cambiar de idioma requiere recargar la página.
 
-## Recommendation
+## Recomendación
 
-With the above in mind, Qwik recommends that you use a tool that best fits your constraints. To help you make a decision there are three different considerations: Browser, Server, and Development.
+Con lo anterior en mente, Qwik recomienda que utilices una herramienta que se adapte mejor a tus limitaciones. Para ayudarte a tomar una decisión, hay tres consideraciones diferentes: Navegador, Servidor y Desarrollo.
 
-### Browser
+### Navegador
 
-Qwik's goal is to deliver the best possible user experience. It achieves this by deferring the loading of code to later so that the initial startup performance is not overwhelmed. Because the runtime approach requires eager loading of all translations, we don't recommend this approach. We think that the compile-time approach is best for the browser.
+El objetivo de Qwik es ofrecer la mejor experiencia de usuario posible. Para lograrlo, pospone la carga de código para más tarde, de modo que el rendimiento inicial de inicio no se vea abrumado. Debido a que el enfoque en tiempo de ejecución requiere la carga precipitada de todas las traducciones, no recomendamos este enfoque. Creemos que el enfoque en tiempo de compilación es el mejor para el navegador.
 
-### Server
+### Servidor
 
-The server does not have the constraint of lazy loading. For this reason, the server can use either the runtime or compiled approach. The disadvantage of compile time approach on the server is that we need to have a separate deployment for each translation. This complicates the deployment process as well as puts greater demand on number of servers. For this reason, we think the runtime approach is preferable on the server.
+El servidor no tiene la restricción de carga lazy. Por esta razón, el servidor puede utilizar tanto el enfoque en tiempo de ejecución como el enfoque en tiempo de compilación. La desventaja del enfoque en tiempo de compilación en el servidor es que necesitamos tener una implementación separada para cada traducción. Esto complica el proceso de implementación y también demanda un mayor número de servidores. Por esta razón, creemos que el enfoque en tiempo de ejecución es preferible en el servidor.
 
-### Development
+### Desarrollo
 
-During development, fewer build steps will result in a faster turnaround. For this reason, runtime translation should result in a simpler development workflow.
+Durante el desarrollo, menos pasos de compilación darán como resultado un tiempo de respuesta más rápido. Por esta razón, la traducción en tiempo de ejecución debería proporcionar un flujo de trabajo de desarrollo más simple.
 
-### Our Recommendation
+### Nuestra Recomendación
 
-Our recommendation is to use a tool that would provide a runtime approach on the server, and runtime or compile time on the client depending on whether we are in development or production. This way it is possible to prove the best user experience and development experience, and use the least server resources.
+Nuestra recomendación es utilizar una herramienta que proporcione un enfoque en tiempo de ejecución en el servidor y en tiempo de ejecución o en tiempo de compilación en el cliente, dependiendo de si estamos en desarrollo o producción. De esta manera, es posible ofrecer la mejor experiencia de usuario y de desarrollo, y utilizar la menor cantidad de recursos del servidor.
 
-## Internationalization libraries
+## Bibliotecas de Internacionalización
 
 - [$localize](https://github.com/mhevery/qwik-i18n)
 - [qwik-speak](https://github.com/robisim74/qwik-speak)
