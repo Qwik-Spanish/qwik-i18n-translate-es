@@ -1,5 +1,5 @@
 ---
-title: Image Optimization
+title: Optimización de Imágenes
 keywords: >-
   third party image optimization, image optimization, image optimization tools,
   image optimization services, image optimization service, image optimization
@@ -11,17 +11,17 @@ contributors:
 import CodeSandbox from '../../../../components/code-sandbox/index.tsx';
 
 
-# Image Optimization
+# Optimización de Imágenes
 
-Image optimization is the process of reducing the number of bytes that represent an image. The smaller the image size, the faster it will load on a page. The smaller the image size, the less bandwidth it consumes. The less bandwidth it consumes, the better the experience for your users especially on mobile networks.
+La optimización de imágenes es el proceso de reducir la cantidad de bytes que representan una imagen. Cuanto más pequeño sea el tamaño de la imagen, más rápido se cargará en una página. Cuanto más pequeño sea el tamaño de la imagen, menos ancho de banda consumirá. Menos ancho de banda consumido significa una mejor experiencia para tus usuarios, especialmente en redes móviles.
 
 
 ## `@unpic/qwik`
 
-- Site with detailed instructions on usage: [@unpic/qwik](https://unpic.pics/img/qwik/)
-- Installation: `npm install @unpic/qwik`
+- Sitio con instrucciones detalladas de uso: [@unpic/qwik](https://unpic.pics/img/qwik/)
+- Instalación: `npm install @unpic/qwik`
 
-Unpic is a third-party image optimization library that works with existing image optimization CDNs. It provides an `Image` component that can be used to optimize images.
+Unpic es una biblioteca de optimización de imágenes de terceros que funciona con CDN de optimización de imágenes existentes. Proporciona un componente `Image` que se puede utilizar para optimizar imágenes.
 
 <CodeSandbox src="/src/routes/demo/integration/img/unpic/simple/index.tsx" style={{ height: '40em' }}>
 ```tsx {6} /Slot/
@@ -35,29 +35,29 @@ export default component$(() => {
       layout="constrained"
       width={800}
       height={600}
-      alt="A lovely bath"
+      alt="Un baño encantador"
     />
   );
 });
 ```
 </CodeSandbox>
 
-> **Note:** qwik-image and unpic are not a CDN and does not host your images. They work with existing image optimization CDNs. We suggest using some of the popular CDNs:
+> **Nota:** qwik-image y unpic no son un CDN y no alojan tus imágenes. Funcionan con CDN de optimización de imágenes existentes. Sugerimos usar algunos de los CDN populares:
 > - Cloudinary
 > - Cloudflare
 > - Bunny.net
 > - Vercel / Next.js
-> - Imgix, including Unsplash, DatoCMS, Sanity and Prismic
+> - Imgix, incluyendo Unsplash, DatoCMS, Sanity y Prismic
 > - Shopify
 > - Kontent.ai
 > - Builder.io
 > - Contentful
 > - Storyblok
-> - WordPress.com and Jetpack Site Accelerator
+> - WordPress.com y Jetpack Site Accelerator
 
 ## `qwik-image`
 
-Performant images with automatic optimisation.
+Imágenes eficientes con optimización automática.
 
 ```bash
 npm install qwik-image
@@ -67,7 +67,7 @@ or
 pnpm install qwik-image
 ```
 
-> This is a pluggable component so devs could connect different image loaders to it (like builder.io or other CDNs)
+> Este es un componente extensible para que los desarrolladores puedan conectar diferentes cargadores de imágenes a él (como builder.io u otros CDN).
 
 <CodeSandbox src="/src/routes/demo/integration/img/qwik-image/index.tsx" style={{ height: '40em' }}>
 ```tsx {6} /Slot/
@@ -77,14 +77,14 @@ import { Image, ImageTransformerProps, useImageProvider } from 'qwik-image';
 export default component$(() => {
 	const imageTransformer$ = $(
 		({ src, width, height }: ImageTransformerProps): string => {
-      // Here you can set your favourite image loaders service
+      // Aquí puedes establecer tu servicio de cargadores de imágenes favorito
 			return `https://cdn.builder.io/api/v1/${src}?height=${height}&width=${width}}&format=webp&fit=fill`;
 		}
 	);
 
-  // Global Provider (required)
+  // Proveedor Global (obligatorio)
 	useImageProvider({
-    // You can set this prop to overwrite default values [3840, 1920, 1280, 960, 640]
+    // Puedes establecer esta propiedad para sobrescribir los valores predeterminados [3840, 1920, 1280, 960, 640]
     resolutions: [640],
 		imageTransformer$,
 	});
@@ -95,7 +95,7 @@ export default component$(() => {
 			objectFit='fill'
 			width={400}
 			height={500}
-			alt='Tropical paradise'
+			alt='Paraíso tropical'
 			placeholder='#e6e6e6'
 			src={
 				'image/assets%2FYJIGb4i01jvw0SRdL5Bt%2Fe5113e1c02db40e5bac75146fa46386f'
@@ -106,4 +106,4 @@ export default component$(() => {
 ```
 </CodeSandbox>
 
-Here is the Github repository with detailed instructions on usage and customizations: [qwikifiers/qwik-image](https://github.com/qwikifiers/qwik-image)
+Aquí está el repositorio de GitHub con instrucciones detalladas de uso y personalización: [qwikifiers/qwik-image](https://github.com/qwikifiers/qwik-image)
