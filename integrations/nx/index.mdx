@@ -1,46 +1,44 @@
 ---
-title: Qwik and Nx
+title: Qwik y Nx
 keywords: 'monorepo, nx, enterprise'
 contributors:
   - shairez
 ---
 
-# Nx and enterprise scale monorepos
+# Nx y monorepos de escala empresarial
 
-[Nx](https://nx.dev/) is a robust and extensible development platform designed to simplify the management 
-of large-scale monorepos containing multiple applications and libraries by offering powerful tools for code generation, 
-build orchestration, dependency management, and code sharing.
+[Nx](https://nx.dev/) es una plataforma de desarrollo sólida y extensible diseñada para simplificar la gestión de monorepos de escala empresarial que contienen múltiples aplicaciones y bibliotecas, ofreciendo potentes herramientas para la generación de código, la orquestación de compilación, la gestión de dependencias y el intercambio de código.
 
-Qwik integrates with nx beautifully by using the [qwik-nx](https://github.com/qwikifiers/qwik-nx) plugin.
+Qwik se integra perfectamente con Nx utilizando el complemento [qwik-nx](https://github.com/qwikifiers/qwik-nx).
 
 
-## Main features
+## Características principales
 
-* Generate a new Nx workspace using a "Qwik" preset
-* Generate Qwik applications and libraries.
-* Generate Qwik components and routes.
-* Generate Storybook, React Qwikify, Cloudflare configuration and much more
-* Run executors that are built specifically for building Qwik applications.
+* Generar un nuevo espacio de trabajo Nx utilizando un preset de "Qwik".
+* Generar aplicaciones y bibliotecas de Qwik.
+* Generar componentes y rutas de Qwik.
+* Generar Storybook, React Qwikify, configuración de Cloudflare y mucho más.
+* Ejecutar ejecutores (executors) diseñados específicamente para compilar aplicaciones de Qwik.
 
 
-## Usage
+## Uso
 
-You can generate a new workspace by running:
+Puedes generar un nuevo espacio de trabajo ejecutando:
 
 ```shell
 npx create-nx-workspace@latest org-workspace --preset=qwik-nx
 ```
 
-Or add a new Qwik application to an existing workspace by running:
+O agregar una nueva aplicación de Qwik a un espacio de trabajo existente ejecutando:
 
 ```shell
 npm install -D qwik-nx
 ```
 
-and then
+y luego
 
 ```shell
 nx generate qwik-nx:app
 ```
 
-For further reference, please check the [qwik-nx documentation](https://github.com/qwikifiers/qwik-nx).
+Para obtener más información, consulta la [documentación de qwik-nx](https://github.com/qwikifiers/qwik-nx).
