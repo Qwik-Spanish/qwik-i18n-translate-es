@@ -1,6 +1,6 @@
 ---
-title: Qwik City and PostCSS
-keywords: 'styles, styling'
+title: Qwik City y PostCSS
+keywords: 'styles, styling, estilos, estilización'
 contributors:
   - manucorporat
   - manuelsanchezweb
@@ -11,17 +11,17 @@ contributors:
 
 # PostCSS
 
-[PostCSS](https://postcss.org/) allows developers to write modern CSS while still maintaining backwards compatibility and improving performance. It parses CSS code and passes it through a series of plugins that can modify, optimize, and extend the CSS before outputting the final result.
+[PostCSS](https://postcss.org/) permite a los desarrolladores escribir CSS moderno manteniendo la compatibilidad con versiones anteriores y mejorando el rendimiento. Analiza el código CSS y lo pasa a través de una serie de complementos que pueden modificar, optimizar y extender el CSS antes de generar el resultado final.
 
-## Usage
+## Uso
 
-You can add PostCSS to your project by using the following Qwik starter script:
+Puedes agregar PostCSS a tu proyecto utilizando el siguiente script de inicialización de Qwik:
 
 ```shell
 npm run qwik add postcss
 ```
 
-This will create a new `postcss.config.js` file at the root of the project with following dependencies and configuration.
+Esto creará un nuevo archivo `postcss.config.js` en la raíz del proyecto con las siguientes dependencias y configuraciones.
 
 - [Autoprefixer](https://github.com/postcss/autoprefixer)
 - [PostCSS Preset Env](https://preset-env.cssdb.org/)
@@ -40,7 +40,7 @@ module.exports = {
 }
 ```
 
-If you wish to add a new plugin like [CssNano](https://cssnano.co/) run the following command and update the `postcss.config.js`.
+Si deseas agregar un nuevo complemento como [CssNano](https://cssnano.co/), ejecuta el siguiente comando y actualiza el archivo `postcss.config.js`.
 
 ```shell
 npm install cssnano --save-dev
@@ -49,7 +49,7 @@ npm install cssnano --save-dev
 ```ts title="postcss.config.js"
 module.exports = {
   plugins: {
-    /* previous plugin configuration */
+    /* configuración del complemento anterior */
     "cssnano": {
       preset: "default"
     }
@@ -57,4 +57,4 @@ module.exports = {
 }
 ```
 
-For further documentation, checkout [PostCSS Docs](https://postcss.org/docs/)
+Para más documentación, consulta [PostCSS Docs](https://postcss.org/docs/)
