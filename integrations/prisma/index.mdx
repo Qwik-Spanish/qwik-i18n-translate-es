@@ -1,5 +1,5 @@
 ---
-title: Qwik City and Prisma
+title: Qwik City y Prisma
 keywords: 'prisma, orm, database, data, storage, postgress, mondodb'
 contributors:
   - manucorporat
@@ -8,24 +8,24 @@ contributors:
 
 # Prisma
 
-[Prisma](https://www.prisma.io/) allows interaction with [MongoDB](https://www.prisma.io/docs/concepts/database-connectors/mongodb) or [SQL databases](https://www.prisma.io/docs/concepts/database-connectors/postgresql) in a fully type safety manner.
+[Prisma](https://www.prisma.io/) permite la interacción con [MongoDB](https://www.prisma.io/docs/concepts/database-connectors/mongodb) o [bases de datos SQL](https://www.prisma.io/docs/concepts/database-connectors/postgresql) incluyendo tipado seguro.
 
-With Prisma you define your DB schema in `.prisma` files, and their CLI automatically generates the DB migrations as well as the Typescript types.
+Con Prisma, defines el esquema de tu base de datos en archivos `.prisma`, y su CLI genera automáticamente las migraciones de la base de datos, así como los tipos de TypeScript.
 
-Prima can be used in Qwik with `routeLoader$`, `routeAction$` and `server$` functions. These are Qwik APIs to allow code to execute only on the server-side.
+Prisma puede ser utilizado en Qwik con las funciones `routeLoader$`, `routeAction$` y `server$`. Estas son APIs de Qwik que permiten que el código se ejecute solo en el lado del servidor.
 
-The easiest way to add Prisma to Qwik is using the `pnpm qwik add prisma` command. This will install the required dependencies and create a `prisma` folder with the Prisma schema and the migrations.
+La forma más sencilla de agregar Prisma a Qwik es utilizando el comando `pnpm qwik add prisma`. Esto instalará las dependencias necesarias y creará una carpeta `prisma` con el esquema de Prisma y las migraciones.
 
 ```bash
 npm run qwik add prisma
 ```
 
-> Prisma makes it easy to use different databases such as Postgres, MySQL, SQLite and MongoDB.
+> Prisma facilita el uso de diferentes bases de datos como Postgres, MySQL, SQLite y MongoDB.
 
 
-## Listing all the users
+## Listando todos los usuarios
 
-We will use `routeLoader$` to query all users in the DB, using `prisma.user.findMany()`, and returning the result.
+Utilizaremos `routeLoader$` para consultar todos los usuarios en la base de datos, utilizando `prisma.user.findMany()`, y retornaremos el resultado.
 
 ```tsx {7} /PrismaClient/ title="src/routes/users/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -42,7 +42,7 @@ export default component$(() => {
   const users = useGetUsers();
   return (
     <section>
-      <h1>User's directory</h1>
+      <h1>Directorio de usuarios</h1>
       <ul>
         {users.value.map(user => (
           <li key={user.id}>
@@ -55,9 +55,9 @@ export default component$(() => {
 });
 ```
 
-## Show user detail
+## Mostrando los detalles del usuario
 
-We will use `routeLoader$` to query an specific users based on the `userId` URL param, using `prisma.user.findUnique()`, and returning the result.
+Utilizaremos `routeLoader$` para consultar un usuario específico basado en el parámetro de URL `userId`, utilizando `prisma.user.findUnique()`, y retornaremos el resultado.
 
 
 ```tsx {8} /PrismaClient/ title="src/routes/users/[userId]/index.tsx"
@@ -70,7 +70,7 @@ export const useGetUser = routeLoader$(async ({params, status}) => {
   const prisma = new PrismaClient();
   const user = await prisma.user.findUnique({where: {id: userId}});
   if (!user) {
-    // Set the status to 404 if the user is not found
+    // Establecemos el estado a 404 si el usuario no se encuentra
     status(404);
   }
   return user;
@@ -80,23 +80,23 @@ export default component$(() => {
   const user = useGetUser();
   return (
     <section>
-      <h1>User detail</h1>
+      <h1>Detalles del usuario</h1>
       {user.value ? (
         <>
-          <p>Name: {user.value.name}</p>
+          <p>Nombre: {user.value.name}</p>
           <p>Email: {user.value.email}</p>
         </>
       ) : (
-        <p>User not found</p>
+        <p>Usuario no encontrado</p>
       )}
     </section>
   )
 });
 ```
 
-## Adding an user
+## Agregando un usuario
 
-We will use `routeAction$` and `Form` to create a progressive form to add a new user to the DB. We will use `prisma.user.create()` to create the user.
+Utilizaremos `routeAction$` y `Form` para crear un formulario progresivo para agregar un nuevo usuario a la base de datos. Utilizaremos `prisma.user.create()` para crear el usuario.
 
 ```tsx {7-9} /PrismaClient/ title="src/routes/create/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -118,19 +118,19 @@ export default component$(() => {
   const createUserAction = useCreateUser();
   return (
     <section>
-      <h1>Create User</h1>
+      <h1>Crear Usuario</h1>
       <Form action={createUserAction}>
-        <label>Name
+        <label>Nombre
           <input name="name" value={createUserAction.formData?.get('name')} />
         </label>
         <label>Email
           <input name="email" value={createUserAction.formData?.get('email')} />
         </label>
-        <button type="submit">Create</button>
+        <button type="submit">Crear</button>
       </Form>
       {createUserAction.value && (
         <div>
-          <h2>User created successfully!</h2>
+          <h2>¡Usuario creado exitosamente!</h2>
         </div>
       )}
     </section>
@@ -138,15 +138,15 @@ export default component$(() => {
 });
 ```
 
-## Limitations
+## Limitaciones
 
-### Big WASM binary
+### Binario WASM grande
 
-Prima Client needs a 14MB WASM binary that might be too big if you plan to deploy your app to a serverless environment. We recommend using Prisma only if you deploy to a Node.js environment, such as Google Cloud Run, Express, or Azure.
+Prisma Client requiere un binario WASM de 14MB que puede ser demasiado grande si planeas implementar tu aplicación en un entorno serverless. Recomendamos utilizar Prisma solo si lo despliegas en un entorno de Node.js, como Google Cloud Run, Express o Azure.
 
-Check out [this blog post for more details](https://dev.to/nexxeln/typesafe-database-queries-on-the-edge-5bbn)
+Consulta [este blog para obtener más detalles](https://dev.to/nexxeln/typesafe-database-queries-on-the-edge-5bbn)
 
-### Prisma Client might not work great with `pnpm`
+### Prisma Client puede no funcionar bien con `pnpm`
 
-The way Prisma generates the client types abuses how `npm` node_modules work, which is different from how `pnpm` works. We recommend using `npm` is you plan to use Prisma.
+La forma en que Prisma genera los tipos de cliente abusa de cómo funcionan los módulos de `npm`, que es diferente de cómo funciona `pnpm`. Recomendamos utilizar `npm` si planeas utilizar Prisma.
 
