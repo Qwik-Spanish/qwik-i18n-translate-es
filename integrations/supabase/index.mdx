@@ -1,5 +1,5 @@
 ---
-title: Qwik City and Supabase
+title: Qwik City y Supabase
 keywords: 'supabase, db'
 contributors:
   - manucorporat
@@ -8,28 +8,28 @@ contributors:
 
 # Supabase
 
-The `Supabase` JS library plays nicely with the server-side APIs from Qwik such as `routeLoader$`, `routeAction$` or `server$`.
+La biblioteca `Supabase` para JS se integra perfectamente con las API del lado del servidor de Qwik, como `routeLoader$`, `routeAction$` o `server$`.
 
-First, install supabase in your Qwik project:
+Primero, instala Supabase en tu proyecto de Qwik:
 
 ```bash
 npm install @supabase/supabase-js supabase-auth-helpers-qwik
 ```
 
-The second step would be to add configure the `PUBLIC_SUPABASE_URL` and `PUBLIC_SUPABASE_ANON_KEY` as environment variables to `.env` file, the "anon" key is safe to be exposed in the client-side.
+El segundo paso sería configurar las variables de entorno `PUBLIC_SUPABASE_URL` y `PUBLIC_SUPABASE_ANON_KEY` en el archivo `.env`. La clave "anon" puede ser expuesta de forma segura en el lado del cliente.
 
 ```bash
 PUBLIC_SUPABASE_URL=https://xxxxxxx.supabase.co
 PUBLIC_SUPABASE_ANON_KEY=eyJhb.......
 ```
 
-You should be able to get this values from the Supabase dashboard, create a new `.env.local` file at the root of the project and paste them there.
+Puedes obtener estos valores desde el panel de control de Supabase, crea un nuevo archivo `.env.local` en la raíz del proyecto y pega los valores allí.
 
-> Note: It's possible to use Supabase with Qwik completely client-side, however, you would lose some of the performance benefits that you can acheive with leveraging the server. For a working example and code head over to [this repository](https://github.com/hamatoyogi/qwik-supabase-example).
+> Nota: Es posible utilizar Supabase con Qwik completamente en el lado del cliente, sin embargo, perderías algunos de los beneficios de rendimiento que se pueden obtener al aprovechar el servidor. Para un ejemplo funcional y código, visita [este repositorio](https://github.com/hamatoyogi/qwik-supabase-example).
 
-## Server-side
+## Lado del servidor
 
-The Supabase client can now be used server-side - in `routeLoader`s and `routeAction`s - by calling the `createServerClient` function.
+El cliente de Supabase ahora puede ser utilizado en el lado del servidor, en `routeLoader`s y `routeAction`s, mediante la llamada a la función `createServerClient`.
 
 ```tsx
 import { routeLoader$ } from '@builder.io/qwik-city';
