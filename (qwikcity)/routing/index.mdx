@@ -11,19 +11,19 @@ contributors:
   - AnthonyPAlicea
 ---
 
-# Routing
+# Enrutamiento
 
-Routing in Qwik City is file-system based like [Next.js](https://nextjs.org/docs/routing/introduction), [SvelteKit](https://kit.svelte.dev/docs/routing), [SolidStart](https://start.solidjs.com/core-concepts/routing) or [Remix](https://remix.run/docs/en/main/guides/routing). Files and directories in the `src/routes` have a role in the routing of your application.
+El enrutamiento en Qwik City se basa en el sistema de archivos, similar a [Next.js](https://nextjs.org/docs/routing/introduction), [SvelteKit](https://kit.svelte.dev/docs/routing), [SolidStart](https://start.solidjs.com/core-concepts/routing) o [Remix](https://remix.run/docs/en/main/guides/routing). Los archivos y directorios en `src/routes` desempeñan un papel en el enrutamiento de tu aplicación.
 
-- **📂 Directories:** Describe the URL segments to match by the router.
-- **📄 index. files:** Page/endpoint.
-- **🖼️ layout. files:** Nested layout/middleware.
+- **📂 Directorios:** Describen los segmentos de URL que deben coincidir con el enrutador.
+- **📄 Ficheros index:** Página/endpoint.
+- **🖼️ Ficheros layout:** Layout anidados/middleware.
 
-## Directory-based routing
+## Enrutamiento basado en directorios
 
-Only the directory names are used to match the incoming requests to pages/endpoints.
+Solo se utilizan los nombres de los directorios para hacer coincidir las solicitudes entrantes con las páginas/endpoints.
 
-For example, if you have a file at `src/routes/some/path/index.tsx`, it will be mapped to the URL path `https://example.com/some/path`.
+Por ejemplo, si tenemos un archivo en la ruta `src/routes/some/path/index.tsx`, se asignará a la ruta la URL `https://example.com/some/path`.
 
 ```bash
 src/
@@ -39,17 +39,17 @@ src/
     ├── [...catchall]/
     │   └── index.tsx         # https://example.com/anything/else/that/didnt/match
     │
-    └── layout.tsx            # This layout is used for all pages
+    └── layout.tsx            # Este layout se usa en todas las páginas
 ```
 
-- **`[id]`** is a directory that represents a dynamic route segment, in this example `id` is the string parameter accessible by `getLocation().params.id`.
-- **`[...catchall]`** is a directory that represents a dynamic catch-all route, in this example `catchall` is the string parameter accessible by `getLocation().params.catchall`.
-- **`index.tsx|mdx` files** are the pages/endpoints.
-- **`layout.tsx` files** are the layouts.
+- **`[id]`** es un directorio que representa un segmento de ruta dinámica, en este ejemplo, `id` es el parámetro de cadena accesible mediante `getLocation().params.id`.
+- **`[...catchall]`** es un directorio que representa una ruta dinámica de captura de todo, en este ejemplo, `catchall` es el parámetro de cadena accesible mediante `getLocation().params.catchall`.
+- Los archivos **`index.tsx|mdx`** son las páginas/endpoints.
+- Los archivos **`layout.tsx`** son los layouts.
 
-### Dynamic route segments
+### Segmentos de ruta dinámicos
 
-Special named directories with square brackets, such as `[paramName]` and `[...catchAll]` can be used to match route segments which are dynamic:
+Directorios con nombres especiales entre corchetes, como `[paramName]` y `[...catchAll]`, se pueden utilizar para hacer coincidir segmentos de ruta que son dinámicos:
 
 ```
 src/routes/blog/index.tsx → /blog
@@ -70,7 +70,7 @@ src/
             └── index.tsx     # https://example.com/user/foo
 ```
 
-> The folder `[username]` can be any of the thousands of users that you have in your database. It would be impractical to create a route for each user. Instead, you need to define a Route Parameter (a part of the URL) that will be used to extract the `[username]`.
+> La carpeta `[username]` puede representar a cualquiera de los miles de usuarios que tienes en tu base de datos. Sería poco práctico crear una ruta para cada usuario. En su lugar, debes definir un parámetro de ruta (una parte de la URL) que se utilizará para extraer el `[username]`.
 
 ```tsx title="src/routes/user/[username]/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -78,45 +78,45 @@ import { useLocation } from '@builder.io/qwik-city';
 
 export default component$(() => {
   const loc = useLocation();
-  return <div>Hello {loc.params.username}!</div>;
+  return <div>¡Hola {loc.params.username}!</div>;
 });
 ```
 
-## `index.` files
+## Archivos `index.`
 
-Inside the `src/routes` directory, all files named `index` are considered pages/endpoints, Qwik supports the following extensions: `.ts`, `.tsx`, `.md` and `.mdx`.
+Dentro del directorio `src/routes`, todos los archivos con el nombre `index` se consideran páginas/endpoints. Qwik admite las siguientes extensiones: `.ts`, `.tsx`, `.md` y `.mdx`.
 
-Pages/endpoints are the leaf nodes of the routing tree, ie, **the modules that will handle the request and return an HTTP response**.
+Las páginas/endpoints son los nodos hoja del árbol de enrutamiento, es decir, **los módulos que manejarán la solicitud y devolverán una respuesta HTTP**.
 
-### Page `index.tsx`
+### Página `index.tsx`
 
-When `index.tsx` or `index.ts` exports a Qwik component as the default export, Qwik City will render the component and return an HTML response as a webpage.
+Cuando `index.tsx` o `index.ts` exporta un componente de Qwik como la exportación predeterminada, Qwik City renderizará el componente y devolverá una respuesta HTML como una página web.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
 
 export default component$(() => {
-  return <h1>Hello World</h1>;
+  return <h1>Hola mundo</h1>;
 });
 ```
 
 ### Endpoint `index.ts`
 
-A `index.ts` can also access the HTTP request directly and return a raw HTTP response without involving any Qwik Component. This is done by exporting an `onRequest` method or `onGet`, `onPost`, `onPut`, `onDelete` depending on if you only want to handle a specific request given its HTTP method.
+Un archivo `index.ts` también puede acceder directamente a la solicitud HTTP y devolver una respuesta HTTP en bruto sin involucrar ningún componente de Qwik. Esto se hace exportando un método `onRequest` o `onGet`, `onPost`, `onPut`, `onDelete` dependiendo de si solo deseas manejar una solicitud específica según su método HTTP.
 
 ```tsx title="src/routes/index.ts"
 import type { RequestHandler } from '@builder.io/qwik-city';
 
 export const onGet: RequestHandler = ({ json }) => {
-  json(200, { message: 'Hello World' });
+  json(200, { message: 'Hola mundo' });
 };
 ```
 
-> Notice that in the last example, there is no default export. This is because we are not rendering a Qwik component, but rather we are handling the request directly and returning a JSON response. This is useful to implement RESTful APIs or any other type of HTTP endpoint.
+> Observa que en el último ejemplo no hay una exportación predeterminada. Esto se debe a que no estamos renderizando un componente de Qwik, sino que estamos manejando la solicitud directamente y devolviendo una respuesta JSON. Esto es útil para implementar APIs RESTful u cualquier otro tipo de endpoint HTTP.
 
-### Page + Endpoint
+### Página + Endpoint
 
-As you can see in Qwik City there is no clear separation between pages and endpoints, in both cases, it's a `index.tsx` file that exports a Qwik component or an `onRequest` method. However, it's possible to combine both approaches. For example, you can export a `onRequest` method that will handle the request, and then render a Qwik component.
+Como puedes ver en Qwik City, no hay una separación clara entre páginas y endpoints, en ambos casos, es un archivo `index.tsx` que exporta un componente de Qwik o un método `onRequest`. Sin embargo, es posible combinar ambos enfoques. Por ejemplo, puedes exportar un método `onRequest` que maneje la solicitud y luego renderizar un componente de Qwik.
 
 ```tsx title="src/routes/index.tsx"
 import { component$ } from '@builder.io/qwik';
@@ -125,59 +125,59 @@ import type { RequestHandler } from '@builder.io/qwik-city';
 export const onRequest: RequestHandler = ({ headers, query, json }) => {
   headers.set('Cache-Control', 'private');
   if (query.get('format') === 'json') {
-    json(200, { message: 'Hello World' });
+    json(200, { message: 'Hola mundo' });
   }
 };
 
 export default component$(() => {
-  return <h1>Hello World</h1>;
+  return <h1>Hola mundo</h1>;
 });
 ```
 
-> In this example, a request handle will always set the `Cache-Control` header to `private` and the page will be rendered as an HTML page, but if the request contains a `format=json` query param, the endpoint will return a JSON response instead.
+> En este ejemplo, el manejador de solicitud siempre establecerá el encabezado `Cache-Control` en `private` y la página se renderizará como una página HTML, pero si la solicitud contiene un parámetro de consulta `format=json`, el endpoint devolverá una respuesta JSON en su lugar.
 
-## `layout.` files
+## Archivos `layout.`
 
-Layout modules are very similar to `index` files, both can handle requests and render Qwik components, however, layouts are designed to work like a middleware, allowing to **share UI and request handling (middleware)** to a set of routes.
+Los módulos de layout son muy similares a los archivos `index`, ambos pueden manejar solicitudes y renderizar componentes de Qwik. Sin embargo, los layouts están diseñados para funcionar como middleware, permitiendo **compartir UI y manejo de solicitudes (middleware)** para un conjunto de rutas.
 
-Usually, different pages need some common request handling and share some UI. For example, picture a dashboard site where all the pages are under the `/admin/*` directory:
+Por lo general, diferentes páginas necesitan algún manejo común de solicitudes y comparten alguna UI. Por ejemplo, imagina un sitio de panel de control donde todas las páginas se encuentran bajo el directorio `/admin/*`:
 
-- **Shared request handling:** The request cookies need to be validated before even rendering the page, otherwise, render a blank 401 page.
-- **Shared UI:** All pages share a common header showing the user's name and profile picture.
+- **Manejo compartido de solicitudes:** Las cookies de la solicitud deben validarse antes de renderizar la página, de lo contrario, se muestra una página en blanco con un código de error 401.
+- **UI compartida:** Todas las páginas comparten un encabezado común que muestra el nombre del usuario y su foto de perfil.
 
-Instead of repeating the same code in each route, we can use layouts to automatically reuse common parts, and also to add middleware to the route.
+En lugar de repetir el mismo código en cada ruta, podemos utilizar los layouts para reutilizar automáticamente las partes comunes y también agregar middleware a la ruta.
 
-Take this `src/routes` directory as an example:
+Tomemos como ejemplo el directorio `src/routes`:
 
 ```bash
 src/
 └── routes/
     ├── admin/
-    │   ├── layout.tsx  <-- This layout is used for all pages under /admin/*
+    │   ├── layout.tsx  <-- Este layout se utiliza para todas las páginas bajo /admin/*
     │   └── index.tsx
-    ├── layout.tsx      <-- This layout is used for all pages
+    ├── layout.tsx      <-- Este layout se utiliza para todas las páginas
     └── index.tsx
 ```
 
-### Middleware layouts
+### Middleware en los layouts
 
-Since layouts can implement request handling with `onRequest` or `onGet`, `onPost`, `onPut`, `onDelete`, they can be used to implement middleware, for example, to validate the request cookies before rendering the page.
+Dado que los layouts pueden implementar el manejo de solicitudes con `onRequest` o `onGet`, `onPost`, `onPut`, `onDelete`, se pueden utilizar para implementar middleware, por ejemplo, para validar las cookies de la solicitud antes de renderizar la página.
 
-For the route `https://example.com/admin`, the `onRequest` methods will be executed in the following order:
+Para la ruta `https://example.com/admin`, los métodos `onRequest` se ejecutarán en el siguiente orden:
 
-1. `src/routes/layout.tsx`'s `onRequest`
-2. `src/routes/admin/layout.tsx`'s `onRequest`
-3. `src/routes/admin/index.tsx`'s component
+1. `onRequest` de `src/routes/layout.tsx`
+2. `onRequest` de `src/routes/admin/layout.tsx`
+3. Componente de `src/routes/admin/index.tsx`
 
-### Nested layouts
+### Layouts anidados
 
-Layouts also **provide a way to add common UI to the rendered page**. For example, if we want to add a common header to all the routes, we can add a `Header` component to the root layout.
+Los layouts también **proporcionan una forma de agregar UI común a la página renderizada**. Por ejemplo, si queremos agregar un encabezado común a todas las rutas, podemos agregar un componente `Header` al layout raíz.
 
-For the given example, the Qwik components will be rendered in the following order:
+Para el ejemplo dado, los componentes de Qwik se renderizarán en el siguiente orden:
 
-1. `src/routes/layout.tsx`'s component
-2. `src/routes/admin/layout.tsx`'s component
-3. `src/routes/admin/index.tsx`'s component
+1. Componente de `src/routes/layout.tsx`
+2. Componente de `src/routes/admin/layout.tsx`
+3. Componente de `src/routes/admin/index.tsx`
 
 ```tsx
 <RootLayout>
@@ -187,13 +187,13 @@ For the given example, the Qwik components will be rendered in the following ord
 </RootLayout>
 ```
 
-## SPA navigation
+## Navegación en SPA
 
-Qwik provides the `<Link>` component and the `useNavigate()` hook to refresh and navigate between pages.
+Qwik proporciona el componente `<Link>` y el hook `useNavigate()` para actualizar y navegar entre páginas.
 
-The `Link` is usually the recommend way to navigate because it uses the HTML `<a>` tag, which is the most accessible way to navigate between pages.
+El `Link` es generalmente la forma recomendada de navegar porque utiliza la etiqueta HTML `<a>`, que es la forma más accesible de navegar entre páginas.
 
-However, if you need to navigate programmatically, you can use the `useNavigate()` hook.
+Sin embargo, si necesitas navegar de forma programática, puedes utilizar el hook `useNavigate()`.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
@@ -203,25 +203,25 @@ export default component$(() => {
   const nav = useNavigate();
   return (
     <div>
-      <Link href="/about">About (prefered)</Link>
-      <button onClick$={() => nav('/about')}>About</button>
+      <Link href="/about">Acerca de (preferido)</Link>
+      <button onClick$={() => nav('/about')}>Acerca de</button>
     </div>
   );
 });
 ```
 
-### Refreshing
+### Actualización de la página
 
-You can use the `Link` with the `reload` prop to refresh the page.
+Puedes utilizar el `Link` con la propiedad `reload` para refrescar la página.
 
-You can also call the `nav()` function from the `useNavigate()` hook, without any arguments.
+También puedes llamar a la función `nav()` del hook `useNavigate()` sin ningún argumento.
 
 ```tsx
 import { component$ } from '@builder.io/qwik';
 import { Link, routeLoader$, useNavigate } from '@builder.io/qwik-city';
 
 export const useServerTime = routeLoader$(() => {
-  // This will re-execute in the server when the page refreshes
+  // Esto se ejecutará nuevamente en el servidor cuando se refresque la página
   return Date.now();
 });
 
@@ -231,53 +231,53 @@ export default component$(() => {
 
   return (
     <div>
-      <Link reload>Refresh (better accesibility)</Link>
-      <button onClick$={() => nav()}>Refresh</button>
-      <p>Server time: {serverTime.value}</p>
+      <Link reload>Refrescar (mejor accesibilidad)</Link>
+      <button onClick$={() => nav()}>Refrescar</button>
+      <p>Hora del servidor: {serverTime.value}</p>
     </div>
   );
 });
 ```
 
-> When the page refreshes, all the matching `routeLoader$` and server handlers (`onRequest`) will reexecute in the server and the UI will re-render accordingly.
+> Cuando se refresca la página, todos los `routeLoader$` coincidentes y los manejadores del servidor (`onRequest`) se ejecutarán nuevamente en el servidor y la interfaz de usuario se volverá a renderizar en consecuencia.
 
-> While refreshing the page, the `isNavigating` boolean from `useLocation()` will be `true` until the page is fully rendered.
+> Mientras se refresca la página, el booleano `isNavigating` de `useLocation()` será `true` hasta que la página se haya renderizado por completo.
 
-## Request Event
+## Evento de solicitud
 
-Each request handler, such as `onRequest`, `onGet`, `onPost`, etc., are passed in a `RequestEvent` object as the first argument to the handler. The `RequestEvent` object contains utility functions and properties to get and set values to the server's request and response. This object contains the following properties:
+Cada manejador de solicitud, como `onRequest`, `onGet`, `onPost`, etc., recibe como primer argumento un objeto `RequestEvent`. El objeto `RequestEvent` contiene funciones de utilidad y propiedades para obtener y establecer valores en la solicitud y respuesta del servidor. Este objeto contiene las siguientes propiedades:
 
-- `basePathname`: The base pathname of the request, which can be configured at build time. Defaults to `/`.
-- `cacheControl`: Convenience function to set the [Cache-Control](https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Cache-Control) response header.
-- `cookie`: HTTP request and response [cookies](https://developer.mozilla.org/en-US/docs/Web/HTTP/Cookies). Use the `get()` method to retrieve a request cookie value. Use the `set()` method to set a response cookie value.
-- `env`: Platform provided environment variables.
-- `error`: When called, the response will immediately end with the given status code. This could be useful to end a response with `404`, and use the 404 handler in the routes directory. See [Status codes](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status) for which status code should be used.
-- `getWritableStream`: Low-level access to write to the HTTP response stream. Once `getWritableStream()` is called, the status and headers can no longer be modified and will be sent over the network.
-- `headers`: HTTP [response headers](https://developer.mozilla.org/en-US/docs/Glossary/Response_header).
-- `html`: Convenience method to send an HTML body response. The response will be automatically set the `Content-Type` header to`text/html; charset=utf-8`. An `html()` response can only be called once.
-- `json`: Convenience method to JSON stringify the data and send it in the response. The response will be automatically set the `Content-Type` header to`application/json; charset=utf-8`. A `json()` response can only be called once.
-- `locale`: Which locale the content is in. The locale value can be retrieved from selected methods using `getLocale()`.
-- `method`: HTTP request [method](https://developer.mozilla.org/en-US/docs/Web/HTTP/Methods) value.
-- `next`: Call the next request handler. This is useful for middleware.
-- `params`: URL path params which have been parsed from the current url pathname segments. Use `query` to instead retrieve the query string search params.
-- `parseBody`: This method will check the request headers for a `Content-Type` header and parse the body accordingly. It supports `application/json`, `application/x-www-form-urlencoded`, and `multipart/form-data` content types. If the `Content-Type` header is not set, it will return `null`.
-- `pathname`: URL pathname value. Does not include the protocol, domain, query string (search params) or hash.
-- `platform`: Platform specific data and functions.
-- `query`: URL query string [URLSearchParams](https://developer.mozilla.org/en-US/docs/Web/API/URLSearchParams) value. Use `params` to instead retrieve the route params found in the url pathname.
-- `redirect`: URL to redirect to. When called, the response will immediately end with the correct redirect status and headers. See [Redirects](https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections) for which status code should be used.
-- `request`: HTTP [Request](https://developer.mozilla.org/en-US/docs/Web/API/Request).
-- `send`: Send a body response. The `Content-Type` response header is not automatically set when using `send()` and must be set manually. A `send()` response can only be called once.
-- `sharedMap`: Shared Map across all the request handlers. Every HTTP request will get a new instance of the shared map. The shared map is useful for sharing data between request handlers.
-- `status`: HTTP response [status code](https://developer.mozilla.org/en-US/docs/Web/HTTP/Status). Sets the status code when called with an argument. Always returns the status code, so calling `status()` without an argument will can be used to return the current status code.
-- `text`: Convenience method to send an text body response. The response will be automatically set the `Content-Type` header to`text/plain; charset=utf-8`. An `text()` response can only be called once.
-- `url`: HTTP request [URL](https://developer.mozilla.org/en-US/docs/Web/API/URL).
+- `basePathname`: El pathname base de la solicitud, que se puede configurar en tiempo de compilación. Por defecto es `/`.
+- `cacheControl`: Función de conveniencia para establecer el encabezado de respuesta [Cache-Control](https://developer.mozilla.org/es/docs/Web/HTTP/Headers/Cache-Control).
+- `cookie`: Cookies de la solicitud HTTP y de respuesta [cookies](https://developer.mozilla.org/es/docs/Web/HTTP/Cookies). Utiliza el método `get()` para obtener el valor de una cookie de la solicitud. Utiliza el método `set()` para establecer el valor de una cookie de respuesta.
+- `env`: Variables de entorno proporcionadas por la plataforma.
+- `error`: Cuando se llama, la respuesta finalizará inmediatamente con el código de estado proporcionado. Esto puede ser útil para finalizar una respuesta con `404` y utilizar el manejador de 404 en el directorio de rutas. Consulta los [códigos de estado](https://developer.mozilla.org/es/docs/Web/HTTP/Status) para saber qué código de estado se debe utilizar.
+- `getWritableStream`: Acceso de bajo nivel para escribir en el flujo de respuesta HTTP. Una vez que se llama a `getWritableStream()`, el estado y los encabezados ya no se pueden modificar y se enviarán a través de la red.
+- `headers`: Encabezados de respuesta HTTP [headers](https://developer.mozilla.org/es/docs/Glossary/Response_header).
+- `html`: Método de conveniencia para enviar una respuesta con cuerpo HTML. La respuesta se establecerá automáticamente con el encabezado `Content-Type` en `text/html; charset=utf-8`. Solo se puede llamar a `html()` una vez.
+- `json`: Método de conveniencia para convertir a JSON los datos y enviarlos en la respuesta. La respuesta se establecerá automáticamente con el encabezado `Content-Type` en `application/json; charset=utf-8`. Solo se puede llamar a `json()` una vez.
+- `locale`: Idioma en el que se encuentra el contenido. El valor de idioma se puede obtener de ciertos métodos utilizando `getLocale()`.
+- `method`: Valor del método de solicitud HTTP [method](https://developer.mozilla.org/es/docs/Web/HTTP/Methods).
+- `next`: Llama al siguiente manejador de solicitud. Esto es útil para middleware.
+- `params`: Parámetros de la ruta URL que se han analizado a partir de los segmentos de pathname de la URL actual. Utiliza `query` para recuperar en su lugar los parámetros de búsqueda de la cadena de consulta.
+- `parseBody`: Este método verificará los encabezados de la solicitud en busca de un encabezado `Content-Type` y analizará el cuerpo en consecuencia. Admite los tipos de contenido `application/json`, `application/x-www-form-urlencoded` y `multipart/form-data`. Si no se establece el encabezado `Content-Type`, devolverá `null`.
+- `pathname`: Valor del pathname de la URL. No incluye el protocolo, dominio, cadena de búsqueda (parámetros de búsqueda) ni fragmento.
+- `platform`: Datos y funciones específicos de la plataforma.
+- `query`: Valor de la cadena de consulta URL [URLSearchParams](https://developer.mozilla.org/es/docs/Web/API/URLSearchParams). Utiliza `params` para recuperar en su lugar los parámetros de ruta encontrados en el pathname de la URL.
+- `redirect`: URL a la que redirigir. Cuando se llama, la respuesta finalizará inmediatamente con el código de redirección correcto y los encabezados adecuados. Consulta las [redirecciones](https://developer.mozilla.org/en-US/docs/Web/HTTP/Redirections) para saber qué código de estado se debe utilizar.
+- `request`: Objeto de solicitud HTTP [Request](https://developer.mozilla.org/es/docs/Web/API/Request).
+- `send`: Envía una respuesta con cuerpo. El encabezado `Content-Type` de la respuesta no se establece automáticamente al usar `send()` y debe establecerse manualmente. Solo se puede llamar a `send()` una vez.
+- `sharedMap`: Mapa compartido entre todos los manejadores de solicitud. Cada solicitud HTTP obtendrá una nueva instancia del mapa compartido. El mapa compartido es útil para compartir datos entre los manejadores de solicitud.
+- `status`: Código de estado de respuesta HTTP [status code](https://developer.mozilla.org/es/docs/Web/HTTP/Status). Establece el código de estado cuando se llama con un argumento. Siempre devuelve el código de estado, por lo que llamar a `status()` sin argumentos se puede utilizar para devolver el código de estado actual.
+- `text`: Método de conveniencia para enviar una respuesta con cuerpo de texto. La respuesta se establecerá automáticamente con el encabezado `Content-Type` en `text/plain; charset=utf-8`. Solo se puede llamar a `text()` una vez.
+- `url`: Objeto de solicitud HTTP [URL](https://developer.mozilla.org/es/docs/Web/API/URL).
 
-## Advanced routing
+## Enrutamiento avanzado
 
-Qwik City also supports:
+Qwik City también admite las siguientes características avanzadas de enrutamiento:
 
-- [Route Parameters](/docs/(qwikcity)/advanced/routing/index.mdx)
-- [Nested layouts](/docs/(qwikcity)/advanced/routing/index.mdx#nested-layout)
-- [Menus](/docs/(qwikcity)/advanced/menu/index.mdx)
+- [Parámetros de ruta](/docs/(qwikcity)/advanced/routing/index.mdx)
+- [Layouts anidados](/docs/(qwikcity)/advanced/routing/index.mdx#nested-layout)
+- [Menús](/docs/(qwikcity)/advanced/menu/index.mdx)
 
-These are discussed later.
+Estos temas se discuten en detalle más adelante. Puedes obtener más información sobre estas características en los enlaces proporcionados.
