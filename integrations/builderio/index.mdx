@@ -7,51 +7,51 @@ contributors:
 
 # Builder.io
 
-[Builder.io](https://builder.io/) is a Visual Headless CMS. Think about it as a drag-and-drop CMS that integrates into your existing Qwik codebase, allowing you and your team to edit content without having to write code.
+[Builder.io](https://builder.io/) es un Headless CMS visual. Piensa en él como un CMS de arrastrar y soltar que se integra en tu base de código existente de Qwik, lo que te permite a ti y a tu equipo editar contenido sin necesidad de escribir código.
 
-## Setup
+## Configuración
 
-You can add builder.io easily by using the following `add` script:
+Puedes agregar Builder.io fácilmente utilizando el siguiente script `add`:
 
 ```shell
 npm run qwik add builder.io
 ```
 
-After running the command, `@builder.io/sdk-qwik` will be installed, and a new sample component and catchall route will be created in `src/components` and `src/routes` respectively.
+Después de ejecutar el comando, se instalará `@builder.io/sdk-qwik` y se creará un nuevo componente de ejemplo y una ruta catchall en `src/components` y `src/routes`, respectivamente.
 
-Create a free [Builder.io account](https://builder.io/signup) (only takes a couple minutes), and paste your [public API key](https://www.builder.io/c/docs/using-your-api-key) into `.env`
+Crea una cuenta gratuita en [Builder.io](https://builder.io/signup) (solo tomará un par de minutos) y pega tu [clave de API pública](https://www.builder.io/c/docs/using-your-api-key) en `.env`
 
 ```diff
-- BUILDER_PUBLIC_API_KEY=YOUR_API_KEY
+- BUILDER_PUBLIC_API_KEY=TU_CLAVE_API
 + BUILDER_PUBLIC_API_KEY=abc123
 ```
 
-Then run the development server:
+Luego ejecuta el servidor de desarrollo:
 
 ```bash
 npm run dev
 ```
 
-Now, go set your [preview URL](https://www.builder.io/c/docs/guides/preview-url) to `http://localhost:5173/`
+Ahora, configura tu [URL de vista previa](https://www.builder.io/c/docs/guides/preview-url) en `http://localhost:5173/`
 
-1. Go to [https://builder.io/models](builder.io/models)
-2. Choose the `page` model
-3. Set the preview URL to `http://localhost:5173/` and click `save` in the top right
+1. Ve a [https://builder.io/models](builder.io/models)
+2. Elige el modelo `page`
+3. Configura la URL de vista previa en `http://localhost:5173/` y haz click en `save` en la esquina superior derecha
 
-Now, let's create a page in Builder.io and see it live in Qwik!
+¡Ahora, creemos una página en Builder.io y veámosla en vivo en Qwik!
 
-1. Go to [https://builder.io/content](builder.io/content)
-2. Click `+ New` and choose `Page`
-3. Give it a name and click `Create`
+1. Ve a [https://builder.io/content](builder.io/content)
+2. Haz click en `+ New` y elige `Page`
+3. Dale un nombre y haz click en `Create`
 
-Now, try out the visual editor! You can find a custom Qwik components
-in the `Custom Components` section of the insert tab.
+¡Ahora, prueba el editor visual! Puedes encontrar componentes personalizados de Qwik
+en la sección `Custom Components` de la pestaña insert.
 
-You may also limit visual editing to only your custom components with [components-only mode](https://www.builder.io/c/docs/guides/components-only-mode).
+También puedes limitar la edición visual solo a tus componentes personalizados con el [modo components-only](https://www.builder.io/c/docs/guides/components-only-mode).
 
-## Register your components
+## Registra tus componentes
 
-One of the killer features of a Visual Headless CMS, is that you can [expose your components](https://www.builder.io/c/docs/custom-components-setup) to the CMS, ie, your Qwik components can be used as blocks in Builder.io.
+Una de las características destacadas de un Headless CMS visual es que puedes [exponer tus componentes](https://www.builder.io/c/docs/custom-components-setup) al CMS, es decir, tus componentes de Qwik pueden ser utilizados como bloques en Builder.io.
 
 ```tsx
 import { MyFunComponent } from './fun/fun';
@@ -64,7 +64,7 @@ export const CUSTOM_COMPONENTS: RegisteredComponent[] = [
       {
         name: 'text',
         type: 'string',
-        defaultValue: 'Hello world',
+        defaultValue: 'Hola mundo',
       },
     ],
   },
@@ -80,11 +80,11 @@ export default component$(() => {
 });
 ```
 
-## Next Steps
+## Siguientes Pasos
 
-See our full integration guides [here](https://www.builder.io/c/docs/developers)
+Consulta nuestras guías de integración completa [aquí](https://www.builder.io/c/docs/developers)
 
-Also, when you push your integration to production, go back and update your preview URL to your production URL so now anyone on your team can visuall create content in your Qwik app!
+Además, cuando implementes tu integración en producción, vuelve y actualiza tu URL de vista previa con tu URL de producción para que cualquier miembro de tu equipo pueda crear contenido visualmente en tu aplicación de Qwik.
 
-Also, to integrate structured data, see [this guide](https://www.builder.io/c/docs/integrate-cms-data)
+También, para integrar datos estructurados, consulta [esta guía](https://www.builder.io/c/docs/integrate-cms-data)
 
