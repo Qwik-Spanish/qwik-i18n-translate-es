@@ -1,5 +1,5 @@
 ---
-title: Qwik City - Cloudflare Pages Adapter and Middleware
+title: Qwik City - Adaptador de Cloudflare Pages y Middleware
 contributors:
   - adamdbradley
   - manucorporat
@@ -9,19 +9,19 @@ contributors:
   - mhevery
 ---
 
-# Cloudflare Pages Adapter
+# Adaptador de Cloudflare Pages
 
-Qwik City Cloudflare Pages adapter allows you to connect Qwik City to [Cloudflare Pages](https://pages.cloudflare.com/).
+El adaptador Cloudflare Pages de Qwik City te permite conectar Qwik City a [Cloudflare Pages](https://pages.cloudflare.com/).
 
-## Installation
+## Instalación
 
-To integrate the `cloudflare-pages` adapter, use the `add` command:
+Para integrar el adaptador `cloudflare-pages`, utiliza el siguiente comando:
 
 ```shell
 npm run qwik add cloudflare-pages
 ```
 
-The adapter will add a new `vite.config.ts` within the `adapters/` directory, and a new entry file will be created, such as:
+El adaptador añadirá un nuevo archivo `vite.config.ts` dentro del directorio `adapters/`, y se creará un nuevo archivo de entrada, como este:
 
 ```shell
 └── adapters/
@@ -31,31 +31,31 @@ The adapter will add a new `vite.config.ts` within the `adapters/` directory, an
     └── entry.cloudflare-pages.tsx
 ```
 
-Additionally, within the `package.json`, the `build.server` and `deploy` scripts will be updated.
+Además, en el archivo `package.json`, se actualizarán los scripts `build.server` y `deploy`.
 
-## Production build
+## Compilación para producción
 
-To build the application for production, use the `build` command, this command will automatically run `npm run build.server` and `npm run build.client`:
+Para compilar la aplicación para producción, utiliza el siguiente comando, que ejecutará automáticamente `npm run build.server` y `npm run build.client`:
 
 ```shell
 npm run build
 ```
 
-[Read the full guide here](https://github.com/BuilderIO/qwik/tree/main/starters/adapters/cloudflare-pages/README.md)
+[Lee la guía completa aquí](https://github.com/BuilderIO/qwik/tree/main/starters/adapters/cloudflare-pages/README.md)
 
-## Deploy to Cloudflare Pages
+## Despliegue en Cloudflare Pages
 
-After installing the integration using `npm run qwik add cloudflare-pages`, the project is ready to be deployed to Cloudflare Pages.
+Una vez instalada la integración utilizando `npm run qwik add cloudflare-pages`, el proyecto estará listo para ser desplegado en Cloudflare Pages.
 
-Please refer to the [Cloudflare Pages docs](https://developers.cloudflare.com/pages/framework-guides/deploy-a-qwik-site/) for more information on how to deploy your site.
+Consulta la [documentación de Cloudflare Pages](https://developers.cloudflare.com/pages/framework-guides/deploy-a-qwik-site/) para obtener más información sobre cómo desplegar tu sitio.
 
-Note that you will need a [Cloudflare account](https://dash.cloudflare.com/sign-up?lang=en-US) in order to complete this step.
+Ten en cuenta que necesitarás una [cuenta de Cloudflare](https://dash.cloudflare.com/sign-up?lang=en-US) para completar este paso.
 
-## Advanced
+## Avanzado
 
-### Cloudflare Pages Entry Middleware
+### Middleware de Entrada para Cloudflare Pages
 
-When the `cloudflare-pages` adapter is added, a new entry file will be created at `src/entry.cloudflare-pages.tsx`. Below is an example of using the built-in middleware within the entry file.
+Cuando se añade el adaptador `cloudflare-pages`, se creará un nuevo archivo de entrada en `src/entry.cloudflare-pages.tsx`. A continuación se muestra un ejemplo de cómo usar el middleware incorporado en el archivo de entrada.
 
 ```tsx title="src/entry.cloudflare-pages.tsx"
 import {
@@ -71,25 +71,25 @@ const fetch = createQwikCity({ render, qwikCityPlan, manifest });
 export { fetch };
 ```
 
-The compiled middleware will be built in the `server/` directory. Such directory also contains an `_worker.js` file which implements the application's request handling as per the [Cloudflare Pages Advanced Mode](https://developers.cloudflare.com/pages/platform/functions/advanced-mode/#advanced-mode).
-The file simple re-exports the produced `fetch` handler as shown below.
+El middleware compilado se generará en el directorio `server/`. Este directorio también contiene un archivo `_worker.js` que implementa el manejo de las peticiones de la aplicación según el [Modo Avanzado de Cloudflare Pages](https://developers.cloudflare.com/pages/platform/functions/advanced-mode/#advanced-mode).
+El archivo simplemente reexporta el manejador `fetch` producido, como se muestra a continuación.
 
 ```tsx title="/dist/_worker.js"
 import { fetch } from "../server/entry.cloudflare-pages";
 export default { fetch };
 ```
 
-- [Cloudflare Pages Middleware Source](https://github.com/BuilderIO/qwik/tree/main/packages/qwik-city/middleware/cloudflare-pages/index.ts)
-- [Cloudflare Pages Advanced Mode](https://developers.cloudflare.com/pages/platform/functions/advanced-mode/)
-- [Function Invocation Route Config](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)
+- [Fuente del Middleware de Cloudflare Pages](https://github.com/BuilderIO/qwik/tree/main/packages/qwik-city/middleware/cloudflare-pages/index.ts)
+- [Modo Avanzado de Cloudflare Pages](https://developers.cloudflare.com/pages/platform/functions/advanced-mode/)
+- [Configuración de Rutas de Invocación de Funciones](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes)
 
-### Cloudflare Pages Function Invocation Routes
+### Rutas de Invocación de Funciones de Cloudflare Pages
 
-Cloudflare Page's [function-invocation-routes config](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes) can be used to include, or exclude, certain paths to be used by the worker functions. Having a `_routes.json` file gives developers more granular control over when your Function is invoked.
+La configuración de [rutas de invocación de funciones de Cloudflare Page](https://developers.cloudflare.com/pages/platform/functions/routing/#functions-invocation-routes) se puede utilizar para incluir o excluir ciertas rutas para ser utilizadas por las funciones del worker. Tener un archivo `_routes.json` proporciona un control más granular sobre cuándo se invoca su función.
 
-This is useful to determine if a page response should be Server-Side Rendered (SSR) or if the response should use a static-site generated (SSG) `index.html` file instead.
+Esto es útil para determinar si la respuesta de una página debe ser renderizada en el lado del servidor (SSR) o si la respuesta debe utilizar un archivo `index.html` generado por el sitio estático (SSG).
 
-By default, the Cloudflare Pages adapter _does not_ include a `public/_routes.json` config, but rather it is auto-generated from the build by the Cloudflare adapter. An example of an auto-generate `dist/_routes.json` would be:
+Por defecto, el adaptador de Cloudflare Pages _no incluye_ una configuración `public/_routes.json`, sino que se genera automáticamente a partir de la compilación por el adaptador de Cloudflare. Un ejemplo de un archivo `dist/_routes.json` auto-generado sería:
 
 ```json
 {
@@ -107,13 +107,13 @@ By default, the Cloudflare Pages adapter _does not_ include a `public/_routes.js
 }
 ```
 
-In the above example, it's saying _all_ pages should be SSR'd. However, the root static files such as `/favicon.ico` and any static assets in `/build/*` should be excluded from the Functions, and instead treated as a static file.
+En el ejemplo anterior, se está indicando que _todas_ las páginas deben ser renderizadas en el lado del servidor. Sin embargo, los archivos raíz estáticos como `/favicon.ico` y cualquier activo estático en `/build/*` deben excluirse de las funciones, y en su lugar deben tratarse como un archivo estático.
 
-In most cases the generated `dist/_routes.json` file is ideal. However, if you need more granular control over each path, you can instead provide you're own `public/_routes.json` file. When the project provides its own `public/_routes.json` file, then the Cloudflare adapter will not auto-generate the routes config and instead use the committed one within the `public` directory.
+En la mayoría de los casos, el archivo generado `dist/_routes.json` es ideal. Sin embargo, si necesitas un control más granular sobre cada ruta, puedes proporcionar tu propio archivo `public/_routes.json`. Cuando el proyecto proporciona su propio archivo `public/_routes.json`, el adaptador de Cloudflare no generará automáticamente la configuración de rutas y en su lugar utilizará el que se encuentra en el directorio `public`.
 
-### Context
+### Contexto
 
-You may access Cloudflare Page's environment variables in the endpoint method's `platform` param:
+Puedes acceder a las variables de entorno de Cloudflare Page en el parámetro `platform` del método del endpoint:
 
 ```ts
 export const onRequest = async ({ platform }) => {
@@ -121,7 +121,7 @@ export const onRequest = async ({ platform }) => {
 };
 ```
 
-Additionally, you may import the `RequestHandler` and `PlatformCloudflarePages` types to have have type completions in your editor.
+Además, puedes importar los tipos `RequestHandler` y `PlatformCloudflarePages` para tener completado de tipos en tu editor.
 
 ```tsx
 import { type RequestHandler } from '@builder.io/qwik-city';
