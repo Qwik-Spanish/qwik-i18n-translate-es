@@ -1,5 +1,5 @@
 ---
-title: Qwik City - Azure Static Web Apps
+title: Qwik City - Aplicaciones Web Estáticas de Azure
 contributors:
   - derkoe
   - manucorporat
@@ -7,19 +7,19 @@ contributors:
   - mhevery
 ---
 
-# Azure Static Web Apps Middleware
+# Middleware para Aplicaciones Web Estáticas de Azure
 
-Qwik City Azure Static Web Apps middleware allows you to connect Qwik City to [Azure Static Web Apps](https://learn.microsoft.com/azure/static-web-apps/).
+El middleware para Aplicaciones Web Estáticas de Azure te permite conectar Qwik City a las [Aplicaciones Web Estáticas de Azure](https://learn.microsoft.com/azure/static-web-apps/).
 
-## Installation
+## Instalación
 
-To integrate the `azure-swa` adapter, use the `add` command:
+Para integrar el adaptador `azure-swa`, utiliza el siguiente comando `add`:
 
 ```shell
 npm run qwik add azure-swa
 ```
 
-The adapter will add a new `vite.config.ts` within the `adapters/` directory, and a new entry file will be created, such as:
+El adaptador agregará un nuevo archivo `vite.config.ts` dentro del directorio `adapters/`, y se creará un nuevo archivo de entrada, por ejemplo:
 
 ```shell
 └── adapters/
@@ -29,58 +29,58 @@ The adapter will add a new `vite.config.ts` within the `adapters/` directory, an
     └── entry.azure-swa.tsx
 ```
 
-Additionally, within the `package.json`, the `build.server` and `deploy` scripts will be updated.
+Adicionalmente, dentro de `package.json`, se actualizarán los scripts `build.server` y `deploy`.
 
-## Production build
+## Compilación para producción
 
-To build the application for production, use the `build` command, this command will automatically run `npm run build.server` and `npm run build.client`:
+Para compilar la aplicación para producción, utiliza el comando `build`, este comando ejecutará automáticamente `npm run build.server` y `npm run build.client`:
 
 ```shell
 npm run build
 ```
 
-## Deploy to Azure
+## Despliegue en Azure
 
-After installing the integration using `npm run qwik add azure-swa` the project is ready to be deployed to Azure Static Web Apps.
+Después de instalar la integración mediante `npm run qwik add azure-swa`, el proyecto estará listo para ser desplegado en Aplicaciones Web Estáticas de Azure.
 
-There are three ways to deploy:
+Existen tres formas de desplegarlo:
 
-1. Deploy with [Static Web Apps CLI](https://azure.github.io/static-web-apps-cli/)
+1. Despliegue con [Static Web Apps CLI](https://azure.github.io/static-web-apps-cli/)
 
-   You can deploy your application from your local environment with:
+   Puedes desplegar tu aplicación desde tu entorno local con:
 
    ```shell
    npx swa deploy
    ```
 
-   This will start a wizard which will guide you through login and deployment to Azure.
+   Esto iniciará un asistente que te guiará a través del inicio de sesión y el despliegue en Azure.
 
-2. Deploy from GitHub
+2. Despliegue desde GitHub
 
-   You can deploy your application via GitHub. Create a Git repository, commit all your code and then publish your branch to GitHub.
+   Puedes desplegar tu aplicación a través de GitHub. Crea un repositorio Git, realiza todos tus cambios y luego publica tu rama en GitHub.
 
-   Create an Azure Static Webapp via the Azure Portal and choose the GitHub repository in the deployment details. When prompted for the build details choose "Custom" and set the following values:
+   Crea una aplicación web estática de Azure a través del Portal de Azure y elige el repositorio de GitHub en los detalles de despliegue. Cuando se te solicite los detalles de compilación, elige "Personalizada" (Custom) y establece los siguientes valores:
 
-   - App location: "."
-   - Api location: "./azure-functions"
-   - Output location: "./dist"
+   - Ubicación de la aplicación: "."
+   - Ubicación de la API: "./azure-functions"
+   - Ubicación de salida: "./dist"
 
-   This will setup a GitHub workflow in your repository that will deploy your application for the main branch and each pull request.
+   Esto configurará un flujo de trabajo de GitHub en tu repositorio que desplegará tu aplicación para la rama principal y cada solicitud de extracción.
 
-   The resulting workflow file has to be adapted by adding the following to the "Repository/Build Configurations" block:
+   El archivo de flujo de trabajo resultante debe adaptarse añadiendo lo siguiente al bloque "Repository/Build Configurations":
 
    ```text /skip_api_build/#b /true/#c
    skip_api_build: true
    ```
 
-   Checkout [Azure Static Web Apps quickstart](https://learn.microsoft.com/azure/static-web-apps/get-started-portal?pivots=github) for more information.
+   Consulta [Aplicaciones Web Estáticas de Azure quickstart](https://learn.microsoft.com/azure/static-web-apps/get-started-portal?pivots=github) para obtener más información.
 
-3. Deploy from any CI system
+3. Despliegue desde cualquier sistema de CI
 
-   You can deploy to Azure Static Web Apps with any CI system by setting the environment variable `SWA_CLI_DEPLOYMENT_TOKEN` with the Azure SWA deployment token and the run the following command from your pipeline:
+   Puedes desplegar en Aplicaciones Web Estáticas de Azure con cualquier sistema de CI estableciendo la variable de entorno `SWA_CLI_DEPLOYMENT_TOKEN` con el token de despliegue de Azure SWA y luego ejecutando el siguiente comando desde tu pipeline:
 
    ```shell
    swa deploy ./dist --api-location ./azure-functions --env production
    ```
 
-Notice, that you will need an [Azure account](https://signup.azure.com/) in order to complete this step!
+Ten en cuenta que necesitarás una [cuenta de Azure](https://signup.azure.com/) para completar este paso.
