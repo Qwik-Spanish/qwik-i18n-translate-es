@@ -9,25 +9,25 @@ contributors:
 import image from './icones.png';
 import CodeSandbox from '../../../../components/code-sandbox/index.tsx';
 
-# Icons
+# Íconos
 
-Icons are an important part of any application. There are already more than 180.000 icons you can add to your Qwik app.
+Los íconos son una parte importante de cualquier aplicación. Ya hay más de 180,000 íconos que puedes agregar a tu aplicación Qwik.
 
 ## `qwikest/icons`
 
-This package allows for a stremalined way to add icons to your Qwik app from a variety of icon sets.
+Este paquete permite agregar íconos de diferentes conjuntos de íconos a tu aplicación Qwik de una manera sencilla.
 
-- `Bs`: Bootstrap Icons
-- `Go`: Octicons by GitHub
-- `Hi`: Heroicons by Tailwind
+- `Bs`: Íconos de Bootstrap
+- `Go`: Octicons de GitHub
+- `Hi`: Heroicons de Tailwind
 - `In`: Iconoir
-- `Io`: Ionicons by Ionic
-- `Lu`: Lucide [superset of feather icons]
+- `Io`: Ionicons de Ionic
+- `Lu`: Lucide [conjunto de íconos basado en feather icons]
 - `Mo`: Mono Icons
-- `Si`: Simple Icons [icons for popular brands]
+- `Si`: Simple Icons [íconos de marcas populares]
 - `Tb`: Tabler Icons
 
-Simply install the package with your package manager of choice:
+Simplemente instala el paquete con tu administrador de paquetes preferido:
 
 ```bash
 npm i @qwikest/icons
@@ -35,13 +35,13 @@ yarn add @qwikest/icons
 pnpm add @qwikest/icons
 ```
 
-### Usage
+### Uso
 
 ```tsx
 import { LuRocket } from "@qwikest/icons/lucide";
 
 export const MyComponent = component$(() => {
-  // Icon size and color are inherited by default ⬇️
+  // El tamaño y color del ícono se heredan por defecto ⬇️
   return (
     <div style={{ color: "red", fontSize: "40px" }}>
       <LuRocket />
@@ -50,18 +50,18 @@ export const MyComponent = component$(() => {
 });
 ```
 
-Please refer to the [official docs for more details](https://github.com/qwikest/icons).
+Por favor, consulta la [documentación oficial para más detalles](https://github.com/qwikest/icons).
 
 
 ## `icones.js.org`
 
-[icones.js.org](https://icones.js.org/) is a collection of icon collections. More than 180.000 public domain icons are available, ready to be used in your Qwik app.
+[icones.js.org](https://icones.js.org/) es una colección de conjuntos de íconos. Hay más de 180,000 íconos de dominio público disponibles y listos para ser utilizados en tu aplicación Qwik.
 
-Icones is powered by [iconify](https://iconify.design/) which allows to easy add icons from Material Design, Phosphor, Remix, Carbon, Bootstrap, Tabler, Feather, Fluent, IconPark, Octicons and many other icon sets. Twitter Emoji, Fluent Emoji, EmojiOne, Noto Emoji... to any Qwik app.
+Icones está impulsado por [iconify](https://iconify.design/), lo que permite agregar fácilmente íconos de Material Design, Phosphor, Remix, Carbon, Bootstrap, Tabler, Feather, Fluent, IconPark, Octicons y muchos otros conjuntos de íconos. También puedes agregar Twitter Emoji, Fluent Emoji, EmojiOne, Noto Emoji y otros a cualquier aplicación Qwik.
 
 <img src={image}/>
 
-Click the `Qwik` button to copy the icon code to your clipboard, then paste it into your project.
+Haz click en el botón `Qwik` para copiar el código del Ícono al portapapeles y luego pégalo en tu proyecto.
 
 ```tsx
 import type { QwikIntrinsicElements } from '@builder.io/qwik'
